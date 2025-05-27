@@ -23,7 +23,7 @@
 		 <li class="nav-item">
              <a class="nav-link" href="<?= base_url();?>admin/our_clients">
                  <span class="menu-title">Our Clients</span>
-                 <i class="mdi mdi-home menu-icon"></i>
+                 <i class="mdi mdi-square menu-icon"></i>
              </a>
          </li>
 		 <li class="nav-item">
@@ -35,6 +35,12 @@
 		 <li class="nav-item">
              <a class="nav-link" href="<?= base_url(); ?>admin/enquiry_data">
                  <span class="menu-title">Enquiry Data</span>
+                 <i class="mdi mdi-home menu-icon"></i>
+             </a>
+         </li>
+		  <li class="nav-item">
+             <a class="nav-link" href="<?= base_url(); ?>admin/carrer_form_data">
+                 <span class="menu-title">Carrer Formn Data</span>
                  <i class="mdi mdi-home menu-icon"></i>
              </a>
          </li>

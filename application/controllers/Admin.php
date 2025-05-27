@@ -34,6 +34,10 @@ class Admin extends CI_Controller {
 	{
 		$this->load->view('admin/our_clients');
 	}
+	public function carrer_form_data()
+	{
+		$this->load->view('admin/carrer_form_data');
+	}
 
 	
 }
