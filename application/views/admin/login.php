@@ -21,18 +21,20 @@
                                 <img src="<?= base_url();?>assets/images/packfora-logo.svg">
                             </div>
                             
-                            <form class="pt-3">
+                            <form id="loginForm" class="pt-3">
                                 <div class="form-group">
-                                    <input type="email" class="form-control form-control-lg" id="exampleInputEmail1"
-                                        placeholder="Username">
+                                    <input type="email" class="form-control form-control-lg" name="email"  id="email"
+                                        placeholder="Email">
+                                        <div class="text-danger" id="email_error"></div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" class="form-control form-control-lg"
-                                        id="exampleInputPassword1" placeholder="Password">
+                                    <input type="password" class="form-control form-control-lg" name="password"
+                                        id="password" placeholder="Password">
+                                        <div class="text-danger" id="password_error"></div>
                                 </div>
                                 <div class="mt-3 d-grid gap-2">
-                                    <a class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"
-                                        href="<?=base_url();?>">SIGN IN</a>
+                                    <button type="submit" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"
+                                        >SIGN IN</button>
                                 </div>
                             </form>
                         </div>
@@ -46,7 +48,10 @@
     <!-- container-scroller -->
     <!-- plugins:js -->
     <?php include('common/js_files.php');?>
+
     <!-- endinject -->
+     <script src="<?= base_url();?>assets/view_js/login.js"></script>
+       </script>
 </body>
 
 </html>

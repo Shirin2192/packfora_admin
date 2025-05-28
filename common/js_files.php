@@ -13,3 +13,12 @@
  <script src="<?= base_url();?>assets/js/typeahead.js"></script>
  <script src="<?= base_url();?>assets/js/select2.js"></script>
  <script src="<?= base_url();?>assets/js/dashboard.js"></script>
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+<script>
+    var frontend = "<?= base_url();?>";
+    var controllerName = "<?= $this->router->fetch_class(); ?>";
+</script>

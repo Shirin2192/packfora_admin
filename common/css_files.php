@@ -1,8 +1,7 @@
 <link rel="stylesheet" href="<?= base_url();?>assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/vendors/ti-icons/css/themify-icons.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/vendors/css/vendor.bundle.base.css">
-    <link rel="stylesheet" href="<?= base_url();?>assets/vendors/font-awesome/css/font-awesome.min.css">
-	 <link rel="stylesheet" href="<?= base_url();?>assets/vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="<?= base_url();?>assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
 	 <link rel="stylesheet" href="<?= base_url();?>assets/vendors/select2/select2.min.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">

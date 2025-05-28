@@ -19,8 +19,8 @@ function generateid() {
 function decy_ency($action, $string) {
     $output = false;
     $encrypt_method = "AES-256-CBC";
-    $secret_key = 'nia_natura_inventory_management key';
-    $secret_iv = 'nia_natura_inventory_management iv';
+    $secret_key = 'packfora key';
+    $secret_iv = 'packfora iv';
     $key = hash('sha256', $secret_key);
     $iv = substr(hash('sha256', $secret_iv), 0, 16);
     if ($action == 'encrypt') {
