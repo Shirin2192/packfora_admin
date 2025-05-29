@@ -20,11 +20,21 @@ class Admin extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('admin/dashboard');
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/dashboard');
+		}
 	}
 	public function slider()
 	{
-		$this->load->view('admin/slider');
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/slider');
+		}
 	}
 	public function save_slider() {
 		// Set validation rules
@@ -80,7 +90,12 @@ class Admin extends CI_Controller {
 
 	public function contact_us()
 	{
-		$this->load->view('admin/contact_us');
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/contact_us');
+		}
 	}
 	public function save_contactus_form() {
 		$response = ['status' => false, 'errors' => []];
@@ -150,7 +165,7 @@ class Admin extends CI_Controller {
 		$response['data'] = $this->model->selectWhereData('tbl_contact_us',array('is_delete'=>'1', 'id'=> $id), '*');
 		echo json_encode($response);
 	}
-	public function update_contactus_form() {
+	public function update_contactus() {
 		$response = ['status' => false, 'errors' => []];
 		// Load form validation library
 		$this->load->library('form_validation');
@@ -185,21 +200,133 @@ class Admin extends CI_Controller {
 
 		echo json_encode($response);
 	}
+	public function delete_contactus()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_contact_us', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Contact Us Details deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Contact Us Details.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
 	public function enquiry_data()
 	{
-		$this->load->view('admin/enquiry_data');
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/enquiry_data');
+		}
+	}
+	public function get_enquiry_contact_data(){
+		$response['data'] = $this->model->selectWhereData('contact_inquiries',array(), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_enquiry_contact_details(){
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('contact_inquiries',array('id'=> $id), '*');
+		echo json_encode($response);
 	}
 	public function our_clients()
 	{
-		$this->load->view('admin/our_clients');
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/our_clients');
+		}
 	}
+	public function upload_client_image()
+	{
+		// Set upload configuration
+		$config['upload_path']   = './uploads/clients/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size']      = 2048; // in KB
+		$config['encrypt_name']  = TRUE;
+
+		// Create directory if not exists
+		if (!is_dir($config['upload_path'])) {
+			mkdir($config['upload_path'], 0777, true);
+		}
+
+		$this->load->library('upload', $config);
+
+		if (!$this->upload->do_upload('img')) {
+			// Remove <p> tags or any HTML from the error message
+			$error = strip_tags($this->upload->display_errors());
+			echo json_encode([
+				'status' => false,
+				'message' => $error
+			]);
+			return;
+		}
+
+		$uploadData = $this->upload->data();
+		$filename = $uploadData['file_name'];
+
+		// Save file path to DB (optional: add validation/sanitization)
+		$save = $this->model->insertData('our_clients', [
+			'image' => base_url().'uploads/clients/' . $filename
+		]);
+
+		if ($save) {
+			echo json_encode([
+				'status' => true,
+				'message' => 'Image uploaded successfully',
+				'filename' => $filename
+			]);
+		} else {
+			echo json_encode([
+				'status' => false,
+				'message' => 'Image uploaded but failed to save in database.'
+			]);
+		}
+	}
+	public function get_clients_data()
+	{
+		$response['data'] = $this->model->selectWhereData('our_clients',array(), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+
 	public function carrer_form_data()
 	{
-		$this->load->view('admin/carrer_form_data');
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/carrer_form_data');
+		}
+	}
+	public function get_career_enquiry_data()
+	{
+		$response['data'] = $this->model->selectWhereData('career_applications',array(), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_career_enquiry_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('career_applications',array('id'=> $id), '*');
+		echo json_encode($response);
 	}
 	public function current_opening()
 	{
-		$this->load->view('admin/current_opening');
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/current_opening');
+		}
 	}
 	public function save_current_opening(){
 		// Set validation rules

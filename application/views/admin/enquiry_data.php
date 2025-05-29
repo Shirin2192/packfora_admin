@@ -34,24 +34,72 @@
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <table id="myTable" class="display">
-                                        <thead>
-                                            <tr>
-                                                <th>Column 1</th>
-                                                <th>Column 2</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Row 1 Data 1</td>
-                                                <td>Row 1 Data 2</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Row 2 Data 1</td>
-                                                <td>Row 2 Data 2</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <!-- Table for displaying enquiry data -->
+                                        <table id="ContactFormTable" class="display">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sr. No.</th>
+                                                    <th>Enquiry Type</th>
+                                                    <th>Full Name</th>
+                                                    <th>Company Name</th>
+                                                    <th>Email</th>
+                                                    <th>Contact No.</th>
+                                                    <th>Message</th>
+                                                    <th>Hear About Us</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="ViewContactModal" tabindex="-1" aria-labelledby="ViewModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="ViewModalLabel">View Contact Us Details</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" id="modalBodyContent">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="view_inquiry_type">Inquiry Type</label>
+                                            <p id="view_inquiry_type"></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="view_full_name">Full Name</label>
+                                            <p id="view_full_name"></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="view_company_name">Company Name</label>
+                                            <p id="view_company_name"></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="view_email">Email</label>
+                                            <p id="view_email"></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="view_phone_number">Phone Number</label>
+                                            <p id="view_phone_number"></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="view_message">Message</label>
+                                            <p id="view_message"></p>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="view_hear_about_us">How did you hear about us?</label>
+                                            <p id="view_hear_about_us"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
@@ -70,17 +118,7 @@
     <!-- container-scroller -->
     <!-- plugins:js -->
     <?php include('common/js_files.php');?>
-	<script>
-		$(document).ready(function() {
-			$('#myTable').DataTable({
-				"paging": true,
-				"searching": true,
-				"ordering": true,
-				"info": true
-			});
-		});
-		</script>
-    <!-- End custom js for this page -->
+    <script src="<?= base_url()?>assets/view_js/enquiry_data.js"></script>
 </body>
 
 </html>

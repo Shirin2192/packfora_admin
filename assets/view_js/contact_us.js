@@ -165,7 +165,7 @@ $(document).ready(function () {
         if (result.isConfirmed) {
             // Perform AJAX delete
             $.ajax({
-                url: frontend + 'admin/delete_contact_us',
+                url: frontend + 'admin/delete_contactus',
                 type: 'POST',
                 data: { id: id },
                 dataType: 'json',
@@ -198,7 +198,7 @@ $("#EditContactUsForm").on("submit", function (e) {
 
 		var formData = new FormData(this);
 		$.ajax({
-			url: frontend + "admin/update_contactus_form",
+			url: frontend + "admin/update_contactus",
 			type: "POST",
 			data: formData,
 			processData: false,
