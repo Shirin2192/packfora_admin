@@ -77,7 +77,7 @@ class Common extends CI_Controller {
 				if ($stored_password == decy_ency('encrypt', $password)) { 					
 					// Assign session variable name based on role
 					$session_name = '';
-					switch ($user['fk_role_id']) {
+					switch ($user['email']) {
 						case 1:
 							$session_name = 'admin_session';
 							$redirect_url = base_url('admin');

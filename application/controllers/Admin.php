@@ -246,8 +246,7 @@ class Admin extends CI_Controller {
 		} else {
 			$this->load->view('admin/our_clients');
 		}
-	}
-	public function upload_client_image()
+	}	public function upload_client_image()
 	{
 		// Set upload configuration
 		$config['upload_path']   = './uploads/clients/';
@@ -271,7 +270,6 @@ class Admin extends CI_Controller {
 			]);
 			return;
 		}
-
 		$uploadData = $this->upload->data();
 		$filename = $uploadData['file_name'];
 
