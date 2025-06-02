@@ -20,7 +20,7 @@ $(document).ready(function () {
 						icon: "success",
 						title: "Success!",
 						text: response.message,
-						timer: 3000, // auto close after 3 seconds
+						timer: 1000, // auto close after 3 seconds
 						timerProgressBar: true,
 						showConfirmButton: false, // hides the OK button
 						willClose: () => {
@@ -209,7 +209,7 @@ $("#EditCurrentOpeningForm").on("submit", function (e) {
 						icon: "success",
 						title: "Success!",
 						text: response.message,
-						timer: 3000, // auto close after 3 seconds
+						timer: 1000, // auto close after 3 seconds
 						timerProgressBar: true,
 						showConfirmButton: false, // hides the OK button
 						willClose: () => {

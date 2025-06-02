@@ -116,7 +116,6 @@ $(document).ready(function () {
 	$("#ContactUsTable").on("click", ".edit-btn", function (e) {
 		e.preventDefault();
 		const id = $(this).data("id");
-
 		// Fetch details from server via POST
 		$.ajax({
 			url: frontend + "admin/get_contact_us_details",
@@ -131,7 +130,6 @@ $(document).ready(function () {
                // Set designation and append if not found
                 const designation = response.data.designation;
                 const $designationSelect = $('#edit_designation');
-
                 if (!$designationSelect.find(`option[value="${designation}"]`).length) {
                     $designationSelect.append(
                         $('<option>', {

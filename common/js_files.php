@@ -15,6 +15,8 @@
  <script src="<?= base_url();?>assets/js/dashboard.js"></script>
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
 <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 </script>

@@ -413,7 +413,774 @@ class Admin extends CI_Controller {
 		}
 		echo json_encode($response);
 	}
-
-
 	
-}
+// Carrer Explore Opportunity
+	public function shine_with_us(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/shine_with_us');
+		}
+	}
+	public function save_shine_with_us()
+	{
+		$this->load->library('form_validation');
+
+		// Set rules
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		$this->form_validation->set_rules('description', 'Description', 'required');
+
+		if (empty($_FILES['image']['name'])) {
+			$this->form_validation->set_rules('image', 'Image', 'required');
+		}
+
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+					'image' => form_error('image'),
+				]
+			]);
+		} else {
+			// File Upload (optional)
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['image' => $this->upload->display_errors('', '')]
+				]);
+			} else {
+				$uploadData = $this->upload->data();
+				$imagePath = 'uploads/' . $uploadData['file_name'];
+				// Prepare data for insertion
+				$data = [
+					'title' => $this->input->post('title'),
+					'description' => $this->input->post('description'),
+					'image' => $imagePath,
+				];
+				// Insert into database
+				$this->model->insertData('tbl_shine_with_us', $data);
+
+				// Save to database or proceed with business logic
+				echo json_encode(['status' => 'success', 'message' => 'Shine with us data saved successfully.']);
+			}
+		}
+	}
+	public function get_shine_with_us_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_shine_with_us',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_shine_with_us_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_shine_with_us',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_shine_with_us()
+	{
+		$this->load->library('form_validation');
+
+    $this->form_validation->set_rules('title', 'Title', 'required|trim');
+    $this->form_validation->set_rules('description', 'Description', 'required|trim');
+
+    if ($this->form_validation->run() === FALSE) {
+        echo json_encode([
+            'status' => 'error',
+            'errors' => [
+                'title' => form_error('title'),
+                'description' => form_error('description'),
+            ]
+        ]);
+        return;
+    }
+
+    $id = $this->input->post('id');
+    $title = $this->input->post('title');
+    $description = $this->input->post('description');
+    $previous_image = $this->input->post('edit_previous_image');
+
+    $image = $previous_image;
+    if (!empty($_FILES['edit_image']['name'])) {
+        $config['upload_path'] = './uploads/';
+        $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+        $config['max_size'] = 2048;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('edit_image')) {
+            echo json_encode([
+                'status' => 'error',
+                'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+            ]);
+            return;
+        } else {
+            $upload_data = $this->upload->data();
+            $image = 'uploads/' . $upload_data['file_name'];
+
+            // Optional: delete old image
+            if ($previous_image && file_exists($previous_image)) {
+                @unlink($previous_image);
+            }
+        }
+    }
+
+    // Update DB
+    $data = [
+        'title' => $title,
+        'description' => $description,
+        'image' => $image,
+    ];
+
+		if ($this->model->updateData('tbl_shine_with_us', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Shine with us updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update shine with us data.']);
+		}
+	}
+	public function delete_shine_with_us()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_shine_with_us', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Shine with us deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the shine with us.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	// Why Join Packfora
+
+	public function why_people_choose_packfora(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/why_people_choose_packfora');
+		}
+	}
+	public function save_why_people_choose_packfora()
+	{
+		$this->load->library('form_validation');
+
+		// Set rules
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		$this->form_validation->set_rules('description', 'Description', 'required');
+
+		if (empty($_FILES['image']['name'])) {
+			$this->form_validation->set_rules('image', 'Image', 'required');
+		}
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+					'image' => form_error('image'),
+				]
+			]);
+		} else {
+			// File Upload (optional)
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['image' => $this->upload->display_errors('', '')]
+				]);
+			} else {
+				$uploadData = $this->upload->data();
+				$imagePath = 'uploads/' . $uploadData['file_name'];
+				// Prepare data for insertion
+				$data = [
+					'title' => $this->input->post('title'),
+					'description' => $this->input->post('description'),
+					'image' => $imagePath,
+				];
+				// Insert into database
+				$this->model->insertData('tbl_why_people_choose_packfora', $data);
+
+				// Save to database or proceed with business logic
+				echo json_encode(['status' => 'success', 'message' => 'Why People Choose Packfora saved successfully.']);
+			}
+		}
+	}
+	public function get_why_people_choose_packfora_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_why_people_choose_packfora',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_why_people_choose_packfora_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_why_people_choose_packfora',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_why_people_choose_packfora()
+	{
+		$this->load->library('form_validation');
+
+    $this->form_validation->set_rules('title', 'Title', 'required|trim');
+    $this->form_validation->set_rules('description', 'Description', 'required|trim');
+
+    if ($this->form_validation->run() === FALSE) {
+        echo json_encode([
+            'status' => 'error',
+            'errors' => [
+                'title' => form_error('title'),
+                'description' => form_error('description'),
+            ]
+        ]);
+        return;
+    }
+
+    $id = $this->input->post('id');
+    $title = $this->input->post('title');
+    $description = $this->input->post('description');
+    $previous_image = $this->input->post('edit_previous_image');
+
+    $image = $previous_image;
+    if (!empty($_FILES['edit_image']['name'])) {
+        $config['upload_path'] = './uploads/';
+        $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+        $config['max_size'] = 2048;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('edit_image')) {
+            echo json_encode([
+                'status' => 'error',
+                'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+            ]);
+            return;
+        } else {
+            $upload_data = $this->upload->data();
+            $image = 'uploads/' . $upload_data['file_name'];
+
+            // Optional: delete old image
+            if ($previous_image && file_exists($previous_image)) {
+                @unlink($previous_image);
+            }
+        }
+    }
+
+    // Update DB
+    $data = [
+        'title' => $title,
+        'description' => $description,
+        'image' => $image,
+    ];
+
+		if ($this->model->updateData('tbl_why_people_choose_packfora', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Why People Choose Packfora updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update Why People Choose Packforas data.']);
+		}
+	}
+	public function delete_why_people_choose_packfora()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_why_people_choose_packfora', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Why People Choose Packfora deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Why People Choose Packfora.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	// student_talent_economy
+	public function student_talent_economy(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			// Load the view for student talent economy
+			$response['data'] = $this->model->selectWhereData('tbl_student_talent_economy',array(), '*' );
+			$this->load->view('admin/student_talent_economy',$response);
+		}
+	}
+	public function save_update_student_talent_economy()
+    {
+        $this->load->library('form_validation');
+
+        $id = $this->input->post('id');
+        $this->form_validation->set_rules('title', 'Title', 'required|trim');
+        $this->form_validation->set_rules('description', 'Description', 'required|trim');
+
+        if ($this->form_validation->run() == FALSE) {
+            echo json_encode([
+                'status' => 'error',
+                'errors' => [
+                    'title' => form_error('title'),
+                    'description' => form_error('description')
+                ]
+            ]);
+            return;
+        }
+
+        $data = [
+            'title' => $this->input->post('title'),
+            'description' => $this->input->post('description')
+        ];
+
+        if (!empty($_FILES['image']['name'])) {
+            $config['upload_path'] = './uploads/';
+            $config['allowed_types'] = 'jpg|jpeg|png|webp';
+            $config['file_name'] = time().'_'.$_FILES['image']['name'];
+
+            $this->load->library('upload', $config);
+
+            if (!$this->upload->do_upload('image')) {
+                echo json_encode([
+                    'status' => 'error',
+                    'errors' => [
+                        'image' => $this->upload->display_errors('', '')
+                    ]
+                ]);
+                return;
+            } else {
+                $upload_data = $this->upload->data();
+                $data['image'] = 'uploads/' . $upload_data['file_name'];
+            }
+        }
+
+        if ($id) {
+            // Update
+           $this->model->updateData('tbl_student_talent_economy', $data, array('id' => $id));
+			$message = 'Updated successfully.';
+        } else {
+            // Insert
+           $this->model->insertData('tbl_student_talent_economy', $data);
+            $message = 'Inserted successfully.';
+        }
+
+        echo json_encode(['status' => 'success', 'message' => $message]);
+    }
+	// global_culture
+	public function global_culture(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session	) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			
+			$this->load->view('admin/global_culture');
+		}
+	}
+	public function save_global_culture()
+	{
+		$this->load->library('form_validation');
+		// Set rules
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		$this->form_validation->set_rules('description', 'Description', 'required');
+
+		if (empty($_FILES['image']['name'])) {
+			$this->form_validation->set_rules('image', 'Image', 'required');
+		}
+
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+					'image' => form_error('image'),
+				]
+			]);
+		} else {
+			// File Upload (optional)
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['image' => $this->upload->display_errors('', '')]
+				]);
+			} else {
+				$uploadData = $this->upload->data();
+				$imagePath = 'uploads/' . $uploadData['file_name'];
+				// Prepare data for insertion
+				$data = [
+					'title' => $this->input->post('title'),
+					'description' => $this->input->post('description'),
+					'image' => $imagePath,
+				];
+				// Insert into database
+				$this->model->insertData('tbl_global_culture', $data);
+
+				// Save to database or proceed with business logic
+				echo json_encode(['status' => 'success', 'message' => 'Global Culture data saved successfully.']);
+			}
+		}
+	}
+	public function get_global_culture_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_global_culture',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_global_culture_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_global_culture',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_global_culture()
+	{
+		$this->load->library('form_validation');
+
+    $this->form_validation->set_rules('title', 'Title', 'required|trim');
+    $this->form_validation->set_rules('description', 'Description', 'required|trim');
+
+    if ($this->form_validation->run() === FALSE) {
+        echo json_encode([
+            'status' => 'error',
+            'errors' => [
+                'title' => form_error('title'),
+                'description' => form_error('description'),
+            ]
+        ]);
+        return;
+    }
+
+    $id = $this->input->post('id');
+    $title = $this->input->post('title');
+    $description = $this->input->post('description');
+    $previous_image = $this->input->post('edit_previous_image');
+
+    $image = $previous_image;
+    if (!empty($_FILES['edit_image']['name'])) {
+        $config['upload_path'] = './uploads/';
+        $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+        $config['max_size'] = 2048;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('edit_image')) {
+            echo json_encode([
+                'status' => 'error',
+                'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+            ]);
+            return;
+        } else {
+            $upload_data = $this->upload->data();
+            $image = 'uploads/' . $upload_data['file_name'];
+
+            // Optional: delete old image
+            if ($previous_image && file_exists($previous_image)) {
+                @unlink($previous_image);
+            }
+        }
+    }
+
+    // Update DB
+    $data = [
+        'title' => $title,
+        'description' => $description,
+        'image' => $image,
+    ];
+
+		if ($this->model->updateData('tbl_global_culture', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Global Culture updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update Global Culture data.']);
+		}
+	}
+	public function delete_global_culture()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_global_culture', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'global culture deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the global culture.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	// work_with_technocarts
+	public function work_with_technocarts(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/work_with_technocarts');
+		}
+	}
+	public function save_work_with_technocarts()
+	{
+		$this->load->library('form_validation');
+		// Set rules
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		$this->form_validation->set_rules('description', 'Description', 'required');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+				]
+			]);
+		} else {			
+				$data = [
+					'title' => $this->input->post('title'),
+					'description' => $this->input->post('description'),
+				];
+				// Insert into database
+				$this->model->insertData('tbl_work_with_technocarts', $data);
+				echo json_encode(['status' => 'success', 'message' => 'Work With Technocarts data saved successfully.']);
+		}
+	}
+	public function get_work_with_technocarts_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_work_with_technocarts',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_work_with_technocarts_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_work_with_technocarts',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_work_with_technocarts()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+				]
+			]);
+			return;
+		}
+		$id = $this->input->post('id');
+		$title = $this->input->post('title');
+		$description = $this->input->post('description');
+		$data = [
+			'title' => $title,
+			'description' => $description,
+		];
+		if ($this->model->updateData('tbl_work_with_technocarts', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Work With Technocarts updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update Work With Technocarts data.']);
+		}
+	}
+	public function delete_work_with_technocarts()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_work_with_technocarts', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Work With Technocarts deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Work With Technocarts.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	// life_at_packfora
+	public function life_at_packfora(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/life_at_packfora');
+		}
+	}
+	public function save_life_at_packfora() {
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('video', 'Video', 'callback_video_check');
+
+        if ($this->form_validation->run() == FALSE) {
+            echo json_encode([
+                'status' => 'error',
+                'errors' => [
+                    'video' => form_error('video')
+                ]
+            ]);
+        } else {
+            $video_name = '';
+
+            if (!empty($_FILES['video']['name'])) {
+                $config['upload_path']   = './uploads/';
+                $config['allowed_types'] = 'mp4|mov|avi|wmv';
+                $config['max_size']      = 51200; // 50MB
+                $this->load->library('upload', $config);
+
+                if (!$this->upload->do_upload('video')) {
+                    echo json_encode([
+                        'status' => 'error',
+                        'errors' => [
+                            'video' => $this->upload->display_errors()
+                        ]
+                    ]);
+                    return;
+                } else {
+                    $upload_data = $this->upload->data();
+                    $video_name = 'uploads/' . $upload_data['file_name'];
+                }
+            }
+
+            $insert_data = [
+                'video' => $video_name
+            ];
+
+            $this->model->insertData('tbl_life_at_packfora',$insert_data);
+
+            echo json_encode(['status' => 'success', 'message' => 'Video uploaded successfully']);
+        }
+    }
+
+    public function video_check($str) {
+        if (empty($_FILES['video']['name'])) {
+            $this->form_validation->set_message('video_check', 'The Video field is required.');
+            return FALSE;
+        }
+        return TRUE;
+    }
+	public function get_life_at_packfora_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_life_at_packfora',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_life_at_packfora_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_life_at_packfora',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_life_at_packfora()
+	{
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('id', 'ID', 'required');
+
+		$id = $this->input->post('id');
+		$previous_video = $this->input->post('edit_previous_video');
+		$video_name = $previous_video;
+
+		// Only validate file if a new file is uploaded
+		if (!empty($_FILES['edit_video']['name'])) {
+			$config['upload_path']   = './uploads/';
+			$config['allowed_types'] = 'mp4|mov|avi|wmv';
+			$config['max_size']      = 51200; // 50MB
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_video')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => [
+						'edit_video' => $this->upload->display_errors('', '')
+					]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$video_name = 'uploads/' . $upload_data['file_name'];
+
+				// Optional: delete old video if exists and is different
+				if ($previous_video && file_exists($previous_video) && $previous_video != $video_name) {
+					@unlink($previous_video);
+				}
+			}
+		} else {
+			// If no new file, ensure previous video exists
+			if (empty($previous_video)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => [
+						'edit_video' => 'The Video field is required.'
+					]
+				]);
+				return;
+			}
+		}
+
+		$data = [
+			'video' => $video_name,
+		];
+
+		if ($this->model->updateData('tbl_life_at_packfora', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Life at Packfora updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update Life at Packfora data.']);
+		}
+	}
+	public function delete_life_at_packfora()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_life_at_packfora', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Life at Packfora deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Life at Packfora.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+}	
+

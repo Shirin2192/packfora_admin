@@ -22,11 +22,11 @@
             <div class="main-panel">
                 <div class="content-wrapper">
                     <div class="page-header">
-                        <h3 class="page-title">Contact Us </h3>
+                        <h3 class="page-title">Slider </h3>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Contact Us</li>
+                                <li class="breadcrumb-item active" aria-current="page">Slider</li>
                             </ol>
                         </nav>
                     </div>
