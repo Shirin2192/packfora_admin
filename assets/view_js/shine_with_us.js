@@ -43,7 +43,6 @@ $(document).ready(function () {
         console.error('The "frontend" variable is not defined.');
         return;
     }
-
     ShineWithUsTable = $('#ShineWithUsTable').DataTable({
         ajax: {
             url: frontend + "admin/get_shine_with_us_data",  // Adjust URL accordingly
