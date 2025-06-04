@@ -1943,21 +1943,22 @@ class Admin extends CI_Controller {
                 'video' => $video_name,
 				'title' => $this->input->post('title'),
 				'sub_title' => $this->input->post('sub_title'),
-				'description' => $this->input->post('description')
+				'description' => $this->input->post('description'),
+				'fk_service_id' => 1, // Assuming 1 is the service ID for Talent Flex
             ];
-            $this->model->insertData('tbl_talent_flex_banner_video',$insert_data);
+            $this->model->insertData('tbl_service_banner_video',$insert_data);
             echo json_encode(['status' => 'success', 'message' => 'Video uploaded successfully']);
         }
     }
 	public function get_talent_flex_banner_video_data()
 	{
-		$response['data'] = $this->model->selectWhereData('tbl_talent_flex_banner_video',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		$response['data'] = $this->model->selectWhereData('tbl_service_banner_video',array('is_delete'=>'1','fk_service_id' => 1), '*', false, array('id' => 'DESC'));
 		echo json_encode($response);
 	}
 	public function get_talent_flex_banner_video_details()
 	{
 		$id = $this->input->post('id');
-		$response['data'] = $this->model->selectWhereData('tbl_talent_flex_banner_video',array('is_delete'=>'1','id'=> $id), '*');
+		$response['data'] = $this->model->selectWhereData('tbl_service_banner_video',array('is_delete'=>'1','id'=> $id), '*');
 		echo json_encode($response);
 	}
 	public function update_talent_flex_banner_video()
@@ -2022,7 +2023,7 @@ class Admin extends CI_Controller {
 			'sub_title' => $this->input->post('edit_sub_title'),
 			'description' => $this->input->post('edit_description')
 		];
-		if ($this->model->updateData('tbl_talent_flex_banner_video', $data, array('id' => $id, 'is_delete' => '1'))) {
+		if ($this->model->updateData('tbl_service_banner_video', $data, array('id' => $id, 'is_delete' => '1'))) {
 			echo json_encode(['status' => 'success', 'message' => 'Video Banner updated successfully.']);
 		} else {
 			echo json_encode(['status' => 'error', 'message' => 'Failed to update Video Banner data.']);
@@ -2034,7 +2035,7 @@ class Admin extends CI_Controller {
 		$response = [];
 		if ($id) {
 			// Soft delete by setting is_delete = 0 (you can change logic)
-			$update = $this->model->updateData('tbl_talent_flex_banner_video', ['is_delete' => '0'], ['id' => $id]);
+			$update = $this->model->updateData('tbl_service_banner_video', ['is_delete' => '0'], ['id' => $id]);
 			if ($update) {
 				$response['status'] = true;
 				$response['message'] = 'Video Banner deleted successfully.';
@@ -2049,4 +2050,872 @@ class Admin extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	// talent_flex_our_offerings
+	public function talent_flex_our_offerings(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/talent_flex_our_offerings');
+		}
+	}
+	public function save_talent_flex_our_offering() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_our_offering', ['fk_service_id' => 1, 'title'=> $title,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				// If data already exists, update it
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Talent Flex Our Offerings already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 1,
+					'title' => $title,
+					'description' => $description,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_our_offering',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Talent Flex Our Offerings saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Talent Flex Our Offerings.']);
+				}
+			}
+		}
+	}
+	public function get_talent_flex_our_offerings_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_our_offering',array('fk_service_id' => 1, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_talent_flex_our_offering_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_our_offering',array('fk_service_id' => 1, 'is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_talent_flex_our_offering()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$title = $this->input->post('edit_title');
+		$description = $this->input->post('edit_description');
+
+		$existingData = $this->model->selectWhereData('tbl_our_offering', ['fk_service_id' => 1, 'title'=> $title, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Talent Flex Our Offering with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'title' => $title,
+				'description' => $description,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_our_offering', $data, array('id' => $id, 'fk_service_id' => 1, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Talent Flex Our Offering updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Talent Flex Our Offering data.']);
+			}
+		}	
+	}
+	public function delete_talent_flex_our_offering()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_our_offering', ['is_delete' => '0'], ['id' => $id, 'fk_service_id' => 1]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Talent Flex Our Offering deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Talent Flex Our Offering.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	public function talent_flex_resourcing_model(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/talent_flex_resourcing_model');
+		}
+	}
+	public function save_talent_flex_resourcing_model() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_resourcing_model', ['title'=> $title,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				// If data already exists, update it
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Talent Flex Our Offerings already exists.'
+				]);
+			}else {
+				$data = [
+					'title' => $title,
+					'description' => $description,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_resourcing_model',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Talent Flex Our Offerings saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Talent Flex Our Offerings.']);
+				}
+			}
+		}
+	}
+	public function get_talent_flex_resourcing_model_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_resourcing_model',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_talent_flex_resourcing_model_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_resourcing_model',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_talent_flex_resourcing_model()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$title = $this->input->post('edit_title');
+		$description = $this->input->post('edit_description');
+
+		$existingData = $this->model->selectWhereData('tbl_resourcing_model', ['title'=> $title, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Talent Flex Our Offering with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'title' => $title,
+				'description' => $description,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_resourcing_model', $data, array('id' => $id,'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Talent Flex Our Offering updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Talent Flex Our Offering data.']);
+			}
+		}	
+	}
+	public function delete_talent_flex_resourcing_model()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_resourcing_model', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Talent Flex Our Offering deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Talent Flex Our Offering.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	// benefits_of_talent_flex
+	public function benefits_of_talent_flex(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/benefits_of_talent_flex');
+		}
+	}
+	public function save_benefits_of_talent_flex()
+	{
+		$this->load->library('form_validation');
+		// Set rules
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		$this->form_validation->set_rules('description', 'Description', 'required');
+
+		if (empty($_FILES['image']['name'])) {
+			$this->form_validation->set_rules('image', 'Image', 'required');
+		}
+
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+					'image' => form_error('image'),
+				]
+			]);
+		} else {
+			// File Upload (optional)
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['image' => $this->upload->display_errors('', '')]
+				]);
+			} else {
+				$uploadData = $this->upload->data();
+				$imagePath = 'uploads/' . $uploadData['file_name'];
+				// Prepare data for insertion
+				$data = [
+					'title' => $this->input->post('title'),
+					'description' => $this->input->post('description'),
+					'image' => $imagePath,
+				];
+				// Insert into database
+				$this->model->insertData('tbl_benefits_of_talent_flex', $data);
+
+				// Save to database or proceed with business logic
+				echo json_encode(['status' => 'success', 'message' => 'Discover the Benefits of Talent Flex data saved successfully.']);
+			}
+		}
+	}
+	public function get_benefits_of_talent_flex_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_benefits_of_talent_flex',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_benefits_of_talent_flex_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_benefits_of_talent_flex',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_benefits_of_talent_flex()
+	{
+		$this->load->library('form_validation');
+
+    $this->form_validation->set_rules('title', 'Title', 'required|trim');
+    $this->form_validation->set_rules('description', 'Description', 'required|trim');
+
+    if ($this->form_validation->run() === FALSE) {
+        echo json_encode([
+            'status' => 'error',
+            'errors' => [
+                'title' => form_error('title'),
+                'description' => form_error('description'),
+            ]
+        ]);
+        return;
+    }
+
+    $id = $this->input->post('id');
+    $title = $this->input->post('title');
+    $description = $this->input->post('description');
+    $previous_image = $this->input->post('edit_previous_image');
+
+    $image = $previous_image;
+    if (!empty($_FILES['edit_image']['name'])) {
+        $config['upload_path'] = './uploads/';
+        $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+        $config['max_size'] = 2048;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('edit_image')) {
+            echo json_encode([
+                'status' => 'error',
+                'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+            ]);
+            return;
+        } else {
+            $upload_data = $this->upload->data();
+            $image = 'uploads/' . $upload_data['file_name'];
+
+            // Optional: delete old image
+            if ($previous_image && file_exists($previous_image)) {
+                @unlink($previous_image);
+            }
+        }
+    }
+
+    // Update DB
+    $data = [
+        'title' => $title,
+        'description' => $description,
+        'image' => $image,
+    ];
+
+		if ($this->model->updateData('tbl_benefits_of_talent_flex', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Discover the Benefits of Talent Flex updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update Discover the Benefits of Talent Flex data.']);
+		}
+	}
+	public function delete_benefits_of_talent_flex()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_benefits_of_talent_flex', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Discover the Benefits of Talent Flex deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Discover the Benefits of Talent Flex.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	// talent_flex_success_stories
+	public function talent_flex_success_stories(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/talent_flex_success_stories');
+		}
+	}
+	public function save_talent_flex_success_stories() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_success_stories', ['fk_service_id' => 1, 'title'=> $title,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				// If data already exists, update it
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Talent Flex Success Stories already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 1,
+					'title' => $title,
+					'description' => $description,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_success_stories',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Talent Flex Success Stories saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Talent Flex Success Stories.']);
+				}
+			}
+		}
+	}
+	public function get_talent_flex_success_stories_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_success_stories',array('fk_service_id' => 1, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_talent_flex_success_stories_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_success_stories',array('fk_service_id' => 1, 'is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_talent_flex_success_stories()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$title = $this->input->post('edit_title');
+		$description = $this->input->post('edit_description');
+
+		$existingData = $this->model->selectWhereData('tbl_success_stories', ['fk_service_id' => 1, 'title'=> $title, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Talent Flex Our Offering with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'title' => $title,
+				'description' => $description,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_success_stories', $data, array('id' => $id, 'fk_service_id' => 1, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Talent Flex Our Offering updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Talent Flex Our Offering data.']);
+			}
+		}	
+	}
+	public function delete_talent_flex_success_stories()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_success_stories', ['is_delete' => '0'], ['id' => $id, 'fk_service_id' => 1]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Talent Flex Our Offering deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Talent Flex Our Offering.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	// talent_flex_our_leaders
+	public function talent_flex_our_leaders(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/talent_flex_our_leaders');
+		}
+	}
+	public function save_talent_flex_our_leaders() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('name', 'Name', 'required|trim');
+		$this->form_validation->set_rules('designation', 'Designation', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'name' => form_error('name'),
+					'designation' => form_error('designation')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$name = $this->input->post('name');
+			$designation = $this->input->post('designation');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_our_leaders', ['fk_service_id' => 1, 'name'=> $name,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				// If data already exists, update it
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Talent Flex Our Leaders already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 1,
+					'name' => $name,
+					'designation' => $designation,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_our_leaders',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Talent Flex Our Leaders saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Talent Flex Our Leaders.']);
+				}
+			}
+		}
+	}
+	public function get_talent_flex_our_leaders_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_our_leaders',array('fk_service_id' => 1, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_talent_flex_our_leaders_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_our_leaders',array('fk_service_id' => 1, 'is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_talent_flex_our_leaders()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_name', 'Name', 'required|trim');
+		$this->form_validation->set_rules('edit_designation', 'Designation', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_name' => form_error('edit_name'),
+					'edit_designation' => form_error('edit_designation')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$name = $this->input->post('edit_name');
+		$designation = $this->input->post('edit_designation');
+
+		$existingData = $this->model->selectWhereData('tbl_our_leaders', ['fk_service_id' => 1, 'name'=> $name, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Talent Flex Our Leaders with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'name' => $name,
+				'designation' => $designation,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_our_leaders', $data, array('id' => $id, 'fk_service_id' => 1, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Talent Flex Our Leaders updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Talent Flex Our Leaders data.']);
+			}
+		}	
+	}
+	public function delete_talent_flex_our_leaders()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_our_leaders', ['is_delete' => '0'], ['id' => $id, 'fk_service_id' => 1]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Talent Flex Our Leaders deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Talent Flex Our Leaders.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	// sustainability
 }

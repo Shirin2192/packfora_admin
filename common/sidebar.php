@@ -86,10 +86,11 @@
                     <li class="nav-item"><span class="menu-sub-header">Services</span></li>
                     <li class="nav-item ps-3"><span class="menu-child-header">Talent Flex</span></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/talent_flex_banner_video">Banner Video</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/our_offerings">Our Offerings</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/discover_the_benefits_of_talent_flex">Discover the Benefits of Talent Flex</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/success_stories">Success Stories</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/our_leaders">Our Leaders</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/talent_flex_our_offerings">Our Offerings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/talent_flex_resourcing_model">Resourcing Models</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_talent_flex">Discover the Benefits of Talent Flex</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/talent_flex_success_stories">Success Stories</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/talent_flex_our_leaders">Our Leaders</a></li>
 
                     <li class="nav-item ps-3"><span class="menu-child-header">Sustainability</span></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/market_trends">Market Trends</a></li>
