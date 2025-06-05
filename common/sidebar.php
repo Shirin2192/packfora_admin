@@ -93,13 +93,14 @@
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/talent_flex_our_leaders">Our Leaders</a></li>
 
                     <li class="nav-item ps-3"><span class="menu-child-header">Sustainability</span></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/market_trends">Market Trends</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/sustainability_banner_video">Banner Video</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/sustainability_market_trends">Market Trends</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/sustainability_our_offerings">Our Offerings</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/our_approach">Our Approach</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/sustainability_success_stories">Success Stories</a></li>
 
                     <li class="nav-item ps-3"><span class="menu-child-header">Supply Chain Automation</span></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/market_trends">Market Trends</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/supply_chain_banner_video">Banner Video</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/supply_chain_market_trends">Market Trends</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/supply_chain_our_offerings">Our Offerings</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/discover_the_benefits_of_supply_chain_automation">Discover the Benefits</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/supply_chain_success_stories">Success Stories</a></li>

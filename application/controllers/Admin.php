@@ -2918,4 +2918,870 @@ class Admin extends CI_Controller {
 		echo json_encode($response);
 	}
 	// sustainability
+	public function sustainability_banner_video(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/sustainability_banner_video');
+		}
+	}
+	public function save_sustainability_banner_video() {
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('title', 'Title', 'required|trim');
+        $this->form_validation->set_rules('sub_title', 'Sub Title', 'required|trim');
+        $this->form_validation->set_rules('description', 'Description', 'required|trim');
+        $this->form_validation->set_rules('video', 'Video', 'callback_video_check');
+        if ($this->form_validation->run() == FALSE) {
+            echo json_encode([
+                'status' => 'error',
+                'errors' => [
+                    'title' => form_error('title'),
+                    'sub_title' => form_error('sub_title'),
+                    'description' => form_error('description'),
+                    'video' => form_error('video')
+                ]
+            ]);
+        } else {
+            $video_name = '';
+            if (!empty($_FILES['video']['name'])) {
+                $config['upload_path']   = './uploads/';
+                $config['allowed_types'] = 'mp4|mov|avi|wmv|webm';
+                $config['max_size']      = 51200; // 50MB
+                $this->load->library('upload', $config);
+                if (!$this->upload->do_upload('video')) {
+                    echo json_encode([
+                        'status' => 'error',
+                        'errors' => [
+                            'video' => $this->upload->display_errors()
+                        ]
+                    ]);
+                    return;
+                } else {
+                    $upload_data = $this->upload->data();
+                    $video_name = 'uploads/' . $upload_data['file_name'];
+                }
+            }
+			// Prepare data for insertion
+			
+            $insert_data = [
+                'video' => $video_name,
+				'title' => $this->input->post('title'),
+				'sub_title' => $this->input->post('sub_title'),
+				'description' => $this->input->post('description'),
+				'fk_service_id' => 2, // Assuming 1 is the service ID for Talent Flex
+            ];
+            $this->model->insertData('tbl_service_banner_video',$insert_data);
+            echo json_encode(['status' => 'success', 'message' => 'Video uploaded successfully']);
+        }
+    }
+	public function get_sustainability_banner_video_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_service_banner_video',array('is_delete'=>'1','fk_service_id' => 2), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_sustainability_banner_video_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_service_banner_video',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_sustainability_banner_video()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_sub_title', 'Sub Title', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					'edit_sub_title' => form_error('edit_sub_title'),
+					'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+		$id = $this->input->post('id');
+		$previous_video = $this->input->post('edit_previous_video');
+		$video_name = $previous_video;
+		// Only validate file if a new file is uploaded
+		if (!empty($_FILES['edit_video']['name'])) {
+			$config['upload_path']   = './uploads/';
+			$config['allowed_types'] = 'mp4|mov|avi|wmv|webm';
+			$config['max_size']      = 51200; // 50MB
+			$this->load->library('upload', $config);
+			if (!$this->upload->do_upload('edit_video')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => [
+						'edit_video' => $this->upload->display_errors('', '')
+					]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$video_name = 'uploads/' . $upload_data['file_name'];
+				// Optional: delete old video if exists and is different
+				if ($previous_video && file_exists($previous_video) && $previous_video != $video_name) {
+					@unlink($previous_video);
+				}
+			}
+		} else {
+			// If no new file, ensure previous video exists
+			if (empty($previous_video)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => [
+						'edit_video' => 'The Video field is required.'
+					]
+				]);
+				return;
+			}
+		}
+		$data = [
+			'video' => $video_name,
+			'title' => $this->input->post('edit_title'),
+			'sub_title' => $this->input->post('edit_sub_title'),
+			'description' => $this->input->post('edit_description')
+		];
+		if ($this->model->updateData('tbl_service_banner_video', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Video Banner updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update Video Banner data.']);
+		}
+	}
+	public function delete_sustainability_banner_video()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_service_banner_video', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Video Banner deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Video Banner.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	public function sustainability_market_trends(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/sustainability_market_trends');
+		}
+	}
+	public function save_sustainability_market_trends()
+	{
+		$this->load->library('form_validation');
+		// Set rules
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		$this->form_validation->set_rules('description', 'Description', 'required');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+				]
+			]);
+			return;
+		}
+		$title = $this->input->post('title');
+		$description = $this->input->post('description');
+		$data = [
+			'title' => $title,
+			'description' => $description,
+			'fk_service_id'=>2,
+		];
+		$this->model->insertData('tbl_market_trends', $data);
+		echo json_encode(['status' => 'success', 'message' => 'Market Trends saved successfully.']);
+	}
+	public function get_sustainability_market_trends_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_market_trends',array('is_delete'=>'1','fk_service_id'=>2), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_sustainability_market_trends_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_market_trends',array('id'=>$id), '*',true);
+		echo json_encode($response);
+	}
+	public function update_sustainability_market_trends_details()
+	{
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$title = $this->input->post('title');
+		$description = $this->input->post('description');
+
+		$data = [
+			'title' => $title,
+			'description' => $description,
+		];
+
+		if ($this->model->updateData('tbl_market_trends', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Market Trends updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update Market Trends data.']);
+		}
+	}
+	public function delete_sustainability_market_trends()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_market_trends', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Market Trends deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Market Trends.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	// sustainability_our_offerings
+	public function sustainability_our_offerings(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/sustainability_our_offerings');
+		}
+	}
+	public function save_sustainability_our_offering() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_our_offering', ['fk_service_id' => 1, 'title'=> $title,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				// If data already exists, update it
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Talent Flex Our Offerings already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 2,
+					'title' => $title,
+					'description' => $description,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_our_offering',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Sustianability Our Offerings saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Sustianability Our Offerings.']);
+				}
+			}
+		}
+	}
+	public function get_sustainability_our_offering_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_our_offering',array('fk_service_id' => 2, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_sustainability_our_offering_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_our_offering',array('fk_service_id' =>2, 'is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_sustainability_our_offering()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$title = $this->input->post('edit_title');
+		$description = $this->input->post('edit_description');
+
+		$existingData = $this->model->selectWhereData('tbl_our_offering', ['fk_service_id' => 2, 'title'=> $title, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Sustianability Our Offering with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'title' => $title,
+				'description' => $description,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_our_offering', $data, array('id' => $id, 'fk_service_id' => 2, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Sustianability Our Offering updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Sustianability Our Offering data.']);
+			}
+		}	
+	}
+	public function delete_sustainability_our_offering()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_our_offering', ['is_delete' => '0'], ['id' => $id, 'fk_service_id' => 2]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Sustianability Our Offering deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Sustianability Our Offering.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	public function sustainability_success_stories(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/sustainability_success_stories');
+		}
+	}
+	public function save_sustainability_success_stories() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		// $this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					// 'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$title = $this->input->post('title');
+			// $description = $this->input->post('description');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_success_stories', ['fk_service_id' => 2, 'title'=> $title,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				// If data already exists, update it
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Sustainability Success Stories already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 2,
+					'title' => $title,
+					// 'description' => $description,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_success_stories',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Sustainability Success Stories saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Sustainability Success Stories.']);
+				}
+			}
+		}
+	}
+	public function get_sustainability_success_stories_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_success_stories',array('fk_service_id' => 2, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_sustainability_success_stories_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_success_stories',array('fk_service_id' => 2, 'is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_sustainability_success_stories()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		// $this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					// 'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+			$this->load->library('upload', $config);
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$title = $this->input->post('edit_title');
+		$description = $this->input->post('edit_description');
+		$existingData = $this->model->selectWhereData('tbl_success_stories', ['fk_service_id' => 2, 'title'=> $title, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Sustainability Success Stories with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'title' => $title,
+				// 'description' => $description,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_success_stories', $data, array('id' => $id, 'fk_service_id' => 1, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Sustainability Success Stories updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Sustainability Success Stories data.']);
+			}
+		}	
+	}
+	public function delete_sustainability_success_stories()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_success_stories', ['is_delete' => '0'], ['id' => $id, 'fk_service_id' => 2]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Sustainability Success Stories deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Sustainability Success Stories.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	// Supply Chain
+	public function supply_chain_banner_video(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/supply_chain_banner_video');
+		}
+	}
+	public function save_supply_chain_banner_video() {
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('title', 'Title', 'required|trim');
+        $this->form_validation->set_rules('sub_title', 'Sub Title', 'required|trim');
+        $this->form_validation->set_rules('description', 'Description', 'required|trim');
+        $this->form_validation->set_rules('video', 'Video', 'callback_video_check');
+        if ($this->form_validation->run() == FALSE) {
+            echo json_encode([
+                'status' => 'error',
+                'errors' => [
+                    'title' => form_error('title'),
+                    'sub_title' => form_error('sub_title'),
+                    'description' => form_error('description'),
+                    'video' => form_error('video')
+                ]
+            ]);
+        } else {
+            $video_name = '';
+            if (!empty($_FILES['video']['name'])) {
+                $config['upload_path']   = './uploads/';
+                $config['allowed_types'] = 'mp4|mov|avi|wmv|webm';
+                $config['max_size']      = 51200; // 50MB
+                $this->load->library('upload', $config);
+                if (!$this->upload->do_upload('video')) {
+                    echo json_encode([
+                        'status' => 'error',
+                        'errors' => [
+                            'video' => $this->upload->display_errors()
+                        ]
+                    ]);
+                    return;
+                } else {
+                    $upload_data = $this->upload->data();
+                    $video_name = 'uploads/' . $upload_data['file_name'];
+                }
+            }
+			// Prepare data for insertion
+			
+            $insert_data = [
+                'video' => $video_name,
+				'title' => $this->input->post('title'),
+				'sub_title' => $this->input->post('sub_title'),
+				'description' => $this->input->post('description'),
+				'fk_service_id' => 3, // Assuming 1 is the service ID for Talent Flex
+            ];
+            $this->model->insertData('tbl_service_banner_video',$insert_data);
+            echo json_encode(['status' => 'success', 'message' => 'Video uploaded successfully']);
+        }
+    }
+	public function get_supply_chain_banner_video_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_service_banner_video',array('is_delete'=>'1','fk_service_id' => 3), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_supply_chain_banner_video_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_service_banner_video',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_supply_chain_banner_video()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_sub_title', 'Sub Title', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					'edit_sub_title' => form_error('edit_sub_title'),
+					'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+		$id = $this->input->post('id');
+		$previous_video = $this->input->post('edit_previous_video');
+		$video_name = $previous_video;
+		// Only validate file if a new file is uploaded
+		if (!empty($_FILES['edit_video']['name'])) {
+			$config['upload_path']   = './uploads/';
+			$config['allowed_types'] = 'mp4|mov|avi|wmv|webm';
+			$config['max_size']      = 51200; // 50MB
+			$this->load->library('upload', $config);
+			if (!$this->upload->do_upload('edit_video')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => [
+						'edit_video' => $this->upload->display_errors('', '')
+					]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$video_name = 'uploads/' . $upload_data['file_name'];
+				// Optional: delete old video if exists and is different
+				if ($previous_video && file_exists($previous_video) && $previous_video != $video_name) {
+					@unlink($previous_video);
+				}
+			}
+		} else {
+			// If no new file, ensure previous video exists
+			if (empty($previous_video)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => [
+						'edit_video' => 'The Video field is required.'
+					]
+				]);
+				return;
+			}
+		}
+		$data = [
+			'video' => $video_name,
+			'title' => $this->input->post('edit_title'),
+			'sub_title' => $this->input->post('edit_sub_title'),
+			'description' => $this->input->post('edit_description')
+		];
+		if ($this->model->updateData('tbl_service_banner_video', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Video Banner updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update Video Banner data.']);
+		}
+	}
+	public function delete_supply_chain_banner_video()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_service_banner_video', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Video Banner deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Video Banner.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	// Supply Chain Market Trends
+	public function supply_chain_market_trends(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/supply_chain_market_trends');
+		}
+	}
+	public function save_supply_chain_market_trends()
+	{
+		$this->load->library('form_validation');
+		// Set rules
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		$this->form_validation->set_rules('description', 'Description', 'required');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+				]
+			]);
+			return;
+		}
+		$title = $this->input->post('title');
+		$description = $this->input->post('description');
+		$data = [
+			'title' => $title,
+			'description' => $description,
+			'fk_service_id'=>3,
+		];
+		$this->model->insertData('tbl_market_trends', $data);
+		echo json_encode(['status' => 'success', 'message' => 'Market Trends saved successfully.']);
+	}
+	public function get_supply_chain_market_trends_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_market_trends',array('is_delete'=>'1','fk_service_id'=>3), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_supply_chain_market_trends_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_market_trends',array('id'=>$id), '*',true);
+		echo json_encode($response);
+	}
+	public function update_supply_chain_market_trends_details()
+	{
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$title = $this->input->post('title');
+		$description = $this->input->post('description');
+
+		$data = [
+			'title' => $title,
+			'description' => $description,
+		];
+
+		if ($this->model->updateData('tbl_market_trends', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Market Trends updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update Market Trends data.']);
+		}
+	}
+	public function delete_supply_chain_market_trends()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_market_trends', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Market Trends deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Market Trends.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
 }

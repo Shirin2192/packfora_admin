@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    $('#VideoBannerForm').on('submit', function (e) {
+    $('#SustainabilityVideoBannerForm').on('submit', function (e) {
         e.preventDefault();
         // Clear previous error messages
         $('#error_video').text('');
         var formData = new FormData(this);
         $.ajax({
-            url: frontend + "admin/save_sustainability_video_banner",  // Adjust URL accordingly
+            url: frontend + "admin/save_sustainability_banner_video",  // Adjust URL accordingly
             type: 'POST',
             data: formData,
             processData: false,
@@ -21,9 +21,9 @@ $(document).ready(function () {
                         timerProgressBar: true,
                         showConfirmButton: false
                     });
-                    $('#VideoBannerForm')[0].reset();
+                    $('#SustainabilityVideoBannerForm')[0].reset();
                      // Reload the DataTable
-                    VideoBannerTable.ajax.reload(null, false);
+                    SustainabilityVideoBannerTable.ajax.reload(null, false);
                 } else if (response.status === 'error') {
                     $.each(response.errors, function (key, val) {
                         $('#error_' + key).text(val);
@@ -40,9 +40,9 @@ $(document).ready(function () {
         console.error('The "frontend" variable is not defined.');
         return;
     }
-    VideoBannerTable = $('#VideoBannerTable').DataTable({
+    SustainabilityVideoBannerTable = $('#SustainabilityVideoBannerTable').DataTable({
         ajax: {
-            url: frontend + "admin/get_sustainability_video_banner_data",  // Adjust URL accordingly
+            url: frontend + "admin/get_sustainability_banner_video_data",  // Adjust URL accordingly
             type: 'POST',
             dataSrc: function (json) {
                 // Ensure the response is an array; adjust if your backend wraps data in an object
@@ -57,7 +57,17 @@ $(document).ready(function () {
             }
         },
         columns: [
-            { data: 'id' },
+            {
+                data: null,
+                render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                },
+                title: 'Sr. No.',
+                orderable: false
+            },
+            { data: 'title' },
+            { data: 'sub_title' },
+            { data: 'description' },
            { data: 'video', render: function (data) {
                 var videoUrl = frontend + data;
                 return `
@@ -90,17 +100,19 @@ $(document).ready(function () {
     });
 
     // Optional: Handle clicks for view/edit/delete
-    $("#VideoBannerTable").on("click", ".view-btn", function (e) {
+    $("#SustainabilityVideoBannerTable").on("click", ".view-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
 
         $.ajax({
-            url: frontend + "admin/get_sustainability_video_banner_details",
+            url: frontend + "admin/get_sustainability_banner_video_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
-               
+                $("#view_title").text(response.data.title);
+                $("#view_sub_title").text(response.data.sub_title);
+                $("#view_description").text(response.data.description);
                 if (response.data.video) {
                 const imageUrl = frontend + response.data.video;
                 $("#view_image").html(`
@@ -122,16 +134,20 @@ $(document).ready(function () {
         });
     });
 
-    $("#VideoBannerTable").on("click", ".edit-btn", function (e) {
+    $("#SustainabilityVideoBannerTable").on("click", ".edit-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
         // Fetch details from server via POST
         $.ajax({
-            url: frontend + "admin/get_sustainability_video_banner_details",
+            url: frontend + "admin/get_sustainability_banner_video_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
+                    $("#edit_id").val(response.data.id);
+                    $("#edit_title").val(response.data.title);
+                    $("#edit_sub_title").val(response.data.sub_title);
+                    $("#edit_description").val(response.data.description);
                     $("#edit_id").val(response.data.id);
                     $("#edit_previous_video").val(response.data.video); // Handle empty image case
                     if (response.data.video) {
@@ -156,7 +172,7 @@ $(document).ready(function () {
         });
     });
     // Delete action
-	$("#VideoBannerTable").on("click", ".delete-btn", function (e) {
+	$("#SustainabilityVideoBannerTable").on("click", ".delete-btn", function (e) {
 		e.preventDefault();
 		const id = $(this).data("id");
 
@@ -171,14 +187,14 @@ $(document).ready(function () {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				$.ajax({
-					url: frontend + "admin/delete_sustainability_video_banner",
+					url: frontend + "admin/delete_sustainability_banner_video",
 					type: "POST",
 					data: { id: id },
 					dataType: "json",
 					success: function (response) {
 						if (response.status) {
 							Swal.fire("Deleted!", response.message, "success");
-							VideoBannerTable.ajax.reload(null, false);
+							SustainabilityVideoBannerTable.ajax.reload(null, false);
 						} else {
 							Swal.fire("Error", response.message, "error");
 						}
@@ -192,7 +208,7 @@ $(document).ready(function () {
 	});
 });
 
-$('#EditVideoBannerForm').submit(function (e) {
+$('#EditSustainabilityVideoBannerForm').submit(function (e) {
     e.preventDefault();
 
     let formData = new FormData(this);
@@ -200,7 +216,7 @@ $('#EditVideoBannerForm').submit(function (e) {
     $('#error_edit_video').text('');
 
     $.ajax({
-        url: frontend + "admin/update_sustainability_video_banner", // adjust to your route
+        url: frontend + "admin/update_sustainability_banner_video", // adjust to your route
         type: "POST",
         data: formData,
         dataType: "json",
@@ -217,11 +233,11 @@ $('#EditVideoBannerForm').submit(function (e) {
                     showConfirmButton: false
                 });
                 // Reset the form
-                $('#EditVideoBannerForm')[0].reset();
+                $('#EditSustainabilityVideoBannerForm')[0].reset();
                 // Clear previous image preview
                 $('#edit_video_preview').html('');
                 // Reload the DataTable
-                VideoBannerTable.ajax.reload(null, false);
+                SustainabilityVideoBannerTable.ajax.reload(null, false);
                 $('#EditModal').modal('hide');
                 // Optional: refresh data table or show toast
             } else if (response.status === 'error') {
