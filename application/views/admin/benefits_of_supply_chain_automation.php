@@ -22,11 +22,11 @@
             <div class="main-panel">
                 <div class="content-wrapper">
                     <div class="page-header">
-                        <h3 class="page-title">Supply Chain Our Offerings </h3>
+                        <h3 class="page-title">Benefits of Supply Chain Automation </h3>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Supply Chain Our Offerings</li>
+                                <li class="breadcrumb-item active" aria-current="page">Benefits of Supply Chain Automation</li>
                             </ol>
                         </nav>
                     </div>
@@ -34,8 +34,7 @@
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <form id="SupplyChainOurOfferingForm" class="forms-sample"
-                                        enctype="multipart/form-data">
+                                    <form id="DiscovertheBenefitsofTalentFlexForm" class="forms-sample" enctype="multipart/form-data">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
@@ -45,6 +44,7 @@
                                                     <div class="text-danger" id="error_title"></div>
                                                 </div>
                                             </div>
+
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="description">Description</label>
@@ -54,15 +54,17 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="image">Image</label>
-                                                    <input type="file" class="form-control" name="image" id="image"
-                                                        placeholder="image">
+                                                    <input type="file" class="form-control" name="image"
+                                                        id="image" placeholder="image">
                                                     <div class="text-danger" id="error_image"></div>
                                                 </div>
                                             </div>
+
                                         </div>
                                         <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
                                     </form>
@@ -72,19 +74,17 @@
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table id="SupplyChainOurOfferingTable" class="display">
-                                            <thead>
-                                                <tr>
-                                                    <th>Sr. No.</th>
-                                                    <th>Title</th>
-                                                    <th>Description</th>
-                                                    <th>Image</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
+                                    <table id="DiscovertheBenefitsofTalentFlexTable" class="display" >
+                                        <thead>
+                                            <tr>
+                                                <th>Sr. No.</th>
+                                                <th>Title</th>                                                
+                                                <th>Description</th>
+                                                <th>Image</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -102,7 +102,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="ViewModalLabel">View Supply Chain Our Offering</h5>
+                        <h5 class="modal-title" id="ViewModalLabel">View Current Opening Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="modalBodyContent">
@@ -134,22 +134,22 @@
                 <div class="modal-content">
 
                     <div class="modal-header">
-                        <h5 class="modal-title" id="EditModalLabel">Edit Supply Chain Our Offering</h5>
+                        <h5 class="modal-title" id="EditModalLabel">Edit Current Opening Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form id="EditSupplyChainOurOfferingForm" enctype="multipart/form-data">
+                    <form id="EditDiscovertheBenefitsofTalentFlexForm" enctype="multipart/form-data">
                         <div class="modal-body" id="modalBodyContent">
                             <input type="hidden" id="edit_id" name="id">
                             <input type="hidden" id="edit_previous_image" name="edit_previous_image">
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="edit_title" class="form-label">Title</label>
-                                    <input type="text" class="form-control" id="edit_title" name="edit_title">
+                                    <input type="text" class="form-control" id="edit_title" name="title">
                                     <div class="text-danger" id="error_edit_title"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="edit_description" class="form-label">Description</label>
-                                    <input type="text" class="form-control" id="edit_description" name="edit_description">
+                                    <input type="text" class="form-control" id="edit_description" name="description">
                                     <div class="text-danger" id="error_edit_description"></div>
                                 </div>
                             </div>
@@ -178,7 +178,7 @@
     <!-- container-scroller -->
     <!-- plugins:js -->
     <?php include('common/js_files.php');?>
-    <script src="<?= base_url()?>assets/view_js/supply_chain_our_offerings.js"></script>
+    <script src="<?= base_url()?>assets/view_js/benefits_of_supply_chain_automation.js"></script>
     <!-- End custom js for this page -->
     <script>
 

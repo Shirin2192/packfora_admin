@@ -88,7 +88,7 @@
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/talent_flex_banner_video">Banner Video</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/talent_flex_our_offerings">Our Offerings</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/talent_flex_resourcing_model">Resourcing Models</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_talent_flex">Discover the Benefits of Talent Flex</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_talent_flex">Benefits of Talent Flex</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/talent_flex_success_stories">Success Stories</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/talent_flex_our_leaders">Our Leaders</a></li>
 
@@ -102,7 +102,7 @@
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/supply_chain_banner_video">Banner Video</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/supply_chain_market_trends">Market Trends</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/supply_chain_our_offerings">Our Offerings</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/discover_the_benefits_of_supply_chain_automation">Discover the Benefits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_supply_chain_automation">Benefits of Supply Chain Automation</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/supply_chain_success_stories">Success Stories</a></li>
 
                     <li class="nav-item ps-3"><span class="menu-child-header">Design To Value</span></li>

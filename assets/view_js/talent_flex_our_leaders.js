@@ -57,7 +57,14 @@ $(document).ready(function () {
             }
         },
         columns: [
-            { data: 'id' },
+            {
+                data: null,
+                render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                },
+                title: 'Sr. No.',
+                orderable: false
+            },
             { data: 'name' },
             { data: 'designation' },
             { data: 'image', render: function (data) {

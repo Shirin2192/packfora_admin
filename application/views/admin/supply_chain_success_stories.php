@@ -22,11 +22,11 @@
             <div class="main-panel">
                 <div class="content-wrapper">
                     <div class="page-header">
-                        <h3 class="page-title">Supply Chain Our Offerings </h3>
+                        <h3 class="page-title">Supply Chain Success Stories</h3>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Supply Chain Our Offerings</li>
+                                <li class="breadcrumb-item active" aria-current="page">Supply Chain Success Stories</li>
                             </ol>
                         </nav>
                     </div>
@@ -34,7 +34,7 @@
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <form id="SupplyChainOurOfferingForm" class="forms-sample"
+                                    <form id="SupplyChainSuccessStoriesForm" class="forms-sample"
                                         enctype="multipart/form-data">
                                         <div class="row">
                                             <div class="col-md-6">
@@ -73,7 +73,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table id="SupplyChainOurOfferingTable" class="display">
+                                        <table id="SupplyChainSuccessStoriesTable" class="display">
                                             <thead>
                                                 <tr>
                                                     <th>Sr. No.</th>
@@ -137,7 +137,7 @@
                         <h5 class="modal-title" id="EditModalLabel">Edit Supply Chain Our Offering</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form id="EditSupplyChainOurOfferingForm" enctype="multipart/form-data">
+                    <form id="EditSupplyChainSuccessStoriesForm" enctype="multipart/form-data">
                         <div class="modal-body" id="modalBodyContent">
                             <input type="hidden" id="edit_id" name="id">
                             <input type="hidden" id="edit_previous_image" name="edit_previous_image">
@@ -178,7 +178,7 @@
     <!-- container-scroller -->
     <!-- plugins:js -->
     <?php include('common/js_files.php');?>
-    <script src="<?= base_url()?>assets/view_js/supply_chain_our_offerings.js"></script>
+    <script src="<?= base_url()?>assets/view_js/supply_chain_success_stories.js"></script>
     <!-- End custom js for this page -->
     <script>
 

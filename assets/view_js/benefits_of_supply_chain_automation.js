@@ -1,11 +1,14 @@
 $(document).ready(function () {
-    $('#GlobalDialogueForm').on('submit', function (e) {
+    $('#DiscovertheBenefitsofTalentFlexForm').on('submit', function (e) {
         e.preventDefault();
+
         // Clear previous error messages
-        $('#error_title, #error_description').text('');
+        $('#error_title, #error_description, #error_image').text('');
+
         var formData = new FormData(this);
+
         $.ajax({
-            url: frontend + "admin/save_global_dialouge",  // Adjust URL accordingly
+            url: frontend + "admin/save_benefits_of_supply_chain_automation",  // Adjust URL accordingly
             type: 'POST',
             data: formData,
             processData: false,
@@ -21,9 +24,9 @@ $(document).ready(function () {
                         timerProgressBar: true,
                         showConfirmButton: false
                     });
-                    $('#GlobalDialogueForm')[0].reset();
+                    $('#DiscovertheBenefitsofTalentFlexForm')[0].reset();
                      // Reload the DataTable
-                    GlobalDialogueTable.ajax.reload(null, false);
+                    DiscovertheBenefitsofTalentFlexTable.ajax.reload(null, false);
                 } else if (response.status === 'error') {
                     $.each(response.errors, function (key, val) {
                         $('#error_' + key).text(val);
@@ -40,9 +43,10 @@ $(document).ready(function () {
         console.error('The "frontend" variable is not defined.');
         return;
     }
-    GlobalDialogueTable = $('#GlobalDialogueTable').DataTable({
+
+    DiscovertheBenefitsofTalentFlexTable = $('#DiscovertheBenefitsofTalentFlexTable').DataTable({
         ajax: {
-            url: frontend + "admin/get_global_dialogue_data",  // Adjust URL accordingly
+            url: frontend + "admin/get_benefits_of_supply_chain_data",  // Adjust URL accordingly
             type: 'POST',
             dataSrc: function (json) {
                 // Ensure the response is an array; adjust if your backend wraps data in an object
@@ -67,6 +71,11 @@ $(document).ready(function () {
             },
             { data: 'title' },
             { data: 'description' },
+            { data: 'image', render: function (data) {
+                // Ensure 'frontend' ends with a slash if needed
+                var imageUrl = frontend + data;
+                return `<img src="${imageUrl}" alt="Image" style="width: 50px; height: 50px; background-color:#5555; ">`;
+            }},
             {
 				data: null,
 				orderable: false,
@@ -90,51 +99,70 @@ $(document).ready(function () {
     });
 
     // Optional: Handle clicks for view/edit/delete
-    $("#GlobalDialogueTable").on("click", ".view-btn", function (e) {
+    $("#DiscovertheBenefitsofTalentFlexTable").on("click", ".view-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
+
         $.ajax({
-            url: frontend + "admin/get_global_dialogue_details",
+            url: frontend + "admin/get_benefits_of_supply_chain_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
                 $("#view_title").text(response.data.title);
                 $("#view_description").text(response.data.description);
-                $('#ViewModal').modal('show');
+                if (response.data.image) {
+                const imageUrl = frontend + response.data.image;
+                $("#view_image").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px; background-color:#5555;">');
+            } else {
+                $("#view_image").html('');
+            }
+            $('#ViewModal').modal('show');
             },
             error: function () {
                 $("#view_title").text("Error loading data");
                 $("#view_description").text("Error loading data");
+                $("#view_image").hide();
             },
         });
     });
 
-    $("#GlobalDialogueTable").on("click", ".edit-btn", function (e) {
+    $("#DiscovertheBenefitsofTalentFlexTable").on("click", ".edit-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
         // Fetch details from server via POST
         $.ajax({
-            url: frontend + "admin/get_global_dialogue_details",
+            url: frontend + "admin/get_benefits_of_supply_chain_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
                     $("#edit_id").val(response.data.id);
                     $("#edit_title").val(response.data.title);
-                    $("#edit_description").val(response.data.description);                  
-                    $('#EditModal').modal('show');                
+                    $('#edit_id').val(response.data.id);
+                    $("#edit_description").val(response.data.description);
+                    $("#edit_previous_image").val(response.data.image); // Handle empty image case
+                    if (response.data.image) {
+                        const imageUrl = frontend + response.data.image;
+                        $("#edit_image_preview").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px; background-color:#5555;">');
+                    } else {
+                        $("#edit_image_preview").html('');
+                    }
+                    $('#EditModal').modal('show');
+                
             },
             error: function () {
                 $("#edit_title").val("Error loading data");
-                $("#edit_description").val("Error loading data");               
+                $("#edit_description").val("Error loading data");
+                $("#edit_image_preview").html('');
             },
         });
     });
     // Delete action
-	$("#GlobalDialogueTable").on("click", ".delete-btn", function (e) {
+	$("#DiscovertheBenefitsofTalentFlexTable").on("click", ".delete-btn", function (e) {
 		e.preventDefault();
 		const id = $(this).data("id");
+
 		Swal.fire({
 			title: "Are you sure?",
 			text: "This image will be deleted!",
@@ -146,14 +174,14 @@ $(document).ready(function () {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				$.ajax({
-					url: frontend + "admin/delete_global_dialogue",
+					url: frontend + "admin/delete_benefits_of_supply_chain",
 					type: "POST",
 					data: { id: id },
 					dataType: "json",
 					success: function (response) {
 						if (response.status) {
 							Swal.fire("Deleted!", response.message, "success");
-							GlobalDialogueTable.ajax.reload(null, false);
+							DiscovertheBenefitsofTalentFlexTable.ajax.reload(null, false);
 						} else {
 							Swal.fire("Error", response.message, "error");
 						}
@@ -166,13 +194,16 @@ $(document).ready(function () {
 		});
 	});
 });
-$('#EditGlobalDialogueForm').submit(function (e) {
+
+$('#EditDiscovertheBenefitsofTalentFlexForm').submit(function (e) {
     e.preventDefault();
+
     let formData = new FormData(this);
     // Clear previous errors
-    $('#error_edit_title, #error_edit_description').text('');
+    $('#error_edit_title, #error_edit_description, #error_edit_image').text('');
+
     $.ajax({
-        url: frontend + "admin/update_global_dialogue_details", // adjust to your route
+        url: frontend + "admin/update_benefits_of_supply_chain", // adjust to your route
         type: "POST",
         data: formData,
         dataType: "json",
@@ -189,11 +220,11 @@ $('#EditGlobalDialogueForm').submit(function (e) {
                     showConfirmButton: false
                 });
                 // Reset the form
-                $('#EditGlobalDialogueForm')[0].reset();
+                $('#EditDiscovertheBenefitsofTalentFlexForm')[0].reset();
                 // Clear previous image preview
                 $('#edit_image_preview').html('');
                 // Reload the DataTable
-                GlobalDialogueTable.ajax.reload(null, false);
+                DiscovertheBenefitsofTalentFlexTable.ajax.reload(null, false);
                 $('#EditModal').modal('hide');
                 // Optional: refresh data table or show toast
             } else if (response.status === 'error') {
@@ -203,6 +234,9 @@ $('#EditGlobalDialogueForm').submit(function (e) {
                 }
                 if (response.errors.description) {
                     $('#error_edit_description').text(response.errors.description);
+                }
+                if (response.errors.image) {
+                    $('#error_edit_image').text(response.errors.image);
                 }
             }
         }

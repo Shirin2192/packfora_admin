@@ -2457,9 +2457,10 @@ class Admin extends CI_Controller {
 					'title' => $this->input->post('title'),
 					'description' => $this->input->post('description'),
 					'image' => $imagePath,
+					'fk_service_id' => 1, // Assuming 1 is the service ID for Talent Flex
 				];
 				// Insert into database
-				$this->model->insertData('tbl_benefits_of_talent_flex', $data);
+				$this->model->insertData('tbl_discover_benefits', $data);
 
 				// Save to database or proceed with business logic
 				echo json_encode(['status' => 'success', 'message' => 'Discover the Benefits of Talent Flex data saved successfully.']);
@@ -2468,13 +2469,13 @@ class Admin extends CI_Controller {
 	}
 	public function get_benefits_of_talent_flex_data()
 	{
-		$response['data'] = $this->model->selectWhereData('tbl_benefits_of_talent_flex',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		$response['data'] = $this->model->selectWhereData('tbl_discover_benefits',array('is_delete'=>'1','fk_service_id' => 1), '*', false, array('id' => 'DESC'));
 		echo json_encode($response);
 	}
 	public function get_benefits_of_talent_flex_details()
 	{
 		$id = $this->input->post('id');
-		$response['data'] = $this->model->selectWhereData('tbl_benefits_of_talent_flex',array('is_delete'=>'1','id'=> $id), '*');
+		$response['data'] = $this->model->selectWhereData('tbl_discover_benefits',array('is_delete'=>'1','id'=> $id), '*');
 		echo json_encode($response);
 	}
 	public function update_benefits_of_talent_flex()
@@ -2532,7 +2533,7 @@ class Admin extends CI_Controller {
         'image' => $image,
     ];
 
-		if ($this->model->updateData('tbl_benefits_of_talent_flex', $data, array('id' => $id, 'is_delete' => '1'))) {
+		if ($this->model->updateData('tbl_discover_benefits', $data, array('id' => $id, 'is_delete' => '1'))) {
 			echo json_encode(['status' => 'success', 'message' => 'Discover the Benefits of Talent Flex updated successfully.']);
 		} else {
 			echo json_encode(['status' => 'error', 'message' => 'Failed to update Discover the Benefits of Talent Flex data.']);
@@ -2544,7 +2545,7 @@ class Admin extends CI_Controller {
 		$response = [];
 		if ($id) {
 			// Soft delete by setting is_delete = 0 (you can change logic)
-			$update = $this->model->updateData('tbl_benefits_of_talent_flex', ['is_delete' => '0'], ['id' => $id]);
+			$update = $this->model->updateData('tbl_discover_benefits', ['is_delete' => '0'], ['id' => $id]);
 			if ($update) {
 				$response['status'] = true;
 				$response['message'] = 'Discover the Benefits of Talent Flex deleted successfully.';
@@ -3783,5 +3784,682 @@ class Admin extends CI_Controller {
 		}
 		echo json_encode($response);
 	}
+	public function supply_chain_our_offerings(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/supply_chain_our_offerings');
+		}
+	}
+
+	public function save_supply_chain_our_offering() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_our_offering', ['fk_service_id' => 3, 'title'=> $title,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Supply Chain Our Offerings already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 3,
+					'title' => $title,
+					'description' => $description,
+					'image' => $imagePath,
+				];
+				if($this->model->insertData('tbl_our_offering',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Supply Chain Our Offerings saved successfully.']);	
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Supply Chain Our Offerings.']);
+				}	
+			}
+		}
+
+	}
+	public function get_supply_chain_our_offering_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_our_offering',array('fk_service_id' => 3, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_supply_chain_our_offering_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_our_offering',array('fk_service_id' =>3, 'is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+
+	public function update_supply_chain_our_offering()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		
+		$title = $this->input->post('edit_title');
+		$description = $this->input->post('edit_description');
+		$existingData = $this->model->selectWhereData('tbl_our_offering', ['fk_service_id' => 3, 'title'=> $title, 'is_delete' => '1', 'id !=' => $id], '*');	
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Supply Chain Our Offering with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'title' => $title,
+				'description' => $description,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_our_offering', $data, array('id' => $id, 'fk_service_id' => 3, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Supply Chain Our Offering updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Supply Chain Our Offering data.']);
+			}
+		}	
+	}
+	public function delete_supply_chain_our_offering()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_our_offering', ['is_delete' => '0'], ['id' => $id, 'fk_service_id' => 3]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Supply Chain Our Offering deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Supply Chain Our Offering.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	public function benefits_of_supply_chain_automation(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/benefits_of_supply_chain_automation');
+		}
+	}
+	public function save_benefits_of_supply_chain_automation() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_discover_benefits', ['fk_service_id' => 3, 'title'=> $title,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Benefits of Supply Chain Automation already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 3,
+					'title' => $title,
+					'description' => $description,
+					'image' => $imagePath,
+				];
+				if($this->model->insertData('tbl_discover_benefits',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Benefits of Supply Chain Automation saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Benefits of Supply Chain Automation.']);
+				}
+			}
+		}
+	}
+	public function get_benefits_of_supply_chain_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_discover_benefits',array('is_delete'=>'1','fk_service_id' => 3), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_benefits_of_supply_chain_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_discover_benefits',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_benefits_of_supply_chain()
+	{
+		$this->load->library('form_validation');
+
+    $this->form_validation->set_rules('title', 'Title', 'required|trim');
+    $this->form_validation->set_rules('description', 'Description', 'required|trim');
+
+    if ($this->form_validation->run() === FALSE) {
+        echo json_encode([
+            'status' => 'error',
+            'errors' => [
+                'title' => form_error('title'),
+                'description' => form_error('description'),
+            ]
+        ]);
+        return;
+    }
+
+    $id = $this->input->post('id');
+    $title = $this->input->post('title');
+    $description = $this->input->post('description');
+    $previous_image = $this->input->post('edit_previous_image');
+
+    $image = $previous_image;
+    if (!empty($_FILES['edit_image']['name'])) {
+        $config['upload_path'] = './uploads/';
+        $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+        $config['max_size'] = 2048;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('edit_image')) {
+            echo json_encode([
+                'status' => 'error',
+                'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+            ]);
+            return;
+        } else {
+            $upload_data = $this->upload->data();
+            $image = 'uploads/' . $upload_data['file_name'];
+
+            // Optional: delete old image
+            if ($previous_image && file_exists($previous_image)) {
+                @unlink($previous_image);
+            }
+        }
+    }
+
+    // Update DB
+    $data = [
+        'title' => $title,
+        'description' => $description,
+        'image' => $image,
+    ];
+
+		if ($this->model->updateData('tbl_discover_benefits', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Discover the Benefits of Supply Chain updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update Discover the Benefits of Supply Chain data.']);
+		}
+	}
+	public function delete_benefits_of_supply_chain()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_discover_benefits', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Discover the Benefits of Supply Chain deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Discover the Benefits of Supply Chain.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	public function supply_chain_success_stories(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/supply_chain_success_stories');
+		}
+	}
+	public function save_supply_chain_success_stories() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_success_stories', ['fk_service_id' => 1, 'title'=> $title,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				// If data already exists, update it
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Supply Chain Success Stories already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 3,
+					'title' => $title,
+					'description' => $description,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_success_stories',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Supply Chain Success Stories saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Supply Chain Success Stories.']);
+				}
+			}
+		}
+	}
+	public function get_supply_chain_success_stories_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_success_stories',array('fk_service_id' => 3, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_supply_chain_success_stories_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_success_stories',array('fk_service_id' => 3, 'is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_supply_chain_success_stories()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$title = $this->input->post('edit_title');
+		$description = $this->input->post('edit_description');
+		$existingData = $this->model->selectWhereData('tbl_success_stories', ['title'=> $title, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Supply Chain Success Stories with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'title' => $title,
+				'description' => $description,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_success_stories', $data, array('id' => $id, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Supply Chain Success Stories updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Supply Chain Success Stories data.']);
+			}
+		}	
+	}
+	public function delete_supply_chain_success_stories()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_success_stories', ['is_delete' => '0'], ['id' => $id, 'fk_service_id' => 3]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Supply Chain Our Offering deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Supply Chain Our Offering.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	public function design_to_value_our_offerings(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/design_to_value_our_offerings');
+		}
+	}
+
+	public function save_design_to_value_our_offering() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_our_offering', ['fk_service_id' => 4, 'title'=> $title,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Design to Value Our Offerings already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 4,
+					'title' => $title,
+					'description' => $description,
+					'image' => $imagePath,
+				];
+
+				if($this->model->insertData('tbl_our_offering',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Design to Value Our Offerings saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Design to Value Our Offerings.']);
+				}
+			}
+		}
+	}
+	public function get_design_to_value_our_offering_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_our_offering',array('fk_service_id' => 4, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_design_to_value_our_offering_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_our_offering',array('fk_service_id' =>4, 'is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_design_to_value_our_offering()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		
+		$title = $this->input->post('edit_title');
+		$description = $this->input->post('edit_description');
+		
+		$existingData = $this->model->selectWhereData('tbl_our_offering', ['fk_service_id' => 4, 'title'=> $title, 'is_delete' => '1', 'id !=' => $id], '*');	
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Design to Value Our Offering with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'title' => $title,
+				'description' => $description,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_our_offering', $data, array('id' => $id, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Design to Value Our Offering updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Design to Value Our Offering data.']);
+			}
+		}
+	}
+
 
 }
+    	
