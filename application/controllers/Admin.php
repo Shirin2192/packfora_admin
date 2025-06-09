@@ -4459,7 +4459,166 @@ class Admin extends CI_Controller {
 			}
 		}
 	}
+	public function benefits_of_design_to_value(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/benefits_of_design_to_value');
+		}
+	}
+	public function save_benefits_of_design_value() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_discover_benefits', ['fk_service_id' => 5, 'title'=> $title,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Benefits of Design to Value already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 5,
+					'title' => $title,
+					'description' => $description,
+					'image' => $imagePath,
+				];
+				if($this->model->insertData('tbl_discover_benefits',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Benefits of Design to Value saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Benefits of Design to Value.']);
+				}
+			}
+		}
+	}
+	public function get_benefits_of_design_value_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_discover_benefits',array('is_delete'=>'1','fk_service_id' => 5), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
 
+	public function get_benefits_of_design_value_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_discover_benefits',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
 
+	public function update_benefits_of_design_value()
+	{
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$title = $this->input->post('title');
+		$description = $this->input->post('description');
+		$previous_image = $this->input->post('edit_previous_image');
+
+		$image = $previous_image;
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				// Optional: delete old image
+				if ($previous_image && file_exists($previous_image)) {
+					@unlink($previous_image);
+				}
+			}
+		}
+
+		// Update DB
+		$data = [
+			'title' => $title,
+			'description' => $description,
+			'image' => $image,
+		];
+
+			if ($this->model->updateData('tbl_discover_benefits', $data, array('id' => $id, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Benefits of Design to Value updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Benefits of Design to Value data.']);
+			}
+	}
+	public function delete_benefits_of_design_value()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_discover_benefits', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Benefits of Design to Value deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Benefits of Design to Value.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
 }
     	

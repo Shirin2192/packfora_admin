@@ -106,8 +106,7 @@
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/supply_chain_success_stories">Success Stories</a></li>
 
                     <li class="nav-item ps-3"><span class="menu-child-header">Design To Value</span></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/design_to_value_our_offerings">Our Offerings</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/discover_the_benefits_of_design_to_value">Discover the Benefits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_design_to_value">Discover the Benefits</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/design_to_value_success_stories">Success Stories</a></li>
 
                     <li class="nav-item ps-3"><span class="menu-child-header">Packaging Innovation & Engineering</span></li>
