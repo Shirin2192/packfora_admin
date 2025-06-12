@@ -4620,5 +4620,80 @@ class Admin extends CI_Controller {
 		}
 		echo json_encode($response);
 	}
+
+	public function design_to_value_success_stories(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/design_value_success_stories');
+		}
+	}
+
+	public function save_design_to_value_success_stories() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_success_stories', ['fk_service_id' => 5, 'title'=> $title,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Design to Value Success Stories already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 5,
+					'title' => $title,
+					'description' => $description,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_success_stories',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Design to Value Success Stories saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Design to Value Success Stories.']);
+				}
+			}
+		}
+	}
+	public function get_design_to_value_success_stories_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_success_stories',array('fk_service_id' => 5, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
 }
     	
