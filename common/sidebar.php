@@ -118,7 +118,7 @@
                     <li class="nav-item ps-3"><span class="menu-child-header">Packaging Procurement</span></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_procurement_video_banner">Video Banner</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_procurement_our_offerings">Our Offerings</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/discover_the_benefits_of_packaging_procurement">Discover the Benefits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_packaging_procurement">Discover the Benefits</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_procurement_success_stories">Success Stories</a></li>
                 </ul>
                 <ul class="nav flex-column sub-menu">
