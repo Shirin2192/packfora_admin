@@ -110,11 +110,13 @@
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/design_to_value_success_stories">Success Stories</a></li>
 
                     <li class="nav-item ps-3"><span class="menu-child-header">Packaging Innovation & Engineering</span></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_innovation_video_banner">Video Banner</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_innovation_our_offerings">Our Offerings</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/discover_the_benefits_of_packaging_innovation">Discover the Benefits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_packaging_innovation">Discover the Benefits</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_innovation_success_stories">Success Stories</a></li>
 
                     <li class="nav-item ps-3"><span class="menu-child-header">Packaging Procurement</span></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_procurement_video_banner">Video Banner</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_procurement_our_offerings">Our Offerings</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/discover_the_benefits_of_packaging_procurement">Discover the Benefits</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_procurement_success_stories">Success Stories</a></li>
