@@ -22,11 +22,11 @@
             <div class="main-panel">
                 <div class="content-wrapper">
                     <div class="page-header">
-                        <h3 class="page-title">How We Do It </h3>
+                        <h3 class="page-title">Our Promise </h3>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">How We Do It</li>
+                                <li class="breadcrumb-item active" aria-current="page">Our Promise</li>
                             </ol>
                         </nav>
                     </div>
@@ -34,7 +34,7 @@
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <form id="HowWeDoItForm" class="forms-sample"
+                                    <form id="OurPromiseForm" class="forms-sample"
                                         enctype="multipart/form-data">
                                         <div class="row">
                                             <div class="col-md-6">
@@ -73,7 +73,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table id="HowWeDoItTable" class="display">
+                                        <table id="OurPromiseTable" class="display">
                                             <thead>
                                                 <tr>
                                                     <th>Sr. No.</th>
@@ -102,7 +102,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="ViewModalLabel">View How We Do It</h5>
+                        <h5 class="modal-title" id="ViewModalLabel">View Our Promise</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="modalBodyContent">
@@ -134,10 +134,10 @@
                 <div class="modal-content">
 
                     <div class="modal-header">
-                        <h5 class="modal-title" id="EditModalLabel">Edit How We Do It</h5>
+                        <h5 class="modal-title" id="EditModalLabel">Edit Our Promise</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form id="EditHowWeDoItForm" enctype="multipart/form-data">
+                    <form id="EditOurPromiseForm" enctype="multipart/form-data">
                         <div class="modal-body" id="modalBodyContent">
                             <input type="hidden" id="edit_id" name="id">
                             <input type="hidden" id="edit_previous_image" name="edit_previous_image">
@@ -178,11 +178,8 @@
     <!-- container-scroller -->
     <!-- plugins:js -->
     <?php include('common/js_files.php');?>
-    <script src="<?= base_url()?>assets/view_js/how_we_do_it.js"></script>
+    <script src="<?= base_url()?>assets/view_js/our_promise.js"></script>
     <!-- End custom js for this page -->
-    <script>
-
-    </script>
 </body>
 
 </html>

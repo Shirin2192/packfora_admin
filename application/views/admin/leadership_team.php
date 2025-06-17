@@ -22,11 +22,11 @@
             <div class="main-panel">
                 <div class="content-wrapper">
                     <div class="page-header">
-                        <h3 class="page-title">How We Do It </h3>
+                        <h3 class="page-title">Leadership Team </h3>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">How We Do It</li>
+                                <li class="breadcrumb-item active" aria-current="page">Leadership Team</li>
                             </ol>
                         </nav>
                     </div>
@@ -34,15 +34,23 @@
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <form id="HowWeDoItForm" class="forms-sample"
+                                    <form id="LeadershipTeamForm" class="forms-sample"
                                         enctype="multipart/form-data">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="title">Title</label>
-                                                    <input type="text" class="form-control" name="title" id="title"
-                                                        placeholder="title">
-                                                    <div class="text-danger" id="error_title"></div>
+                                                    <label for="name">Name</label>
+                                                    <input type="text" class="form-control" name="name" id="name"
+                                                        placeholder="name">
+                                                    <div class="text-danger" id="error_name"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="designation">Designation</label>
+                                                    <input type="text" class="form-control" name="designation" id="designation"
+                                                        placeholder="Designation">
+                                                    <div class="text-danger" id="error_designation"></div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -53,8 +61,7 @@
                                                     <div class="text-danger" id="error_description"></div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
+                                       
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="image">Image</label>
@@ -73,11 +80,12 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table id="HowWeDoItTable" class="display">
+                                        <table id="LeadershipTeamTable" class="display">
                                             <thead>
                                                 <tr>
                                                     <th>Sr. No.</th>
                                                     <th>Title</th>
+                                                    <th>Designation</th>
                                                     <th>Description</th>
                                                     <th>Image</th>
                                                     <th>Action</th>
@@ -102,14 +110,18 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="ViewModalLabel">View How We Do It</h5>
+                        <h5 class="modal-title" id="ViewModalLabel">View Leadership Team</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="modalBodyContent">
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="view_title">Title</label>
-                                <p id="view_title"></p>
+                                <label for="view_name">Name</label>
+                                <p id="view_name"></p>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="view_designation">Designation</label>
+                                <p id="view_designation"></p>
                             </div>
                             <div class="col-md-6">
                                 <label for="view_image">Image</label>
@@ -134,18 +146,23 @@
                 <div class="modal-content">
 
                     <div class="modal-header">
-                        <h5 class="modal-title" id="EditModalLabel">Edit How We Do It</h5>
+                        <h5 class="modal-title" id="EditModalLabel">Edit Leadership Team</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form id="EditHowWeDoItForm" enctype="multipart/form-data">
+                    <form id="EditLeadershipTeamForm" enctype="multipart/form-data">
                         <div class="modal-body" id="modalBodyContent">
                             <input type="hidden" id="edit_id" name="id">
                             <input type="hidden" id="edit_previous_image" name="edit_previous_image">
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="edit_title" class="form-label">Title</label>
-                                    <input type="text" class="form-control" id="edit_title" name="edit_title">
+                                    <label for="edit_name" class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="edit_name" name="edit_name">
                                     <div class="text-danger" id="error_edit_title"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="edit_designation" class="form-label">Designation</label>
+                                    <input type="text" class="form-control" id="edit_designation" name="edit_designation">
+                                    <div class="text-danger" id="error_edit_designation"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="edit_description" class="form-label">Description</label>
@@ -178,7 +195,7 @@
     <!-- container-scroller -->
     <!-- plugins:js -->
     <?php include('common/js_files.php');?>
-    <script src="<?= base_url()?>assets/view_js/how_we_do_it.js"></script>
+    <script src="<?= base_url()?>assets/view_js/leadership_team.js"></script>
     <!-- End custom js for this page -->
     <script>
 

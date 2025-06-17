@@ -5,7 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Purple Admin</title>
+    <title>Packfora Admin</title>
     <!-- plugins:css -->
     <?php include('common/css_files.php');?>
 </head>
@@ -111,7 +111,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    <form id="EditCurrentOpeningForm">
+                                    <form id="EditOurClientForm">
                                         <div class="modal-body" id="modalBodyContent">
                                             <input type="hidden" id="edit_id" name="id">
                                             <div class="row mb-3">

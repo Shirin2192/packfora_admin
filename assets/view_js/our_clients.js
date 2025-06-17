@@ -87,7 +87,70 @@ $(document).ready(function () {
 			},
 		],
 	});
-
+	$("#KnowledgeCentreTable").on("click", ".view-btn", function (e) {
+        e.preventDefault();
+        const id = $(this).data("id");
+        $.ajax({
+            url: frontend + "admin/get_knowledge_centre_details",
+            type: "POST",
+            dataType: "json",
+            data: { id: id }, // send id in POST data
+            success: function (response) {
+                $("#view_title").text(response.data.title);
+                $("#view_date").text(response.data.date);
+                if (response.data.image) {
+                const imageUrl = frontend + response.data.image;
+                $("#view_image").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px;">');
+            } else {
+                $("#view_image").html('');
+            }
+            $('#ViewModal').modal('show');
+            },
+            error: function () {
+                $("#view_title").text("Error loading data");
+                $("#view_date").text("Error loading data");
+                $("#view_image").hide();
+            },
+        });
+    });
+    $("#KnowledgeCentreTable").on("click", ".edit-btn", function (e) {
+        e.preventDefault();
+        const id = $(this).data("id");
+        // Fetch details from server via POST
+        $.ajax({
+            url: frontend + "admin/get_knowledge_centre_details",
+            type: "POST",
+            dataType: "json",
+            data: { id: id }, // send id in POST data
+            success: function (response) {
+                    $("#edit_id").val(response.data.id);
+                    $("#edit_title").val(response.data.title);
+                    $('#edit_id').val(response.data.id);
+                    // Original format: yyyy-mm-dd
+                    let originalDate = response.data.date;
+                    if (originalDate && /^\d{4}-\d{2}-\d{2}$/.test(originalDate)) {
+                        $("#edit_date").val(originalDate);  // directly set for <input type="date">
+                    } else {
+                        console.warn("Invalid or missing date format:", originalDate);
+                        $("#edit_date").val(""); // optional: clear field on bad format
+                    }
+                    $("#edit_previous_image").val(response.data.image); // Handle empty image case
+                    if (response.data.image) {
+                        const imageUrl = frontend + response.data.image;
+                        $("#edit_image_preview").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px;">');
+                    } else {
+                        $("#edit_image_preview").html('');
+                    }
+                    $('#EditModal').modal('show');
+                
+            },
+            error: function () {
+                $("#edit_title").val("Error loading data");
+                $("#edit_date").val("Error loading data");
+                $("#edit_image_preview").html('');
+            },
+        });
+    });
 	// Delete action
 	$("#ClientImageTable").on("click", ".delete-client-btn", function (e) {
 		e.preventDefault();

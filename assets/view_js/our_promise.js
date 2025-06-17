@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    $('#HowWeDoItForm').on('submit', function (e) {
+    $('#OurPromiseForm').on('submit', function (e) {
         e.preventDefault();
        // Clear previous error messages
         $('#error_title, #error_description, #error_image').text('');
         var formData = new FormData(this);
         $.ajax({
-            url: frontend + "admin/save_how_we_do_it",  // Adjust URL accordingly
+            url: frontend + "admin/save_our_promise",  // Adjust URL accordingly
             type: 'POST',
             data: formData,
             processData: false,
@@ -21,9 +21,9 @@ $(document).ready(function () {
                         timerProgressBar: true,
                         showConfirmButton: false
                     });
-                    $('#HowWeDoItForm')[0].reset();
+                    $('#OurPromiseForm')[0].reset();
                      // Reload the DataTable
-                    HowWeDoItTable.ajax.reload(null, false);
+                    OurPromiseTable.ajax.reload(null, false);
                 } else if (response.status === 'error') {
                     $.each(response.errors, function (key, val) {
                         $('#error_' + key).text(val);
@@ -40,9 +40,9 @@ $(document).ready(function () {
         console.error('The "frontend" variable is not defined.');
         return;
     }
-    HowWeDoItTable = $('#HowWeDoItTable').DataTable({
+    OurPromiseTable = $('#OurPromiseTable').DataTable({
         ajax: {
-            url: frontend + "admin/get_how_we_do_it_data",  // Adjust URL accordingly
+            url: frontend + "admin/get_our_promise_data",  // Adjust URL accordingly
             type: 'POST',
             dataSrc: function (json) {
                 // Ensure the response is an array; adjust if your backend wraps data in an object
@@ -95,12 +95,12 @@ $(document).ready(function () {
     });
 
     // Optional: Handle clicks for view/edit/delete
-    $("#HowWeDoItTable").on("click", ".view-btn", function (e) {
+    $("#OurPromiseTable").on("click", ".view-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
 
         $.ajax({
-            url: frontend + "admin/get_how_we_do_it_details",
+            url: frontend + "admin/get_our_promise_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
@@ -123,12 +123,12 @@ $(document).ready(function () {
         });
     });
 
-    $("#HowWeDoItTable").on("click", ".edit-btn", function (e) {
+    $("#OurPromiseTable").on("click", ".edit-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
         // Fetch details from server via POST
         $.ajax({
-            url: frontend + "admin/get_how_we_do_it_details",
+            url: frontend + "admin/get_our_promise_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
@@ -155,7 +155,7 @@ $(document).ready(function () {
         });
     });
     // Delete action
-	$("#HowWeDoItTable").on("click", ".delete-btn", function (e) {
+	$("#OurPromiseTable").on("click", ".delete-btn", function (e) {
 		e.preventDefault();
 		const id = $(this).data("id");
 
@@ -170,14 +170,14 @@ $(document).ready(function () {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				$.ajax({
-					url: frontend + "admin/delete_how_we_do_it",
+					url: frontend + "admin/delete_our_promise",
 					type: "POST",
 					data: { id: id },
 					dataType: "json",
 					success: function (response) {
 						if (response.status) {
 							Swal.fire("Deleted!", response.message, "success");
-							HowWeDoItTable.ajax.reload(null, false);
+							OurPromiseTable.ajax.reload(null, false);
 						} else {
 							Swal.fire("Error", response.message, "error");
 						}
@@ -191,7 +191,7 @@ $(document).ready(function () {
 	});
 });
 
-$('#EditHowWeDoItForm').submit(function (e) {
+$('#EditOurPromiseForm').submit(function (e) {
     e.preventDefault();
 
     let formData = new FormData(this);
@@ -199,7 +199,7 @@ $('#EditHowWeDoItForm').submit(function (e) {
     $('#error_edit_title, #error_edit_description, #error_edit_image').text('');
 
     $.ajax({
-        url: frontend + "admin/update_how_we_do_it", // adjust to your route
+        url: frontend + "admin/update_our_promise", // adjust to your route
         type: "POST",
         data: formData,
         dataType: "json",
@@ -216,11 +216,11 @@ $('#EditHowWeDoItForm').submit(function (e) {
                     showConfirmButton: false
                 });
                 // Reset the form
-                $('#EditHowWeDoItForm')[0].reset();
+                $('#EditOurPromiseForm')[0].reset();
                 // Clear previous image preview
                 $('#edit_image_preview').html('');
                 // Reload the DataTable
-                HowWeDoItTable.ajax.reload(null, false);
+                OurPromiseTable.ajax.reload(null, false);
                 $('#EditModal').modal('hide');
                 // Optional: refresh data table or show toast
             } else if (response.status === 'error') {
