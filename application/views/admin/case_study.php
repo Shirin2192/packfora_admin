@@ -35,7 +35,15 @@
                             <div class="card">
                                 <div class="card-body">
                                     <form id="CaseStudyForm" class="forms-sample" enctype="multipart/form-data">
-                                        <div class="row">                         
+                                        <div class="row">    
+											<div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="title">Title</label>
+                                                    <input type="text" class="form-control" name="title"
+                                                        id="title" placeholder="Title">
+                                                    <div class="text-danger" id="error_title"></div>
+                                                </div>
+                                            </div>                     
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="image">Image</label>

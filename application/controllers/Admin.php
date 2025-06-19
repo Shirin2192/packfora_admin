@@ -6896,12 +6896,14 @@ class Admin extends CI_Controller {
 		$this->load->library('form_validation');
 		$this->form_validation->set_rules('description', 'Description', 'required|trim');
 		$this->form_validation->set_rules('link', 'Link', 'required|trim');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
 		if ($this->form_validation->run() == FALSE) {
 			echo json_encode([
 				'status' => 'error',
 				'errors' => [
 					'description' => form_error('description'),
-					'link' => form_error('link')
+					'link' => form_error('link'),
+					'title' => form_error('title'),
 				]
 			]);
 			return;
@@ -6929,6 +6931,7 @@ class Admin extends CI_Controller {
 			$imagePath = 'uploads/' . $uploadData['file_name'];
 			$description = $this->input->post('description');
 			$link = $this->input->post('link');
+			$title = $this->input->post('title');
 			// Prepare data for insertion
 			$existingData = $this->model->selectWhereData('tbl_case_study', ['description'=> $description,'is_delete' => '1'], '*');
 			if (!empty($existingData)) {
@@ -6941,6 +6944,7 @@ class Admin extends CI_Controller {
 					'description' => $description,
 					'link' => $link,
 					'image' => $imagePath,
+					'title' => $title,
 				];
 				// Insert into database
 				if($this->model->insertData('tbl_case_study',$data)){
@@ -6966,6 +6970,7 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('id', 'ID', 'required');
 		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
 		$this->form_validation->set_rules('edit_link', 'Link', 'required|trim');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
 
 		if ($this->form_validation->run() === FALSE) {
 			echo json_encode([
@@ -6973,7 +6978,8 @@ class Admin extends CI_Controller {
 				'errors' => [
 					'id' => form_error('id'),
 					'edit_description' => form_error('edit_description'),
-					'edit_link' => form_error('edit_link')
+					'edit_link' => form_error('edit_link'),
+					'edit_title' => form_error('edit_title'),
 				]
 			]);
 			return;
@@ -7016,6 +7022,7 @@ class Admin extends CI_Controller {
 		}
 		$description = $this->input->post('edit_description');
 		$link = $this->input->post('edit_link');
+		$title = $this->input->post('edit_title');
 
 		$existingData = $this->model->selectWhereData('tbl_case_study', ['description'=> $description, 'is_delete' => '1', 'id !=' => $id], '*');
 		if (!empty($existingData)) {
@@ -7030,6 +7037,7 @@ class Admin extends CI_Controller {
 				'description' => $description,
 				'link' => $link,
 				'image' => $image,
+				'title' => $title,
 			];
 			if ($this->model->updateData('tbl_case_study', $data, array('id' => $id,'is_delete' => '1'))) {
 				echo json_encode(['status' => 'success', 'message' => 'Data updated successfully.']);

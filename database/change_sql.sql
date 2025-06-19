@@ -1,0 +1,1 @@
+ALTER TABLE `tbl_case_study` ADD `title` VARCHAR(100) NULL DEFAULT NULL AFTER `id`;
