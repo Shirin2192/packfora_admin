@@ -293,7 +293,34 @@ class Admin extends CI_Controller {
 	}
 	public function get_clients_data()
 	{
-		$response['data'] = $this->model->selectWhereData('our_clients',array(), '*', false, array('id' => 'DESC'));
+		$response['data'] = $this->model->selectWhereData('our_clients',array('is_delete' => '1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_clients_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('our_clients',array('id'=> $id), '*');
+		echo json_encode($response);
+	}
+
+	public function delete_clients_image()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('our_clients', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Clients deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the current opening.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
 		echo json_encode($response);
 	}
 
@@ -6855,6 +6882,565 @@ class Admin extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	// Case Study
+	public function case_study()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/case_study');
+		}
+	}
+	public function save_case_study() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		$this->form_validation->set_rules('link', 'Link', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'description' => form_error('description'),
+					'link' => form_error('link')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$description = $this->input->post('description');
+			$link = $this->input->post('link');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_case_study', ['description'=> $description,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['description' => "Data Already Exist"]
+				]);
+			}else {
+				$data = [
+					'description' => $description,
+					'link' => $link,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_case_study',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Data saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Data.']);
+				}
+			}
+		}
+	}
+
+	public function get_case_study_data(){
+		$response['data'] = $this->model->selectWhereData('tbl_case_study',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_case_study_details(){
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_case_study',array('is_delete'=>'1','id'=>$id), '*');
+		echo json_encode($response);
+	}
+	public function update_case_study(){
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+		$this->form_validation->set_rules('edit_link', 'Link', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_description' => form_error('edit_description'),
+					'edit_link' => form_error('edit_link')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$description = $this->input->post('edit_description');
+		$link = $this->input->post('edit_link');
+
+		$existingData = $this->model->selectWhereData('tbl_case_study', ['description'=> $description, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Data with this description already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'description' => $description,
+				'link' => $link,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_case_study', $data, array('id' => $id,'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Data updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Data.']);
+			}
+		}		
+	}
+	public function delete_case_study()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_case_study', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Data deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Success Stories';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	public function our_impact()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/our_impact');
+		}
+	}
+
+	public function save_our_impact()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('heading', 'Heading', 'required|trim');
+		$this->form_validation->set_rules('sub_text', 'sub_text', 'required|trim');
+		$this->form_validation->set_rules('value1_title', 'Title 1', 'required|trim');
+		$this->form_validation->set_rules('value1_description', 'Description 1', 'required|trim');
+		$this->form_validation->set_rules('value2_title', 'Title 2', 'required|trim');
+		$this->form_validation->set_rules('value2_description', 'Description 1', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'heading' => form_error('heading'),
+					'sub_text' => form_error('sub_text'),
+					'value1_title' => form_error('value1_title'),
+					'value1_description' => form_error('value1_description'),
+					'value2_title' => form_error('value2_title'),
+					'value2_description' => form_error('value2_description'),
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$heading = $this->input->post('heading');
+			$sub_text = $this->input->post('sub_text');
+			$value1_title = $this->input->post('value1_title');
+			$value1_description = $this->input->post('value1_description');
+			$value2_title = $this->input->post('value2_title');
+			$value2_description = $this->input->post('value2_description');
+			$existingData = $this->model->selectWhereData('tbl_impact_sections', ['heading'=> $heading,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['heading' => "Data Already Exist"]
+				]);
+			}else {
+				$data = [
+					'heading' => $heading,
+					'sub_text' => $sub_text,
+					'value1_title' => $value1_title,
+					'value1_description' => $value1_description,
+					'value2_title' => $value2_title,
+					'value2_description' => $value2_description,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_impact_sections',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Data saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Data.']);
+				}
+			}
+		}
+	}
+	public function get_our_impact_data(){
+		$response['data'] = $this->model->selectWhereData('tbl_impact_sections',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_our_impact_details(){
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_impact_sections',array('is_delete'=>'1','id'=>$id), '*');
+		echo json_encode($response);
+	}
+	public function update_our_impact(){
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_heading', 'Heading', 'required|trim');
+		$this->form_validation->set_rules('edit_sub_text', 'sub_text', 'required|trim');
+		$this->form_validation->set_rules('edit_value1_title', 'Title 1', 'required|trim');
+		$this->form_validation->set_rules('edit_value1_description', 'Description 1', 'required|trim');
+		$this->form_validation->set_rules('edit_value2_title', 'Title 2', 'required|trim');
+		$this->form_validation->set_rules('edit_value2_description', 'Description 1', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_heading' => form_error('edit_heading'),
+					'edit_sub_text' => form_error('edit_sub_text'),
+					'edit_value1_title' => form_error('edit_value1_title'),
+					'edit_value1_description' => form_error('edit_value1_description'),
+					'edit_value2_title' => form_error('edit_value2_title'),
+					'edit_value2_description' => form_error('edit_value2_description'),
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$heading = $this->input->post('edit_heading');
+		$sub_text = $this->input->post('edit_sub_text');
+		$value1_title = $this->input->post('edit_value1_title');
+		$value1_description = $this->input->post('edit_value1_description');
+		$value2_title = $this->input->post('edit_value2_title');
+		$value2_description = $this->input->post('edit_value2_description');
+
+		$existingData = $this->model->selectWhereData('tbl_impact_sections', ['heading'=> $heading, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Data already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'heading' => $heading,
+				'sub_text' => $sub_text,
+				'value1_title' => $value1_title,
+				'value1_description' => $value1_description,
+				'value2_title' => $value2_title,
+				'value2_description' => $value2_description,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_impact_sections', $data, array('id' => $id,'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Data updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Data.']);
+			}
+		}		
+	}
+	public function delete_our_impact()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_impact_sections', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Data deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Success Stories';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	// Our Services
+	public function our_services()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/our_services');
+		}
+	}
+	public function save_our_services()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		$this->form_validation->set_rules('link', 'Link', 'required|trim');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+					'link' => form_error('link')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$description = $this->input->post('description');
+			$link = $this->input->post('link');
+			$title = $this->input->post('title');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_services', ['description'=> $description,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['description' => "Data Already Exist"]
+				]);
+			}else {
+				$data = [
+					'description' => $description,
+					'link' => $link,
+					'image' => $imagePath,
+					'service_name' => $title,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_services',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Data saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Data.']);
+				}
+			}
+		}
+	}
+	public function get_our_services_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_services',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_our_services_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_services',array('id'=>$id), '*');
+		echo json_encode($response);
+	}
+	public function update_our_services()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+		$this->form_validation->set_rules('edit_link', 'Link', 'required|trim');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_description' => form_error('edit_description'),
+					'edit_link' => form_error('edit_link'),
+					'edit_title' => form_error('edit_title'),
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$description = $this->input->post('edit_description');
+		$link = $this->input->post('edit_link');
+		$title = $this->input->post('edit_title');
+
+		$existingData = $this->model->selectWhereData('tbl_services', ['service_name'=> $title, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Data with this description already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'description' => $description,
+				'link' => $link,
+				'image' => $image,
+				'service_name' =>$title
+			];
+			if ($this->model->updateData('tbl_services', $data, array('id' => $id,'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Data updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Data.']);
+			}
+		}		
+	}
+	// Impact Box
+
+	public function impact_box(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/impact_box');
+		}
+	}
 
 }
 

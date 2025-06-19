@@ -33,7 +33,7 @@
                     <a class="nav-link" href="<?= base_url(); ?>admin/slider">Home Slider</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url(); ?>admin/intro">Intro</a>
+                    <a class="nav-link" href="<?= base_url(); ?>admin/impact_box">Impact Box</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="<?= base_url(); ?>admin/our_services">Our Services</a>

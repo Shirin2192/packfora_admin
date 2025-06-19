@@ -73,12 +73,6 @@ $(document).ready(function () {
 				orderable: false,
 				render: function (data, type, row) {
 					return `
-						 <a href="#" class="view-btn" data-id="${row.id}" title="View">
-                            <i class="fas fa-eye text-info "></i>
-                        </a>
-                        <a href="#" class="edit-btn" data-id="${row.id}" title="Edit">
-                            <i class="fas fa-edit text-warning "></i>
-                        </a>
                         <a href="#" class="delete-btn" data-id="${row.id}" title="Delete">
                             <i class="fas fa-trash-alt text-danger"></i>
                         </a>
@@ -87,19 +81,23 @@ $(document).ready(function () {
 			},
 		],
 	});
-	$("#KnowledgeCentreTable").on("click", ".view-btn", function (e) {
+	 // <a href="#" class="view-btn" data-id="${row.id}" title="View">
+     //                        <i class="fas fa-eye text-info "></i>
+     //                    </a>
+     //                    <a href="#" class="edit-btn" data-id="${row.id}" title="Edit">
+     //                        <i class="fas fa-edit text-warning "></i>
+     //                    </a>
+	$("#ClientImageTable").on("click", ".view-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
         $.ajax({
-            url: frontend + "admin/get_knowledge_centre_details",
+            url: frontend + "admin/get_clients_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
-                $("#view_title").text(response.data.title);
-                $("#view_date").text(response.data.date);
                 if (response.data.image) {
-                const imageUrl = frontend + response.data.image;
+                	const imageUrl = response.data.image;
                 $("#view_image").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px;">');
             } else {
                 $("#view_image").html('');
@@ -113,27 +111,17 @@ $(document).ready(function () {
             },
         });
     });
-    $("#KnowledgeCentreTable").on("click", ".edit-btn", function (e) {
+    $("#ClientImageTable").on("click", ".edit-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
         // Fetch details from server via POST
         $.ajax({
-            url: frontend + "admin/get_knowledge_centre_details",
+            url: frontend + "admin/get_clients_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
                     $("#edit_id").val(response.data.id);
-                    $("#edit_title").val(response.data.title);
-                    $('#edit_id').val(response.data.id);
-                    // Original format: yyyy-mm-dd
-                    let originalDate = response.data.date;
-                    if (originalDate && /^\d{4}-\d{2}-\d{2}$/.test(originalDate)) {
-                        $("#edit_date").val(originalDate);  // directly set for <input type="date">
-                    } else {
-                        console.warn("Invalid or missing date format:", originalDate);
-                        $("#edit_date").val(""); // optional: clear field on bad format
-                    }
                     $("#edit_previous_image").val(response.data.image); // Handle empty image case
                     if (response.data.image) {
                         const imageUrl = frontend + response.data.image;
@@ -141,8 +129,7 @@ $(document).ready(function () {
                     } else {
                         $("#edit_image_preview").html('');
                     }
-                    $('#EditModal').modal('show');
-                
+                    $('#EditModal').modal('show');                
             },
             error: function () {
                 $("#edit_title").val("Error loading data");
@@ -152,10 +139,9 @@ $(document).ready(function () {
         });
     });
 	// Delete action
-	$("#ClientImageTable").on("click", ".delete-client-btn", function (e) {
+	$("#ClientImageTable").on("click", ".delete-btn", function (e) {
 		e.preventDefault();
 		const id = $(this).data("id");
-
 		Swal.fire({
 			title: "Are you sure?",
 			text: "This image will be deleted!",
@@ -167,7 +153,7 @@ $(document).ready(function () {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				$.ajax({
-					url: frontend + "admin/delete_client_image",
+					url: frontend + "admin/delete_clients_image",
 					type: "POST",
 					data: { id: id },
 					dataType: "json",
