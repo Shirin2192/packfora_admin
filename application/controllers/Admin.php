@@ -7449,6 +7449,714 @@ class Admin extends CI_Controller {
 			$this->load->view('admin/impact_box');
 		}
 	}
+	public function save_impact_box()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('heading', 'heading', 'required|trim');
+		$this->form_validation->set_rules('value', 'Value', 'required|trim');
+		$this->form_validation->set_rules('link', 'Link', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'value' => form_error('value'),
+					'heading' => form_error('heading'),
+					'link' => form_error('link'),
+					'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$description = $this->input->post('description');
+			$link = $this->input->post('link');
+			$heading = $this->input->post('heading');
+			$value = $this->input->post('value');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_impact_boxes', ['front_heading'=> $heading,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['heading' => "Data Already Exist"]
+				]);
+			}else {
+				$data = [
+					'front_heading' => $heading,
+					'front_value' => $value,
+					'image' => $imagePath,
+					'back_description' => $description,
+					'link' => $link,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_impact_boxes',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Data saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Data.']);
+				}
+			}
+		}
+	}
+	public function get_impact_box_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_impact_boxes',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_impact_box_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_impact_boxes',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_impact_box()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_heading', 'Heading', 'required|trim');
+		$this->form_validation->set_rules('edit_value', 'Value', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+		$this->form_validation->set_rules('edit_link', 'Link', 'required|trim');
+		
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_heading' => form_error('edit_heading'),
+					'edit_value' => form_error('edit_value'),
+					'edit_description' => form_error('edit_description'),
+					'edit_link' => form_error('edit_link'),
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$heading = $this->input->post('edit_heading');
+		$value = $this->input->post('edit_value');
+		$description = $this->input->post('edit_description');
+		$link = $this->input->post('edit_link');
+		
+		$existingData = $this->model->selectWhereData('tbl_impact_boxes', ['front_heading'=> $heading, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Data already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'front_heading' => $heading,
+				'front_value' => $value,
+				'back_description' => $description,
+				'link' => $link,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_impact_boxes', $data, array('id' => $id,'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Data updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Data.']);
+			}
+		}
+	}
+	// Blogs
+	public function blog()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/blogs');
+		}
+	}
+	public function save_blogs()
+	{
+		$this->load->library('form_validation');
+		// Set rules
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		$this->form_validation->set_rules('description', 'Description', 'required');
+		if (empty($_FILES['image']['name'])) {
+			$this->form_validation->set_rules('image', 'Image', 'required');
+		}
+
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+					'image' => form_error('image'),
+				]
+			]);
+		} else {
+			// File Upload (optional)
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['image' => $this->upload->display_errors('', '')]
+				]);
+			} else {
+				$uploadData = $this->upload->data();
+				$imagePath = 'uploads/' . $uploadData['file_name'];
+				// Prepare data for insertion
+				$data = [
+					'title' => $this->input->post('title'),
+					'description' => $this->input->post('description'),
+					'image' => $imagePath,
+				];
+				// Insert into database
+				$this->model->insertData('tbl_blogs', $data);
+
+				// Save to database or proceed with business logic
+				echo json_encode(['status' => 'success', 'message' => 'Blogs data saved successfully.']);
+			}
+		}
+	}
+	public function get_blogs_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_blogs',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_blogs_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_blogs',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_blogs()
+	{
+		$this->load->library('form_validation');
+    	$this->form_validation->set_rules('title', 'Title', 'required|trim');
+    	$this->form_validation->set_rules('description', 'Description', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$title = $this->input->post('title');
+		$description = $this->input->post('description');
+		$previous_image = $this->input->post('edit_previous_image');
+
+		$image = $previous_image;
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				// Optional: delete old image
+				if ($previous_image && file_exists($previous_image)) {
+					@unlink($previous_image);
+				}
+			}
+		}
+		// Update DB
+		$data = [
+			'title' => $title,
+			'description' => $description,
+			'image' => $image,
+		];
+
+		if ($this->model->updateData('tbl_blogs', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Blogs updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update blogs data.']);
+		}
+	}
+	public function delete_blogs()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_blogs', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Blogs deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete blogs';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	// More Blogs
+	public function more_blogs()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/more_blogs');
+		}
+	}
+	public function save_more_blogs()
+	{
+		$this->load->library('form_validation');
+		// Set rules
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		$this->form_validation->set_rules('description', 'Description', 'required');
+		$this->form_validation->set_rules('link', 'Link', 'required');
+		if (empty($_FILES['image']['name'])) {
+			$this->form_validation->set_rules('image', 'Image', 'required');
+		}
+
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+					'image' => form_error('image'),
+					'link' => form_error('link'),
+				]
+			]);
+		} else {
+			// File Upload (optional)
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['image' => $this->upload->display_errors('', '')]
+				]);
+			} else {
+				$uploadData = $this->upload->data();
+				$imagePath = 'uploads/' . $uploadData['file_name'];
+				// Prepare data for insertion
+				$data = [
+					'title' => $this->input->post('title'),
+					'description' => $this->input->post('description'),
+					'image' => $imagePath,
+					'link' => $this->input->post('link'),
+				];
+				// Insert into database
+				$this->model->insertData('tbl_blogs', $data);
+
+				// Save to database or proceed with business logic
+				echo json_encode(['status' => 'success', 'message' => 'Blogs data saved successfully.']);
+			}
+		}
+	}
+	public function get_more_blogs_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_blogs',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_more_blogs_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_blogs',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_more_blogs()
+	{
+		$this->load->library('form_validation');
+    	$this->form_validation->set_rules('title', 'Title', 'required|trim');
+    	$this->form_validation->set_rules('description', 'Description', 'required|trim');
+    	$this->form_validation->set_rules('link', 'Link', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+					'link' => form_error('link'),
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$title = $this->input->post('title');
+		$description = $this->input->post('description');
+		$previous_image = $this->input->post('edit_previous_image');
+		$link = $this->input->post('edit_link');
+
+		$image = $previous_image;
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				// Optional: delete old image
+				if ($previous_image && file_exists($previous_image)) {
+					@unlink($previous_image);
+				}
+			}
+		}
+		// Update DB
+		$data = [
+			'title' => $title,
+			'description' => $description,
+			'image' => $image,
+			'link' => $link,
+		];
+
+		if ($this->model->updateData('tbl_blogs', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Blogs updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update blogs data.']);
+		}
+	}
+	public function delete_more_blogs()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_blogs', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Blogs deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete blogs';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	//  Maxmold built_reliability
+	public function built_reliability()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/built_reliability');
+		}
+	}
+	public function save_built_reliability()
+	{
+		$this->load->library('form_validation');
+		// Set rules
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		$this->form_validation->set_rules('description', 'Description', 'required');
+		
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+				]
+			]);
+		} else {			
+				$data = [
+					'title' => $this->input->post('title'),
+					'description' => $this->input->post('description'),
+				];
+				// Insert into database
+				$this->model->insertData('tbl_built_reliability', $data);
+				// Save to database or proceed with business logic
+				echo json_encode(['status' => 'success', 'message' => 'Data saved successfully.']);
+		}
+	}
+	public function get_built_reliability_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_built_reliability',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_built_reliability_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_built_reliability',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_built_reliability()
+	{
+		$this->load->library('form_validation');
+    	$this->form_validation->set_rules('title', 'Title', 'required|trim');
+    	$this->form_validation->set_rules('description', 'Description', 'required|trim');
+    	if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+				]
+			]);
+			return;
+		}
+		$id = $this->input->post('id');
+		$title = $this->input->post('title');
+		$description = $this->input->post('description');		
+		// Update DB
+		$data = [
+			'title' => $title,
+			'description' => $description,	
+		];
+
+		if ($this->model->updateData('tbl_built_reliability', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Data updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update data.']);
+		}
+	}
+	public function delete_built_reliability()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_built_reliability', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Data deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete data';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	// story_behind_maxmold
+	public function story_behind_maxmold()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/story_behind_maxmold');
+		}
+	}
+	public function save_story_behind_maxmold()
+	{
+		$this->load->library('form_validation');
+		// Set rules
+		$this->form_validation->set_rules('description', 'Description', 'required');
+		if (empty($_FILES['image']['name'])) {
+			$this->form_validation->set_rules('image', 'Image', 'required');
+		}
+
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'description' => form_error('description'),
+					'image' => form_error('image'),
+				]
+			]);
+		} else {
+			// File Upload (optional)
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['image' => $this->upload->display_errors('', '')]
+				]);
+			} else {
+				$uploadData = $this->upload->data();
+				$imagePath = 'uploads/' . $uploadData['file_name'];
+				// Prepare data for insertion
+				$data = [
+					'description' => $this->input->post('description'),
+					'image' => $imagePath,
+				];
+				// Insert into database
+				$this->model->insertData('tbl_story_behind_maxmold', $data);
+
+				// Save to database or proceed with business logic
+				echo json_encode(['status' => 'success', 'message' => 'Data saved successfully.']);
+			}
+		}
+	}
+	public function get_story_behind_maxmold_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_story_behind_maxmold',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_story_behind_maxmold_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_story_behind_maxmold',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_story_behind_maxmold()
+	{
+		$this->load->library('form_validation');    	
+    	$this->form_validation->set_rules('description', 'Description', 'required|trim');	
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [				
+					'description' => form_error('description'),					
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$description = $this->input->post('description');
+		$previous_image = $this->input->post('edit_previous_image');		
+
+		$image = $previous_image;
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				// Optional: delete old image
+				if ($previous_image && file_exists($previous_image)) {
+					@unlink($previous_image);
+				}
+			}
+		}
+		// Update DB
+		$data = [
+			'description' => $description,
+			'image' => $image,
+		];
+
+		if ($this->model->updateData('tbl_story_behind_maxmold', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Data updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update data.']);
+		}
+	}
+	public function delete_story_behind_maxmold()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_story_behind_maxmold', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Data deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete data';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
 
 }
 

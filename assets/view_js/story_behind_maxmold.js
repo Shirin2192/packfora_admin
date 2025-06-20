@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    $('#ImpactBoxForm').on('submit', function (e) {
+    $('#StoryBehindMaxmoldForm').on('submit', function (e) {
         e.preventDefault();
         // Clear previous error messages
-        $('#error_link, #error_description, #error_image').text('');
+        $('#error_link, #error_description, #error_image, #error_title').text('');
         var formData = new FormData(this);
         $.ajax({
-            url: frontend + "admin/save_impact_box",  // Adjust URL accordingly
+            url: frontend + "admin/save_story_behind_maxmold",  // Adjust URL accordingly
             type: 'POST',
             data: formData,
             processData: false,
@@ -21,9 +21,9 @@ $(document).ready(function () {
                         timerProgressBar: true,
                         showConfirmButton: false
                     });
-                    $('#ImpactBoxForm')[0].reset();
+                    $('#StoryBehindMaxmoldForm')[0].reset();
                      // Reload the DataTable
-                    ImpactBoxTable.ajax.reload(null, false);
+                    StoryBehindMaxmoldTable.ajax.reload(null, false);
                 } else if (response.status === 'error') {
                     $.each(response.errors, function (key, val) {
                         $('#error_' + key).text(val);
@@ -41,9 +41,9 @@ $(document).ready(function () {
         return;
     }
 
-    ImpactBoxTable = $('#ImpactBoxTable').DataTable({
+    StoryBehindMaxmoldTable = $('#StoryBehindMaxmoldTable').DataTable({
         ajax: {
-            url: frontend + "admin/get_impact_box_data",  // Adjust URL accordingly
+            url: frontend + "admin/get_story_behind_maxmold_data",  // Adjust URL accordingly
             type: 'POST',
             dataSrc: function (json) {
                 // Ensure the response is an array; adjust if your backend wraps data in an object
@@ -65,17 +65,13 @@ $(document).ready(function () {
                 },
                 title: 'Sr. No.',
                 orderable: false
-            },
-            { data: 'front_heading' },
-            { data: 'front_value' },
-            { data: 'back_description' },
-            { data: 'link' },
+            },           
             { data: 'image', render: function (data) {
                 // Ensure 'frontend' ends with a slash if needed
                 var imageUrl = frontend + data;
                 return `<img src="${imageUrl}" alt="Image" style="width: 50px; height: 50px; background-color:#5555; ">`;
-            }},            
-            
+            }}, 
+            { data: 'description' },            
             {
 				data: null,
 				orderable: false,
@@ -87,32 +83,27 @@ $(document).ready(function () {
                         <a href="#" class="edit-btn" data-id="${row.id}" title="Edit">
                             <i class="fas fa-edit text-warning "></i>
                         </a>
-                        <a href="#" class="delete-btn" data-id="${row.id}" title="Delete">
-                            <i class="fas fa-trash-alt text-danger"></i>
-                        </a>
-					`;
+                        <a href="#" class="delete-btn" data-id="${row.id}" title="Delete">                           <i class="fas fa-trash-alt text-danger"></i>
+                         </a>`;
 				},
 			},
         ],
         order: [[0, 'desc']],
         responsive: true
     });
-
+// 
     // Optional: Handle clicks for view/edit/delete
-    $("#ImpactBoxTable").on("click", ".view-btn", function (e) {
+    $("#StoryBehindMaxmoldTable").on("click", ".view-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
 
         $.ajax({
-            url: frontend + "admin/get_impact_box_details",
+            url: frontend + "admin/get_story_behind_maxmold_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
-            success: function (response) {
-                $("#view_heading").text(response.data.front_heading);
-                $("#view_value").text(response.data.front_value);
-                $("#view_description").text(response.data.back_description);
-                $("#view_link").text(response.data.link);
+            success: function (response) {               
+                $("#view_description").text(response.data.description);               
                 if (response.data.image) {
                 const imageUrl = frontend + response.data.image;
                 $("#view_image").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px; background-color:#5555;">');
@@ -129,20 +120,19 @@ $(document).ready(function () {
         });
     });
 
-    $("#ImpactBoxTable").on("click", ".edit-btn", function (e) {
+    $("#StoryBehindMaxmoldTable").on("click", ".edit-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
         // Fetch details from server via POST
         $.ajax({
-            url: frontend + "admin/get_impact_box_details",
+            url: frontend + "admin/get_story_behind_maxmold_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
                     $("#edit_id").val(response.data.id);
-                    $("#edit_heading").val(response.data.front_heading);
-                    $("#edit_value").val(response.data.front_value);
-                    $("#edit_description").val(response.data.back_description);
+                    $("#edit_title").val(response.data.service_name);
+                    $("#edit_description").val(response.data.description);
                     $("#edit_link").val(response.data.link);
                     $("#edit_previous_image").val(response.data.image); // Handle empty image case
                     if (response.data.image) {
@@ -162,7 +152,7 @@ $(document).ready(function () {
         });
     });
     // Delete action
-	$("#ImpactBoxTable").on("click", ".delete-btn", function (e) {
+	$("#StoryBehindMaxmoldTable").on("click", ".delete-btn", function (e) {
 		e.preventDefault();
 		const id = $(this).data("id");
 
@@ -177,14 +167,14 @@ $(document).ready(function () {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				$.ajax({
-					url: frontend + "admin/delete_our_impact",
+					url: frontend + "admin/delete_story_behind_maxmold",
 					type: "POST",
 					data: { id: id },
 					dataType: "json",
 					success: function (response) {
 						if (response.status) {
 							Swal.fire("Deleted!", response.message, "success");
-							ImpactBoxTable.ajax.reload(null, false);
+							StoryBehindMaxmoldTable.ajax.reload(null, false);
 						} else {
 							Swal.fire("Error", response.message, "error");
 						}
@@ -198,15 +188,15 @@ $(document).ready(function () {
 	});
 });
 
-$('#EditImpactBoxForm').submit(function (e) {
+$('#EditStoryBehindMaxmoldForm').submit(function (e) {
     e.preventDefault();
 
     let formData = new FormData(this);
     // Clear previous errors
-    $('#error_edit_link, #error_edit_description, #error_edit_image').text('');
+    $('#error_edit_link, #error_edit_description, #error_edit_image, #error_edit_title').text('');
 
     $.ajax({
-        url: frontend + "admin/update_impact_box", // adjust to your route
+        url: frontend + "admin/update_story_behind_maxmold", // adjust to your route
         type: "POST",
         data: formData,
         dataType: "json",
@@ -223,11 +213,11 @@ $('#EditImpactBoxForm').submit(function (e) {
                     showConfirmButton: false
                 });
                 // Reset the form
-                $('#EditImpactBoxForm')[0].reset();
+                $('#EditStoryBehindMaxmoldForm')[0].reset();
                 // Clear previous image preview
                 $('#edit_image_preview').html('');
                 // Reload the DataTable
-                ImpactBoxTable.ajax.reload(null, false);
+                StoryBehindMaxmoldTable.ajax.reload(null, false);
                 $('#EditModal').modal('hide');
                 // Optional: refresh data table or show toast
             } else if (response.status === 'error') {

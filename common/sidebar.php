@@ -124,7 +124,8 @@
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"><span class="menu-sub-header">Digital</span></li>
                     <li class="nav-item ps-3"><span class="menu-child-header">MaxMold</span></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/built_reliability">Built for Reliability. Backed by Results.</a></li>                    
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/built_reliability">Built for Reliability. Backed by Results.</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/story_behind_maxmold">Story Behind MaxMold</a></li>                    
                 </ul>
             </div>
         </li>

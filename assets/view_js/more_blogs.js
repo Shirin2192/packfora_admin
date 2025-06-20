@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    $('#ImpactBoxForm').on('submit', function (e) {
+    $('#MoreBlogsForm').on('submit', function (e) {
         e.preventDefault();
-        // Clear previous error messages
-        $('#error_link, #error_description, #error_image').text('');
+       // Clear previous error messages
+        $('#error_title, #error_description, #error_image, #error_link').text('');
         var formData = new FormData(this);
         $.ajax({
-            url: frontend + "admin/save_impact_box",  // Adjust URL accordingly
+            url: frontend + "admin/save_more_blogs",  // Adjust URL accordingly
             type: 'POST',
             data: formData,
             processData: false,
@@ -21,9 +21,9 @@ $(document).ready(function () {
                         timerProgressBar: true,
                         showConfirmButton: false
                     });
-                    $('#ImpactBoxForm')[0].reset();
+                    $('#MoreBlogsForm')[0].reset();
                      // Reload the DataTable
-                    ImpactBoxTable.ajax.reload(null, false);
+                    MoreBlogsTable.ajax.reload(null, false);
                 } else if (response.status === 'error') {
                     $.each(response.errors, function (key, val) {
                         $('#error_' + key).text(val);
@@ -40,10 +40,9 @@ $(document).ready(function () {
         console.error('The "frontend" variable is not defined.');
         return;
     }
-
-    ImpactBoxTable = $('#ImpactBoxTable').DataTable({
+    MoreBlogsTable = $('#MoreBlogsTable').DataTable({
         ajax: {
-            url: frontend + "admin/get_impact_box_data",  // Adjust URL accordingly
+            url: frontend + "admin/get_more_blogs_data",  // Adjust URL accordingly
             type: 'POST',
             dataSrc: function (json) {
                 // Ensure the response is an array; adjust if your backend wraps data in an object
@@ -58,7 +57,7 @@ $(document).ready(function () {
             }
         },
         columns: [
-            {
+             {
                 data: null,
                 render: function (data, type, row, meta) {
                     return meta.row + 1;
@@ -66,16 +65,14 @@ $(document).ready(function () {
                 title: 'Sr. No.',
                 orderable: false
             },
-            { data: 'front_heading' },
-            { data: 'front_value' },
-            { data: 'back_description' },
+            { data: 'title' },
+            { data: 'description' },
             { data: 'link' },
             { data: 'image', render: function (data) {
                 // Ensure 'frontend' ends with a slash if needed
                 var imageUrl = frontend + data;
-                return `<img src="${imageUrl}" alt="Image" style="width: 50px; height: 50px; background-color:#5555; ">`;
-            }},            
-            
+                return `<img src="${imageUrl}" alt="Image" style="width: 50px; height: 50px;">`;
+            }},
             {
 				data: null,
 				orderable: false,
@@ -99,23 +96,20 @@ $(document).ready(function () {
     });
 
     // Optional: Handle clicks for view/edit/delete
-    $("#ImpactBoxTable").on("click", ".view-btn", function (e) {
+    $("#MoreBlogsTable").on("click", ".view-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
-
         $.ajax({
-            url: frontend + "admin/get_impact_box_details",
+            url: frontend + "admin/get_more_blogs_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
-                $("#view_heading").text(response.data.front_heading);
-                $("#view_value").text(response.data.front_value);
-                $("#view_description").text(response.data.back_description);
-                $("#view_link").text(response.data.link);
+                $("#view_title").text(response.data.title);
+                $("#view_description").text(response.data.description);
                 if (response.data.image) {
                 const imageUrl = frontend + response.data.image;
-                $("#view_image").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px; background-color:#5555;">');
+                $("#view_image").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px;">');
             } else {
                 $("#view_image").html('');
             }
@@ -129,25 +123,24 @@ $(document).ready(function () {
         });
     });
 
-    $("#ImpactBoxTable").on("click", ".edit-btn", function (e) {
+    $("#MoreBlogsTable").on("click", ".edit-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
         // Fetch details from server via POST
         $.ajax({
-            url: frontend + "admin/get_impact_box_details",
+            url: frontend + "admin/get_more_blogs_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
                     $("#edit_id").val(response.data.id);
-                    $("#edit_heading").val(response.data.front_heading);
-                    $("#edit_value").val(response.data.front_value);
-                    $("#edit_description").val(response.data.back_description);
-                    $("#edit_link").val(response.data.link);
+                    $("#edit_title").val(response.data.title);
+                    $('#edit_id').val(response.data.id);
+                    $("#edit_description").val(response.data.description);
                     $("#edit_previous_image").val(response.data.image); // Handle empty image case
                     if (response.data.image) {
                         const imageUrl = frontend + response.data.image;
-                        $("#edit_image_preview").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px; background-color:#5555;">');
+                        $("#edit_image_preview").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px;">');
                     } else {
                         $("#edit_image_preview").html('');
                     }
@@ -162,7 +155,7 @@ $(document).ready(function () {
         });
     });
     // Delete action
-	$("#ImpactBoxTable").on("click", ".delete-btn", function (e) {
+	$("#MoreBlogsTable").on("click", ".delete-btn", function (e) {
 		e.preventDefault();
 		const id = $(this).data("id");
 
@@ -177,14 +170,14 @@ $(document).ready(function () {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				$.ajax({
-					url: frontend + "admin/delete_our_impact",
+					url: frontend + "admin/delete_more_blogs",
 					type: "POST",
 					data: { id: id },
 					dataType: "json",
 					success: function (response) {
 						if (response.status) {
 							Swal.fire("Deleted!", response.message, "success");
-							ImpactBoxTable.ajax.reload(null, false);
+							MoreBlogsTable.ajax.reload(null, false);
 						} else {
 							Swal.fire("Error", response.message, "error");
 						}
@@ -198,15 +191,15 @@ $(document).ready(function () {
 	});
 });
 
-$('#EditImpactBoxForm').submit(function (e) {
+$('#EditMoreBlogsForm').submit(function (e) {
     e.preventDefault();
 
     let formData = new FormData(this);
     // Clear previous errors
-    $('#error_edit_link, #error_edit_description, #error_edit_image').text('');
+    $('#error_edit_title, #error_edit_description, #error_edit_image, #error_edit_link').text('');
 
     $.ajax({
-        url: frontend + "admin/update_impact_box", // adjust to your route
+        url: frontend + "admin/update_more_blogs", // adjust to your route
         type: "POST",
         data: formData,
         dataType: "json",
@@ -223,16 +216,19 @@ $('#EditImpactBoxForm').submit(function (e) {
                     showConfirmButton: false
                 });
                 // Reset the form
-                $('#EditImpactBoxForm')[0].reset();
+                $('#EditMoreBlogsForm')[0].reset();
                 // Clear previous image preview
                 $('#edit_image_preview').html('');
                 // Reload the DataTable
-                ImpactBoxTable.ajax.reload(null, false);
+                MoreBlogsTable.ajax.reload(null, false);
                 $('#EditModal').modal('hide');
                 // Optional: refresh data table or show toast
             } else if (response.status === 'error') {
                 // Show validation errors
                 if (response.errors.title) {
+                    $('#error_edit_title').text(response.errors.title);
+                }
+                if (response.errors.link) {
                     $('#error_edit_link').text(response.errors.link);
                 }
                 if (response.errors.description) {
