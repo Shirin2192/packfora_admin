@@ -2,22 +2,6 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Admin extends CI_Controller {
-
-	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/welcome
-	 *	- or -
-	 * 		http://example.com/index.php/welcome/index
-	 *	- or -
-	 * Since this controller is set as the default controller in
-	 * config/routes.php, it's displayed at http://example.com/
-	 *
-	 * So any other public methods not prefixed with an underscore will
-	 * map to /index.php/welcome/<method_name>
-	 * @see https://codeigniter.com/userguide3/general/urls.html
-	 */
 	public function index()
 	{
 		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
@@ -37,56 +21,55 @@ class Admin extends CI_Controller {
 		}
 	}
 	public function save_slider() {
-		// Set validation rules
-		$this->form_validation->set_rules('title', 'Title', 'required');
-		$this->form_validation->set_rules('description', 'Description', 'required');
-		$this->form_validation->set_rules('link', 'Link', 'required');
+    $this->load->library('form_validation');
 
-		// Run validation
-		if (!$this->form_validation->run()) {
-			$errors = [
-				'title' => form_error('title', '<span>', '</span>'),
-				'description' => form_error('description', '<span>', '</span>'),
-				'link' => form_error('link', '<span>', '</span>')
-			];
-			echo json_encode(['status' => false, 'errors' => $errors]);
-			return;
-		}
-		// Image validation
-		if (empty($_FILES['img']['name'])) {
-			echo json_encode(['status' => false, 'errors' => ['img' => 'Image file is required.']]);
-			return;
-		}
+    $this->form_validation->set_rules('title', 'Title', 'required|trim');
+    $this->form_validation->set_rules('button_link', 'Button Link', 'required');
+    $this->form_validation->set_rules('slide_order', 'Slide Order', 'required|integer');
 
-		// File upload config
-		$config['upload_path'] = './uploads/sliders/';
-		$config['allowed_types'] = 'jpg|jpeg|png|gif';
-		$config['file_name'] = time() . '_' . $_FILES['img']['name'];
+    if ($this->form_validation->run() == FALSE) {
+        echo json_encode([
+            'status' => 'error',
+            'errors' => $this->form_validation->error_array()
+        ]);
+        return;
+    }
 
-		if (!is_dir($config['upload_path'])) {
-			mkdir($config['upload_path'], 0777, true);
-		}
+    $data = [
+        'title'        => $this->input->post('title'),
+        'subtitle'     => $this->input->post('subtitle'),
+        'button_text'  => $this->input->post('button_text'),
+        'button_link'  => $this->input->post('button_link'),
+        'slide_order'  => $this->input->post('slide_order'),
+    ];
+
+    // Upload image
+    if (!empty($_FILES['image']['name'])) {
+       $this->load->library('upload');
+
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|webp';
+		$config['max_size'] = 2048;
 
 		$this->upload->initialize($config);
-		if (!$this->upload->do_upload('img')) {
-			echo json_encode(['status' => false, 'errors' => ['img' => strip_tags($this->upload->display_errors())]]);
-			return;
-		}
 
-		// Prepare data
-		$uploadData = $this->upload->data();
-		$data = [
-			'title' => $this->input->post('title'),
-			'description' => $this->input->post('description'),
-			'link' => $this->input->post('link'),
-			'image' => 'uploads/sliders/' . $uploadData['file_name'],
-			'status' => 'active'
-		];
+        if (!$this->upload->do_upload('image')) {
+            echo json_encode([
+                'status' => 'error',
+                'errors' => ['image' => $this->upload->display_errors('', '')]
+            ]);
+            return;
+        }
 
-		// Insert into database
-		$this->model->insertData('slider', $data);
-		echo json_encode(['status' => true, 'message' => 'Slider added successfully']);
-	}
+        $upload_data = $this->upload->data();
+        $data['image'] = $upload_data['file_name'];
+    }
+
+    $this->model->insertData('tbl_slider', $data);
+
+    echo json_encode(['status' => 'success', 'message' => 'Slider added successfully.']);
+}
+
 
 	public function contact_us()
 	{
@@ -246,7 +229,8 @@ class Admin extends CI_Controller {
 		} else {
 			$this->load->view('admin/our_clients');
 		}
-	}	public function upload_client_image()
+	}	
+	public function upload_client_image()
 	{
 		// Set upload configuration
 		$config['upload_path']   = './uploads/clients/';
@@ -275,7 +259,7 @@ class Admin extends CI_Controller {
 
 		// Save file path to DB (optional: add validation/sanitization)
 		$save = $this->model->insertData('our_clients', [
-			'image' => base_url().'uploads/clients/' . $filename
+			'image' => 'uploads/clients/' . $filename
 		]);
 
 		if ($save) {
@@ -1068,49 +1052,85 @@ class Admin extends CI_Controller {
 		}
 	}
 	public function save_life_at_packfora() {
-        $this->load->library('form_validation');
+	    $this->load->library('form_validation');
 
-        $this->form_validation->set_rules('video', 'Video', 'callback_video_check');
+	    $this->form_validation->set_rules('video', 'Video', 'callback_video_check');
+	    $this->form_validation->set_rules('image', 'Image', 'callback_image_check');
 
-        if ($this->form_validation->run() == FALSE) {
-            echo json_encode([
-                'status' => 'error',
-                'errors' => [
-                    'video' => form_error('video')
-                ]
-            ]);
-        } else {
-            $video_name = '';
+	    if ($this->form_validation->run() == FALSE) {
+	        echo json_encode([
+	            'status' => 'error',
+	            'errors' => [
+	                'video' => form_error('video'),
+	                'image' => form_error('image')
+	            ]
+	        ]);
+	    } else {
+	        $video_name = '';
+	        $image_name = '';
 
-            if (!empty($_FILES['video']['name'])) {
-                $config['upload_path']   = './uploads/';
-                $config['allowed_types'] = 'mp4|mov|avi|wmv';
-                $config['max_size']      = 51200; // 50MB
-                $this->load->library('upload', $config);
+	        // ------------------ Video Upload ------------------
+	        if (!empty($_FILES['video']['name'])) {
+	            $config['upload_path']   = './uploads/';
+	            $config['allowed_types'] = 'mp4|mov|avi|wmv';
+	            $config['max_size']      = 51200; // 50MB
+	            $this->load->library('upload', $config);
 
-                if (!$this->upload->do_upload('video')) {
-                    echo json_encode([
-                        'status' => 'error',
-                        'errors' => [
-                            'video' => $this->upload->display_errors()
-                        ]
-                    ]);
-                    return;
-                } else {
-                    $upload_data = $this->upload->data();
-                    $video_name = 'uploads/' . $upload_data['file_name'];
-                }
-            }
+	            if (!$this->upload->do_upload('video')) {
+	                echo json_encode([
+	                    'status' => 'error',
+	                    'errors' => [
+	                        'video' => $this->upload->display_errors()
+	                    ]
+	                ]);
+	                return;
+	            } else {
+	                $upload_data = $this->upload->data();
+	                $video_name = 'uploads/' . $upload_data['file_name'];
+	            }
+	        }
 
-            $insert_data = [
-                'video' => $video_name
-            ];
+	        // ------------------ Image Upload ------------------
+	        if (!empty($_FILES['image']['name'])) {
+	            $config['upload_path']   = './uploads/';
+	            $config['allowed_types'] = 'jpg|jpeg|png|webp';
+	            $config['max_size']      = 5120; // 5MB
+	            $config['file_name']     = time() . '_' . $_FILES['image']['name'];
+	            $this->upload->initialize($config); // Reinitialize for new settings
 
-            $this->model->insertData('tbl_life_at_packfora',$insert_data);
+	            if (!$this->upload->do_upload('image')) {
+	                echo json_encode([
+	                    'status' => 'error',
+	                    'errors' => [
+	                        'image' => $this->upload->display_errors()
+	                    ]
+	                ]);
+	                return;
+	            } else {
+	                $image_data = $this->upload->data();
+	                $image_name = 'uploads/' . $image_data['file_name'];
+	            }
+	        }
 
-            echo json_encode(['status' => 'success', 'message' => 'Video uploaded successfully']);
-        }
-    }
+	        // ------------------ DB Insert ------------------
+	        $insert_data = [
+	            'video' => $video_name,
+	            'image' => $image_name
+	        ];
+
+	        $this->model->insertData('tbl_life_at_packfora', $insert_data);
+
+	        echo json_encode(['status' => 'success', 'message' => 'Video and image uploaded successfully']);
+	    }
+	}
+	public function image_check() {
+	    if (empty($_FILES['image']['name'])) {
+	        $this->form_validation->set_message('image_check', 'Please upload an image.');
+	        return false;
+	    }
+	    return true;
+	}
+
 
     public function video_check($str) {
         if (empty($_FILES['video']['name'])) {
@@ -1138,9 +1158,11 @@ class Admin extends CI_Controller {
 
 		$id = $this->input->post('id');
 		$previous_video = $this->input->post('edit_previous_video');
+		$previous_image = $this->input->post('edit_previous_image');
 		$video_name = $previous_video;
+		$image_name = $previous_image;
 
-		// Only validate file if a new file is uploaded
+		// ------------------- Video Upload -------------------
 		if (!empty($_FILES['edit_video']['name'])) {
 			$config['upload_path']   = './uploads/';
 			$config['allowed_types'] = 'mp4|mov|avi|wmv';
@@ -1160,33 +1182,64 @@ class Admin extends CI_Controller {
 				$upload_data = $this->upload->data();
 				$video_name = 'uploads/' . $upload_data['file_name'];
 
-				// Optional: delete old video if exists and is different
+				// Optional: delete old video
 				if ($previous_video && file_exists($previous_video) && $previous_video != $video_name) {
 					@unlink($previous_video);
 				}
 			}
-		} else {
-			// If no new file, ensure previous video exists
-			if (empty($previous_video)) {
+		} elseif (empty($previous_video)) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'edit_video' => 'The Video field is required.'
+				]
+			]);
+			return;
+		}
+
+		// ------------------- Image Upload -------------------
+		if (!empty($_FILES['edit_image']['name'])) {
+			$this->load->library('upload');
+			$config['upload_path']   = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|webp';
+			$config['max_size']      = 5120; // 5MB
+			$config['file_name']     = time() . '_' . $_FILES['edit_image']['name'];
+
+			$this->upload->initialize($config); // Reinitialize for new settings
+
+			if (!$this->upload->do_upload('edit_image')) {
 				echo json_encode([
 					'status' => 'error',
 					'errors' => [
-						'edit_video' => 'The Video field is required.'
+						'edit_image' => $this->upload->display_errors('', '')
 					]
 				]);
 				return;
+			} else {
+				$img_data = $this->upload->data();
+				$image_name = 'uploads/
+				+' . $img_data['file_name'];
+
+				// Optional: delete old image
+				if ($previous_image && file_exists($previous_image) && $previous_image != $image_name) {
+					@unlink($previous_image);
+				}
 			}
 		}
+
+		// ------------------- Update DB -------------------
 		$data = [
 			'video' => $video_name,
+			'image' => $image_name
 		];
 
-		if ($this->model->updateData('tbl_life_at_packfora', $data, array('id' => $id, 'is_delete' => '1'))) {
+		if ($this->model->updateData('tbl_life_at_packfora', $data, ['id' => $id, 'is_delete' => '1'])) {
 			echo json_encode(['status' => 'success', 'message' => 'Life at Packfora updated successfully.']);
 		} else {
 			echo json_encode(['status' => 'error', 'message' => 'Failed to update Life at Packfora data.']);
 		}
 	}
+
 	public function delete_life_at_packfora()
 	{
 		$id = $this->input->post('id');

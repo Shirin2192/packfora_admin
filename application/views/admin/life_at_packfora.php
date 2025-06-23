@@ -36,6 +36,14 @@
                                 <div class="card-body">
                                     <form id="LifeAtpackforaForm" class="forms-sample" enctype="multipart/form-data">
                                         <div class="row">
+                                                <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="image">Upload Image</label>
+                                                    <input type="file" class="form-control" name="image" id="image"
+                                                        placeholder="Upload image">
+                                                    <div class="text-danger" id="error_image"></div>
+                                                </div>
+                                            </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="video">Upload Video</label>
@@ -57,6 +65,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Sr. No.</th>
+                                                <th>Image</th>
                                                 <th>Video</th>
                                                 <th>Action</th>
                                             </tr>
@@ -85,8 +94,12 @@
                     <div class="modal-body" id="modalBodyContent">
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="view_image">Video</label>
+                                <label for="view_image">Image</label>
                                 <div id="view_image"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="view_video">Video</label>
+                                <div id="view_video"></div>
                             </div>
                         </div>
                     </div>
@@ -108,7 +121,8 @@
                         <div class="modal-body" id="modalBodyContent">
                             <input type="hidden" id="edit_id" name="id">
                             <input type="hidden" id="edit_previous_video" name="edit_previous_video">
-                            
+                            <input type="hidden" id="edit_previous_image" name="edit_previous_image"> <!-- new hidden field -->
+
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="edit_video" class="form-label">Upload Video</label>
@@ -116,7 +130,14 @@
                                     <div id="current_video" class="mt-2"></div>
                                     <div class="text-danger" id="error_edit_video"></div>
                                 </div>
+                                  <div class="col-md-6">
+                                    <label for="edit_image" class="form-label">Upload Image</label>
+                                    <input type="file" class="form-control" id="edit_image" name="edit_image" accept="image/*">
+                                    <div id="edit_image_preview" class="mt-2"></div>
+                                    <div class="text-danger" id="error_edit_image"></div>
+                                </div>
                             </div>
+
                             <div class="row mb-3">
                                 <div id="edit_video_preview"></div>
                             </div>
@@ -126,6 +147,7 @@
                             <button type="submit" class="btn btn-primary">Update</button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>

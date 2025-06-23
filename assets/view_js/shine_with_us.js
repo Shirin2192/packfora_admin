@@ -4,9 +4,7 @@ $(document).ready(function () {
 
         // Clear previous error messages
         $('#error_title, #error_description, #error_image').text('');
-
         var formData = new FormData(this);
-
         $.ajax({
             url: frontend + "admin/save_shine_with_us",  // Adjust URL accordingly
             type: 'POST',

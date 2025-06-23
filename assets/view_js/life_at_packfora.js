@@ -65,6 +65,19 @@ $(document).ready(function () {
                 title: 'Sr. No.',
                 orderable: false
             },
+            {
+            data: 'image',
+            title: 'Image',
+            render: function (data) {
+                if (data) {
+                    const imageUrl = frontend + data;
+                    return `<img src="${imageUrl}" alt="Thumbnail" width="70" height="50">`;
+                } else {
+                    return `<span class="text-muted">No Image</span>`;
+                }
+            },
+            orderable: false
+        },
            { data: 'video', render: function (data) {
                 var videoUrl = frontend + data;
                 return `
@@ -97,71 +110,103 @@ $(document).ready(function () {
     });
 
     // Optional: Handle clicks for view/edit/delete
-    $("#LifeAtpackforaTable").on("click", ".view-btn", function (e) {
-        e.preventDefault();
-        const id = $(this).data("id");
+   $("#LifeAtpackforaTable").on("click", ".view-btn", function (e) {
+    e.preventDefault();
+    const id = $(this).data("id");
 
-        $.ajax({
-            url: frontend + "admin/get_life_at_packfora_details",
-            type: "POST",
-            dataType: "json",
-            data: { id: id }, // send id in POST data
-            success: function (response) {
-               
+    $.ajax({
+        url: frontend + "admin/get_life_at_packfora_details",
+        type: "POST",
+        dataType: "json",
+        data: { id: id }, // send id in POST data
+        success: function (response) {
+            if (response.data) {
+                // Display video if exists
                 if (response.data.video) {
-                const imageUrl = frontend + response.data.video;
-                $("#view_image").html(`
-                    <video width="320" height="240" controls>
-                        <source src="${imageUrl}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                `);
+                    const videoUrl = frontend + response.data.video;
+                    $("#view_video").html(`
+                        <video width="320" height="240" controls>
+                            <source src="${videoUrl}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    `);
+                } else {
+                    $("#view_video").html('<span class="text-muted">No video uploaded</span>');
+                }
+
+                // Display image if exists
+                if (response.data.image) {
+                    const imageUrl = frontend + response.data.image;
+                    $("#view_image").html(`
+                        <img src="${imageUrl}" alt="Thumbnail" width="320" height="200" class="img-fluid" />
+                    `);
+                } else {
+                    $("#view_image").html('<span class="text-muted">No image uploaded</span>');
+                }
+
+                // Show modal
+                $('#ViewModal').modal('show');
             } else {
+                $("#view_video").html('<span class="text-danger">Data not found.</span>');
                 $("#view_image").html('');
             }
-            $('#ViewModal').modal('show');
-            },
-            error: function () {
-                $("#view_title").text("Error loading data");
-                $("#view_description").text("Error loading data");
-                $("#view_image").hide();
-            },
-        });
+        },
+        error: function () {
+            $("#view_video").html('<span class="text-danger">Error loading video.</span>');
+            $("#view_image").html('<span class="text-danger">Error loading image.</span>');
+        }
     });
+});
 
-    $("#LifeAtpackforaTable").on("click", ".edit-btn", function (e) {
-        e.preventDefault();
-        const id = $(this).data("id");
-        // Fetch details from server via POST
-        $.ajax({
-            url: frontend + "admin/get_life_at_packfora_details",
-            type: "POST",
-            dataType: "json",
-            data: { id: id }, // send id in POST data
-            success: function (response) {
-                    $("#edit_id").val(response.data.id);
-                    $("#edit_previous_video").val(response.data.video); // Handle empty image case
-                    if (response.data.video) {
-                        const imageUrl = frontend + response.data.video;
-                        $("#edit_video_preview").html(`
-                            <video width="320" height="240" controls>
-                                <source src="${imageUrl}" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        `);
-                    } else {
-                        $("#edit_video_preview").html('');
-                    }
-                    $('#EditModal').modal('show');
-                
-            },
-            error: function () {
-                $("#edit_title").val("Error loading data");
-                $("#edit_description").val("Error loading data");
-                $("#edit_video_preview").html('');
-            },
-        });
+
+   $("#LifeAtpackforaTable").on("click", ".edit-btn", function (e) {
+    e.preventDefault();
+    const id = $(this).data("id");
+
+    $.ajax({
+        url: frontend + "admin/get_life_at_packfora_details",
+        type: "POST",
+        dataType: "json",
+        data: { id: id },
+        success: function (response) {
+            if (response.data) {
+                $("#edit_id").val(response.data.id);
+                $("#edit_previous_video").val(response.data.video);
+                $("#edit_previous_image").val(response.data.image); // Store previous image
+
+                // Video Preview
+                if (response.data.video) {
+                    const videoUrl = frontend + response.data.video;
+                    $("#edit_video_preview").html(`
+                        <video width="320" height="240" controls>
+                            <source src="${videoUrl}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    `);
+                } else {
+                    $("#edit_video_preview").html('<span class="text-muted">No video</span>');
+                }
+
+                // Image Preview
+                if (response.data.image) {
+                    const imageUrl = frontend + response.data.image;
+                    $("#edit_image_preview").html(`
+                        <img src="${imageUrl}" alt="Thumbnail" width="150" class="img-fluid border rounded" />
+                    `);
+                } else {
+                    $("#edit_image_preview").html('<span class="text-muted">No image</span>');
+                }
+
+                $('#EditModal').modal('show');
+            }
+        },
+        error: function () {
+            $("#edit_video_preview").html('');
+            $("#edit_image_preview").html('');
+        }
     });
+});
+
     // Delete action
 	$("#LifeAtpackforaTable").on("click", ".delete-btn", function (e) {
 		e.preventDefault();

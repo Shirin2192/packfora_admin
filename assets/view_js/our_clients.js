@@ -26,9 +26,10 @@ $("#OurClientForm").on("submit", function (e) {
 					willClose: () => {
 						$("#OurClientForm")[0].reset();
 						$(".text-danger").text("").hide();
-						currentOpeningTable.ajax.reload();
+						table.ajax.reload();
 					},
 				});
+				location.reload();
 			} else {
 				// Clear existing error first
 				$("#error_img").text("").hide();
@@ -64,7 +65,8 @@ $(document).ready(function () {
 			{
 				data: "image",
 				render: function (data) {
-					return `<img src="${data}" alt="Client" style="height: 40px; width: auto;">`;
+					var imageUrl = frontend + data;
+					return `<img src="${imageUrl}" alt="Client" style="height: 40px; width: auto;">`;
 				},
 				orderable: false,
 			},
