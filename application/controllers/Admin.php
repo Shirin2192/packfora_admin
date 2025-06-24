@@ -21,56 +21,147 @@ class Admin extends CI_Controller {
 		}
 	}
 	public function save_slider() {
-    $this->load->library('form_validation');
+		$this->load->library('form_validation');
 
-    $this->form_validation->set_rules('title', 'Title', 'required|trim');
-    $this->form_validation->set_rules('button_link', 'Button Link', 'required');
-    $this->form_validation->set_rules('slide_order', 'Slide Order', 'required|integer');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('button_link', 'Button Link', 'required');
+		$this->form_validation->set_rules('slide_order', 'Slide Order', 'required|integer');
 
-    if ($this->form_validation->run() == FALSE) {
-        echo json_encode([
-            'status' => 'error',
-            'errors' => $this->form_validation->error_array()
-        ]);
-        return;
-    }
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => $this->form_validation->error_array()
+			]);
+			return;
+		}
 
-    $data = [
-        'title'        => $this->input->post('title'),
-        'subtitle'     => $this->input->post('subtitle'),
-        'button_text'  => $this->input->post('button_text'),
-        'button_link'  => $this->input->post('button_link'),
-        'slide_order'  => $this->input->post('slide_order'),
-    ];
+		$data = [
+			'title'        => $this->input->post('title'),
+			'subtitle'     => $this->input->post('subtitle'),
+			'button_text'  => $this->input->post('button_text'),
+			'button_link'  => $this->input->post('button_link'),
+			'slide_order'  => $this->input->post('slide_order'),
+		];
 
-    // Upload image
-    if (!empty($_FILES['image']['name'])) {
-       $this->load->library('upload');
+		// Upload image
+		if (!empty($_FILES['image']['name'])) {
+		$this->load->library('upload');
 
-		$config['upload_path'] = './uploads/';
-		$config['allowed_types'] = 'jpg|jpeg|png|webp';
-		$config['max_size'] = 2048;
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|webp';
+			$config['max_size'] = 2048;
 
-		$this->upload->initialize($config);
+			$this->upload->initialize($config);
 
-        if (!$this->upload->do_upload('image')) {
-            echo json_encode([
-                'status' => 'error',
-                'errors' => ['image' => $this->upload->display_errors('', '')]
-            ]);
-            return;
-        }
+			if (!$this->upload->do_upload('image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			}
 
-        $upload_data = $this->upload->data();
-        $data['image'] = $upload_data['file_name'];
-    }
+			$upload_data = $this->upload->data();
+			$data['image'] = './uploads/'.$upload_data['file_name'];
+		}
 
-    $this->model->insertData('tbl_slider', $data);
+		$this->model->insertData('tbl_slider', $data);
 
-    echo json_encode(['status' => 'success', 'message' => 'Slider added successfully.']);
-}
+		echo json_encode(['status' => 'success', 'message' => 'Slider added successfully.']);
+	}
+	public function get_slider_data(){
+		$response['data'] = $this->model->selectWhereData('tbl_slider',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_slider_details(){
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_slider',array('is_delete'=>'1','id'=>$id), '*');
+		echo json_encode($response);
+	}
+	public function update_slider()
+	{
+		$this->load->library('form_validation');
 
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_slide_order', 'Slide Order', 'required|trim');
+	
 
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'edit_title' => form_error('edit_title'),
+					'edit_order' => form_error('edit_order'),
+				]
+			]);
+			return;
+		}
+		$id = $this->input->post('id');
+		$title = $this->input->post('edit_title');
+		$subtitle = $this->input->post('edit_subtitle');
+		$button_text = $this->input->post('edit_button_text');
+		$button_link = $this->input->post('edit_button_link');
+		$previous_image = $this->input->post('edit_previous_image');
+
+		$image = $previous_image;
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				// Optional: delete old image
+				if ($previous_image && file_exists($previous_image)) {
+					@unlink($previous_image);
+				}
+			}
+		}
+		// Update DB
+		$data = [
+			'title' => $title,
+			'subtitle' => $subtitle,
+			'button_text' => $button_text,
+			'button_link' => $button_link,
+			'image' => $image,
+		];
+
+		if ($this->model->updateData('tbl_slider', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Slider updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed tupdate Slider data.']);
+		}
+	}
+	public function delete_slider()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_slider', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Slider Details deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Slider Details.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
 	public function contact_us()
 	{
 		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
@@ -500,56 +591,56 @@ class Admin extends CI_Controller {
 	{
 		$this->load->library('form_validation');
 
-    $this->form_validation->set_rules('title', 'Title', 'required|trim');
-    $this->form_validation->set_rules('description', 'Description', 'required|trim');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
 
-    if ($this->form_validation->run() === FALSE) {
-        echo json_encode([
-            'status' => 'error',
-            'errors' => [
-                'title' => form_error('title'),
-                'description' => form_error('description'),
-            ]
-        ]);
-        return;
-    }
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description'),
+				]
+			]);
+			return;
+		}
 
-    $id = $this->input->post('id');
-    $title = $this->input->post('title');
-    $description = $this->input->post('description');
-    $previous_image = $this->input->post('edit_previous_image');
+		$id = $this->input->post('id');
+		$title = $this->input->post('title');
+		$description = $this->input->post('description');
+		$previous_image = $this->input->post('edit_previous_image');
 
-    $image = $previous_image;
-    if (!empty($_FILES['edit_image']['name'])) {
-        $config['upload_path'] = './uploads/';
-        $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
-        $config['max_size'] = 2048;
+		$image = $previous_image;
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
 
-        $this->load->library('upload', $config);
+			$this->load->library('upload', $config);
 
-        if (!$this->upload->do_upload('edit_image')) {
-            echo json_encode([
-                'status' => 'error',
-                'errors' => ['edit_image' => $this->upload->display_errors('', '')]
-            ]);
-            return;
-        } else {
-            $upload_data = $this->upload->data();
-            $image = 'uploads/' . $upload_data['file_name'];
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
 
-            // Optional: delete old image
-            if ($previous_image && file_exists($previous_image)) {
-                @unlink($previous_image);
-            }
-        }
-    }
+				// Optional: delete old image
+				if ($previous_image && file_exists($previous_image)) {
+					@unlink($previous_image);
+				}
+			}
+		}
 
-    // Update DB
-    $data = [
-        'title' => $title,
-        'description' => $description,
-        'image' => $image,
-    ];
+		// Update DB
+		$data = [
+			'title' => $title,
+			'description' => $description,
+			'image' => $image,
+		];
 
 		if ($this->model->updateData('tbl_shine_with_us', $data, array('id' => $id, 'is_delete' => '1'))) {
 			echo json_encode(['status' => 'success', 'message' => 'Shine with us updated successfully.']);
@@ -6950,6 +7041,7 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('description', 'Description', 'required|trim');
 		$this->form_validation->set_rules('link', 'Link', 'required|trim');
 		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('date', 'Date', 'required|trim');
 		if ($this->form_validation->run() == FALSE) {
 			echo json_encode([
 				'status' => 'error',
@@ -6957,6 +7049,7 @@ class Admin extends CI_Controller {
 					'description' => form_error('description'),
 					'link' => form_error('link'),
 					'title' => form_error('title'),
+					'date' => form_error('date'),
 				]
 			]);
 			return;
@@ -6985,6 +7078,7 @@ class Admin extends CI_Controller {
 			$description = $this->input->post('description');
 			$link = $this->input->post('link');
 			$title = $this->input->post('title');
+			$date = $this->input->post('date');
 			// Prepare data for insertion
 			$existingData = $this->model->selectWhereData('tbl_case_study', ['description'=> $description,'is_delete' => '1'], '*');
 			if (!empty($existingData)) {
@@ -6998,6 +7092,7 @@ class Admin extends CI_Controller {
 					'link' => $link,
 					'image' => $imagePath,
 					'title' => $title,
+					'date' => $date,
 				];
 				// Insert into database
 				if($this->model->insertData('tbl_case_study',$data)){
@@ -7024,6 +7119,7 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
 		$this->form_validation->set_rules('edit_link', 'Link', 'required|trim');
 		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_date', 'Date', 'required|trim');
 
 		if ($this->form_validation->run() === FALSE) {
 			echo json_encode([
@@ -7033,6 +7129,7 @@ class Admin extends CI_Controller {
 					'edit_description' => form_error('edit_description'),
 					'edit_link' => form_error('edit_link'),
 					'edit_title' => form_error('edit_title'),
+					'edit_date' => form_error('edit_date'),
 				]
 			]);
 			return;
@@ -7076,6 +7173,7 @@ class Admin extends CI_Controller {
 		$description = $this->input->post('edit_description');
 		$link = $this->input->post('edit_link');
 		$title = $this->input->post('edit_title');
+		$date = $this->input->post('edit_date');
 
 		$existingData = $this->model->selectWhereData('tbl_case_study', ['description'=> $description, 'is_delete' => '1', 'id !=' => $id], '*');
 		if (!empty($existingData)) {
@@ -7091,6 +7189,7 @@ class Admin extends CI_Controller {
 				'link' => $link,
 				'image' => $image,
 				'title' => $title,
+				'date' => $date,
 			];
 			if ($this->model->updateData('tbl_case_study', $data, array('id' => $id,'is_delete' => '1'))) {
 				echo json_encode(['status' => 'success', 'message' => 'Data updated successfully.']);
@@ -8138,20 +8237,20 @@ class Admin extends CI_Controller {
 	public function update_story_behind_maxmold()
 	{
 		$this->load->library('form_validation');    	
-    	$this->form_validation->set_rules('description', 'Description', 'required|trim');	
+    	$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');	
 
 		if ($this->form_validation->run() === FALSE) {
 			echo json_encode([
 				'status' => 'error',
 				'errors' => [				
-					'description' => form_error('description'),					
+					'edit_description' => form_error('edit_description'),					
 				]
 			]);
 			return;
 		}
 
 		$id = $this->input->post('id');
-		$description = $this->input->post('description');
+		$description = $this->input->post('edit_description');
 		$previous_image = $this->input->post('edit_previous_image');		
 
 		$image = $previous_image;

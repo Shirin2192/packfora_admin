@@ -68,6 +68,14 @@
                                                     <div class="text-danger" id="error_link"></div>
                                                 </div>
                                             </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="link">Date</label>
+                                                    <input type="date" class="form-control" name="date"
+                                                        id="date" placeholder="Date">
+                                                    <div class="text-danger" id="error_date"></div>
+                                                </div>
+                                            </div>
                                         </div>                                        
                                         <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
                                     </form>
@@ -138,7 +146,7 @@
                 <div class="modal-content">
 
                     <div class="modal-header">
-                        <h5 class="modal-title" id="EditModalLabel">Edit Current Opening Details</h5>
+                        <h5 class="modal-title" id="EditModalLabel">Edit Case Study</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form id="EditCaseStudyForm" enctype="multipart/form-data">
@@ -146,7 +154,14 @@
                             <input type="hidden" id="edit_id" name="id">
                             <input type="hidden" id="edit_previous_image" name="edit_previous_image">
                             <div class="row mb-3">
-                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="edit_title">Title</label>
+                                        <input type="text" class="form-control" name="edit_title"
+                                            id="edit_title" placeholder="Title">
+                                        <div class="text-danger" id="error_edit_title"></div>
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <label for="edit_image" class="form-label">Image</label>
                                     <input type="file" class="form-control" id="edit_image" name="edit_image">
@@ -163,6 +178,14 @@
                                     <label for="edit_link" class="form-label">Link</label>
                                     <input type="text" class="form-control" id="edit_link" name="edit_link">
                                     <div class="text-danger" id="error_edit_link"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="date">Date</label>
+                                        <input type="date" class="form-control" name="edit_date"
+                                            id="edit_date" placeholder="Date">
+                                        <div class="text-danger" id="error_edit_date"></div>
+                                    </div>
                                 </div>
                             </div>
                             

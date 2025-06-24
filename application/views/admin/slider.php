@@ -103,23 +103,16 @@ o<!DOCTYPE html>
                      <div class="col-12 grid-margin stretch-card">
                         <div class="card">
                            <div class="card-body">
-                              <table id="myTable" class="display">
+                              <table id="SliderTable" class="display">
                                  <thead>
                                     <tr>
-                                       <th>Column 1</th>
-                                       <th>Column 2</th>
+                                       <th>Sr. No</th>
+                                       <th>Title</th>
+                                       <th>Sub Title</th>
+                                       <th>Image</th>
+                                       <th>Action</th>
                                     </tr>
                                  </thead>
-                                 <tbody>
-                                    <tr>
-                                       <td>Row 1 Data 1</td>
-                                       <td>Row 1 Data 2</td>
-                                    </tr>
-                                    <tr>
-                                       <td>Row 2 Data 1</td>
-                                       <td>Row 2 Data 2</td>
-                                    </tr>
-                                 </tbody>
                               </table>
                            </div>
                         </div>
@@ -129,6 +122,102 @@ o<!DOCTYPE html>
                <!-- content-wrapper ends -->
                <!-- partial:../../partials/_footer.html -->
                <?php include('common/footer.php');?>
+                <!-- Modal -->
+         <div class="modal fade" id="ViewModal" tabindex="-1" aria-labelledby="ViewModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="ViewModalLabel">View Slider</h5>
+                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body" id="modalBodyContent">
+                     <div class="row">                        
+                        <div class="col-md-6">
+                           <label for="view_title">Title</label>
+                           <p id="view_title"></p>
+                        </div>
+                        <div class="col-md-6">
+                           <label for="view_sub_title">Sub Title</label>
+                           <p id="view_sub_title"></p>
+                        </div>
+                        <div class="col-md-6">
+                           <label for="view_button_text">Button Text</label>
+                           <p id="view_button_text"></p>
+                        </div>
+                        <div class="col-md-6">
+                           <label for="view_button_link">Button Link</label>
+                           <p id="view_button_link"></p>
+                        </div>
+                        <div class="col-md-6">
+                           <label for="view_image">Image</label>
+                           <div id="view_image"></div>
+                        </div>                        
+                     </div>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="EditModalLabel">Edit Story Behind Maxmold</h5>
+                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <form id="EditSliderForm" enctype="multipart/form-data">
+                     <div class="modal-body" id="modalBodyContent">
+                        <input type="hidden" id="edit_id" name="id">
+                        <input type="hidden" id="edit_previous_image" name="edit_previous_image">
+                        <div class="row mb-3">
+                            
+                            <div class="col-md-6">
+                              <label for="edit_title" class="form-label">Title</label>
+                              <input type="text" class="form-control" id="edit_title" name="edit_title">
+                              <div class="text-danger" id="error_edit_title"></div>
+                           </div>
+                           <div class="col-md-6">
+                              <label for="edit_subtitle" class="form-label">Sub Title</label>
+                              <input type="text" class="form-control" id="edit_subtitle" name="edit_subtitle">
+                              <div class="text-danger" id="error_edit_subtitle"></div>
+                           </div>
+                           <div class="col-md-6">
+                              <label for="edit_button_text" class="form-label">Button Text</label>
+                              <input type="text" class="form-control" id="edit_button_text" name="edit_button_text">
+                              <div class="text-danger" id="error_edit_button_text"></div>
+                           </div>
+                           <div class="col-md-6">
+                              <label for="edit_button_link" class="form-label">Button Link</label>
+                              <input type="text" class="form-control" id="edit_button_link" name="edit_button_link">
+                              <div class="text-danger" id="error_edit_button_link"></div>
+                           </div>
+                           <div class="col-md-6">
+                              <label for="edit_slide_order" class="form-label">Slide Order</label>
+                              <input type="text" class="form-control" id="edit_slide_order" name="edit_slide_order">
+                              <div class="text-danger" id="error_edit_slide_order"></div>
+                           </div>
+                           <div class="col-md-6">
+                              <label for="edit_image" class="form-label">Image</label>
+                              <input type="file" class="form-control" id="edit_image" name="edit_image">
+                              <div id="current_image" class="mt-2"></div>
+                              <div class="text-danger" id="error_edit_image"></div>
+                           </div>                        
+                           
+                        </div>
+                        <div class="row mb-3">
+                           <div id="edit_image_preview"></div>
+                        </div>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
                <!-- partial -->
             </div>
             <!-- main-panel ends -->

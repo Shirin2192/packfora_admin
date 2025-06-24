@@ -108,6 +108,8 @@ $(document).ready(function () {
             success: function (response) {
                 $("#view_title").text(response.data.title);
                 $("#view_description").text(response.data.description);
+                $("#view_link").text(response.data.link);
+                $("#view_date").text(response.data.date);
                 if (response.data.image) {
                 const imageUrl = frontend + response.data.image;
                 $("#view_image").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px; background-color:#5555;">');
@@ -138,6 +140,15 @@ $(document).ready(function () {
                     $("#edit_link").val(response.data.link);
                     $('#edit_id').val(response.data.id);
                     $("#edit_description").val(response.data.description);
+                    $("#edit_title").val(response.data.title);
+                    // Original format: yyyy-mm-dd
+                    let originalDate = response.data.date;
+                    if (originalDate && /^\d{4}-\d{2}-\d{2}$/.test(originalDate)) {
+                        $("#edit_date").val(originalDate);  // directly set for <input type="date">
+                    } else {
+                        console.warn("Invalid or missing date format:", originalDate);
+                        $("#edit_date").val(""); // optional: clear field on bad format
+                    }
                     $("#edit_previous_image").val(response.data.image); // Handle empty image case
                     if (response.data.image) {
                         const imageUrl = frontend + response.data.image;
