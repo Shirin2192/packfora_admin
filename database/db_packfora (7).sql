@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 20, 2025 at 12:57 PM
+-- Generation Time: Jun 24, 2025 at 02:46 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -112,7 +112,10 @@ INSERT INTO `contact_requests` (`id`, `full_name`, `email`, `phone_number`, `ser
 (2, 'Shirin Ragbansingh', 'shirin@sda-zone.com', '8010597075', 'Packaging Innovation Engineering', 'Test Mail', '2025-04-23 04:53:25'),
 (3, 'Shirin Ragbansingh', 'shirin@sda-zone.com', '8010597075', 'Packaging Innovation Engineering', 'Test Mail', '2025-04-23 04:53:25'),
 (4, 'Gaurav ', 'test@gmail.vcom', '+9198765432', 'Sustainability', 'Test', '2025-04-24 17:44:00'),
-(5, 'Gaurav ', 'test@gmail.vcom', '+9198765432', 'Sustainability', 'Test', '2025-04-24 17:44:00');
+(5, 'Gaurav ', 'test@gmail.vcom', '+9198765432', 'Sustainability', 'Test', '2025-04-24 17:44:00'),
+(6, 'weeeeee', 'shirin@sda-zone.com', '+919000033444', 'Product Innovation', 'erre', '2025-06-24 09:35:48'),
+(7, 'weeeeee', 'shirin@sda-zone.com', '+919000033444', 'Product Innovation', 'erre', '2025-06-24 09:35:58'),
+(8, 'weeeeee', 'shirin@sda-zone.com', '+919000033444', 'Product Innovation', 'erre', '2025-06-24 09:36:14');
 
 -- --------------------------------------------------------
 
@@ -135,7 +138,7 @@ CREATE TABLE `current_opening` (
 --
 
 INSERT INTO `current_opening` (`id`, `title`, `description`, `location`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'Packaging Consultant', 'Lead Clients projects to deisgn suatainable packaging solutions.', 'Location: Remote | Full-Time', '0', '2025-05-28 05:38:08', '2025-05-28 11:34:51'),
+(1, 'Packaging Consultant', 'Lead Clients projects to deisgn suatainable packaging solutions.', 'Location: Remote | Full-Time', '1', '2025-05-28 05:38:08', '2025-06-23 11:27:06'),
 (2, 'Sustainable Specialist', 'Advise clients on eco-friendly materials and circular economy strategies.', 'Location: New York, NY | Full-Time', '1', '2025-05-28 05:41:54', '2025-05-28 05:41:54');
 
 -- --------------------------------------------------------
@@ -157,27 +160,26 @@ CREATE TABLE `our_clients` (
 --
 
 INSERT INTO `our_clients` (`id`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'http://localhost/packfora/packfora_admin/uploads/clients/0cce0c0cf2a7bbb737b59776f3b3444a.webp', '0', '2025-05-29 11:16:29', '2025-05-29 11:16:29'),
-(2, 'http://localhost/packfora/packfora_admin/uploads/clients/e7d52865e93659fae1ee14376e131022.webp', '1', '2025-05-29 11:17:09', '2025-05-29 11:17:09'),
-(3, 'http://localhost/packfora/packfora_admin/uploads/clients/78099f674292bf71aa53a75a570a2062.webp', '1', '2025-05-29 11:17:44', '2025-05-29 11:17:44'),
-(4, 'http://localhost/packfora/packfora_admin/uploads/clients/51fb800716bffbde6b409a5679c00315.webp', '1', '2025-05-29 11:17:52', '2025-05-29 11:17:52'),
-(5, 'http://localhost/packfora/packfora_admin/uploads/clients/d714ea63a9980844b7f188967ef30161.webp', '1', '2025-05-29 11:18:03', '2025-05-29 11:18:03');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `sliders`
---
-
-CREATE TABLE `sliders` (
-  `id` int(11) NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `description` text DEFAULT NULL,
-  `link` varchar(255) DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL,
-  `status` enum('active','inactive') DEFAULT 'active',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+(1, 'uploads/clients/ea4e4cc2604bed9518d158485b180f90.webp', '1', '2025-06-23 11:09:59', '2025-06-23 11:09:59'),
+(2, 'uploads/clients/6de0b2f0447610a7830ec0485393559f.webp', '1', '2025-06-23 11:11:50', '2025-06-23 11:11:50'),
+(3, 'uploads/clients/3bfca6f287410cb8d55216d75f963ec6.webp', '1', '2025-06-23 11:12:15', '2025-06-23 11:12:15'),
+(4, 'uploads/clients/b00d5e03892f0771c31ab36cdee3607d.webp', '1', '2025-06-23 11:12:38', '2025-06-23 11:12:38'),
+(5, 'uploads/clients/55c57c6c8bef2318a8daf82ebd051c55.webp', '1', '2025-06-23 11:12:54', '2025-06-23 11:12:54'),
+(6, 'uploads/clients/e078ca252e600b2dd2d73d98d642d4a2.webp', '1', '2025-06-23 11:13:11', '2025-06-23 11:13:11'),
+(7, 'uploads/clients/ddd9c9ac11f30c110f7de0b32f98edf9.webp', '1', '2025-06-23 11:13:31', '2025-06-23 11:13:31'),
+(8, 'uploads/clients/870bbfd7930cb8cfac10d7f49b609bd3.webp', '1', '2025-06-23 11:16:20', '2025-06-23 11:16:20'),
+(9, 'uploads/clients/bdc5a0e1c82603e2e40ff9116569dcfa.webp', '1', '2025-06-23 11:16:25', '2025-06-23 11:16:25'),
+(10, 'uploads/clients/a6f62a30dfc361d7b0ab1409541c764d.webp', '1', '2025-06-23 11:16:31', '2025-06-23 11:16:31'),
+(11, 'uploads/clients/18d286094b5dbe5db28ee1fce5c44c6f.webp', '1', '2025-06-23 11:16:42', '2025-06-23 11:16:42'),
+(12, 'uploads/clients/1713ca04eb5600899757bb1d4b431b1c.webp', '1', '2025-06-23 11:16:49', '2025-06-23 11:16:49'),
+(13, 'uploads/clients/4c90a91e89a137bd726fa588b683de7c.webp', '1', '2025-06-23 11:17:00', '2025-06-23 11:17:00'),
+(14, 'uploads/clients/8ae02a1b00b57d0ca1e98376480bde8f.webp', '1', '2025-06-23 11:17:11', '2025-06-23 11:17:11'),
+(15, 'uploads/clients/b2e04b5dc916826ec552a9b082f0e5c9.webp', '1', '2025-06-23 11:17:16', '2025-06-23 11:17:16'),
+(16, 'uploads/clients/f9a32f35f7f8816e3824ace1001014f4.webp', '1', '2025-06-23 11:17:30', '2025-06-23 11:17:30'),
+(17, 'uploads/clients/4241600bfeecb4f9d5258d3deaee80e3.webp', '1', '2025-06-23 11:17:35', '2025-06-23 11:17:35'),
+(18, 'uploads/clients/47cf185e408308fbe8976ceade48d970.webp', '1', '2025-06-23 11:17:39', '2025-06-23 11:17:39'),
+(19, 'uploads/clients/2c1437f54a44332666e63bde995ba57d.webp', '1', '2025-06-23 11:17:44', '2025-06-23 11:17:44'),
+(20, 'uploads/clients/8b8cd3fe4096a3e6b5398696d2b2aaa1.webp', '1', '2025-06-23 11:17:48', '2025-06-23 11:17:48');
 
 -- --------------------------------------------------------
 
@@ -223,7 +225,12 @@ CREATE TABLE `tbl_built_reliability` (
 --
 
 INSERT INTO `tbl_built_reliability` (`id`, `title`, `description`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'MAX Availability', 'Fewer mold breakdowns = higher on-shelf availability and production continuity.', '1', '2025-06-20 10:29:50', '2025-06-20 10:34:37');
+(1, 'MAX Availability', 'Fewer mold breakdowns = higher on-shelf availability and production continuity.', '1', '2025-06-20 10:29:50', '2025-06-20 10:34:37'),
+(2, 'MAX Quality', 'Better mold performance delivers consistently high-quality output with fewer rejections.', '1', '2025-06-24 12:24:16', '2025-06-24 12:24:16'),
+(3, 'MAX Life', 'Extend mold lifespan by 15%+ through proactive, data-led maintenance.', '1', '2025-06-24 12:24:31', '2025-06-24 12:24:31'),
+(4, 'MAX Governance', 'Structured governance ensures transparency, traceability, and accountability.', '1', '2025-06-24 12:24:51', '2025-06-24 12:24:51'),
+(5, 'MAX Value', '10%+ OPEX savings and 3-5X ROI through optimized maintenance and mold reuse.', '1', '2025-06-24 12:25:06', '2025-06-24 12:25:06'),
+(6, 'MAX Circularity', 'Enable sustainable practices like part reuse, modular design, and smarter end-of-life decisions.', '1', '2025-06-24 12:25:22', '2025-06-24 12:25:22');
 
 -- --------------------------------------------------------
 
@@ -233,9 +240,11 @@ INSERT INTO `tbl_built_reliability` (`id`, `title`, `description`, `is_delete`, 
 
 CREATE TABLE `tbl_case_study` (
   `id` int(11) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
   `description` longtext DEFAULT NULL,
   `link` varchar(100) DEFAULT NULL,
   `image` longtext DEFAULT NULL,
+  `date` date DEFAULT NULL,
   `is_delete` enum('1','0') NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -245,8 +254,8 @@ CREATE TABLE `tbl_case_study` (
 -- Dumping data for table `tbl_case_study`
 --
 
-INSERT INTO `tbl_case_study` (`id`, `description`, `link`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'Check out how Packfora reimagined packaging for a new 1.5L water bottle.', 'https://sda.in.net/web/packfora/final/1.5-litre-bottle-case-study.php', 'uploads/case-study-032.webp', '1', '2025-06-18 11:15:25', '2025-06-18 11:36:31');
+INSERT INTO `tbl_case_study` (`id`, `title`, `description`, `link`, `image`, `date`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'Foods', 'Packfora enabled a leading FMCG brand to cut costs by 30% while enhancing recyclability and sustainability.', 'case-study-inner.php', 'uploads/case-study-01.webp', '2025-05-05', '1', '2025-06-24 14:05:29', '2025-06-24 14:32:38');
 
 -- --------------------------------------------------------
 
@@ -270,10 +279,10 @@ CREATE TABLE `tbl_contact_us` (
 --
 
 INSERT INTO `tbl_contact_us` (`id`, `name`, `email`, `contact_no`, `designation`, `attachment`, `is_delete`, `created_at`) VALUES
-(1, 'Ankheeta Lath', 'ankheeta.lath@packfora.com', '+91 96649 73055', 'Marketing & Communications', 'http://localhost/packfora/packfora_admin/uploads/contact_files/4b9fffef24ed7ff9048fb921b8db1cf6.png', '1', '0000-00-00 00:00:00'),
-(2, 'Brijesh Sounderrajan', 'brijesh.sounderrajan@packfora.com', '+91 98200 30019', 'Inquiries & Partnership Opportunities', 'http://localhost/packfora/packfora_admin/uploads/contact_files/3fe780451b98a2da6395602ee13d0df2.png', '1', '2025-05-28 13:37:00'),
-(3, 'Prachi Balchandani', 'prachi.balchandani@packfora.com', '+91 77100 39221', 'Human Resources', 'http://localhost/packfora/packfora_admin/uploads/contact_files/51be35deee3b0381f019318020b317f5.png', '1', '2025-05-28 13:38:17'),
-(4, 'Shweta Rao', 'contact@packfora.com', '+91 98338 51623', 'General Inquires', 'http://localhost/packfora/packfora_admin/uploads/contact_files/6c454591c8b2bc11cfbb7422d6e29e05.png', '1', '2025-05-28 13:39:37');
+(1, 'Ankheeta Lath', 'ankheeta.lath@packfora.com', '+91 96649 73055', 'Marketing & Communications', 'uploads/contact_files/4b9fffef24ed7ff9048fb921b8db1cf6.png', '1', '0000-00-00 00:00:00'),
+(2, 'Brijesh Sounderrajan', 'brijesh.sounderrajan@packfora.com', '+91 98200 30019', 'Inquiries & Partnership Opportunities', 'uploads/contact_files/3fe780451b98a2da6395602ee13d0df2.png', '1', '2025-05-28 13:37:00'),
+(3, 'Prachi Balchandani', 'prachi.balchandani@packfora.com', '+91 77100 39221', 'Human Resources', 'uploads/contact_files/51be35deee3b0381f019318020b317f5.png', '1', '2025-05-28 13:38:17'),
+(4, 'Shweta Rao', 'contact@packfora.com', '+91 98338 51623', 'General Inquires', 'uploads/contact_files/6c454591c8b2bc11cfbb7422d6e29e05.png', '1', '2025-05-28 13:39:37');
 
 -- --------------------------------------------------------
 
@@ -395,7 +404,7 @@ CREATE TABLE `tbl_global_culture` (
 INSERT INTO `tbl_global_culture` (`id`, `title`, `description`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
 (1, 'Clientele', 'Trusted by brands across continents', 'uploads/clientele.png', '1', '2025-06-02 11:58:54', '2025-06-02 11:58:54'),
 (2, 'Projects', 'International in spirit, even when local in scope', 'uploads/projects.png', '1', '2025-06-02 12:20:41', '2025-06-02 12:20:41'),
-(3, 'Culture', 'Diverse, inclusive, and deeply collaborative', 'uploads/culture.png', '1', '2025-06-02 12:21:10', '2025-06-02 13:41:19');
+(3, 'Culture', 'Diverse, inclusive, and deeply collaborative', 'uploads/culture.png', '1', '2025-06-02 12:21:10', '2025-06-23 15:02:32');
 
 -- --------------------------------------------------------
 
@@ -468,7 +477,10 @@ CREATE TABLE `tbl_impact_boxes` (
 --
 
 INSERT INTO `tbl_impact_boxes` (`id`, `front_heading`, `front_value`, `back_description`, `link`, `image`, `is_delete`, `created_at`) VALUES
-(1, 'Collective Expertise', '1000+ Years', 'Delivering industry expertise and strategic innovation to solve every packaging challenge.', 'https://sda.in.net/web/packfora/final/about-us.php', 'uploads/collective-expertise3.webp', '1', '2025-06-20 09:15:20');
+(1, 'Collective Expertise', '1000+ Years', 'Delivering industry expertise and strategic innovation to solve every packaging challenge.', 'https://sda.in.net/web/packfora/final/about-us.php', 'uploads/collective-expertise3.webp', '1', '2025-06-20 09:15:20'),
+(2, 'Unmatched Packaging with', '140+ Experts', 'Innovating packaging solutions that drive efficiency, sustainability, and market leadership.', 'https://sda.in.net/web/packfora/final/why-packfora.php', 'uploads/unmatched-packaging.webp', '1', '2025-06-23 04:00:48'),
+(3, 'Successfully delivered client projects across', '21+  Countries', 'Empowering global brands to achieve scalable,future-proof packaging success.', 'https://sda.in.net/web/packfora/final/why-packfora.php', 'uploads/successfully-delivered.webp', '1', '2025-06-23 04:03:54'),
+(4, 'Client Satisfaction', '70+ Clients', 'Committed to a customer-first approach, delivering trust, innovation, and brand excellence.', 'https://sda.in.net/web/packfora/final/why-packfora.php', 'uploads/client-satisfaction.jpg', '1', '2025-06-23 04:05:13');
 
 -- --------------------------------------------------------
 
@@ -495,8 +507,9 @@ CREATE TABLE `tbl_impact_sections` (
 --
 
 INSERT INTO `tbl_impact_sections` (`id`, `image`, `heading`, `sub_text`, `value1_title`, `value1_description`, `value2_title`, `value2_description`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'uploads/people2.webp', 'People', 'Powering Brands, Driving Innovation', '5Bn.US$', 'Brand Value Covered', '12', 'Innovations Delivered', '1', '2025-06-18 06:54:46', '2025-06-18 13:48:03'),
-(2, 'uploads/planet.webp', 'Planet', 'Built for Sustainability, Engineered for Impact', '100KT.', 'Carbon Reduction', '52KT.', 'Material Reduction', '1', '2025-06-18 08:20:22', '2025-06-18 13:50:22');
+(1, 'uploads/people_(1).webp', 'People', 'Powering Brands, Driving Innovation', '5Bn.US$', 'Brand Value Covered', '12', 'Innovations Delivered', '1', '2025-06-18 06:54:46', '2025-06-23 11:34:36'),
+(2, 'uploads/planet_(1).webp', 'Planet', 'Built for Sustainability, Engineered for Impact', '100KT.', 'Carbon Reduction', '52KT.', 'Material Reduction', '1', '2025-06-18 08:20:22', '2025-06-23 11:34:45'),
+(3, 'uploads/profits_(1).webp', 'Profit', 'Smarter Spend, Bigger Gains', '2.5Bn.US$', 'Spend Covered', '500-1000BPS', 'Savings Delivered', '1', '2025-06-23 06:06:16', '2025-06-23 11:36:16');
 
 -- --------------------------------------------------------
 
@@ -554,6 +567,7 @@ INSERT INTO `tbl_leadership_team` (`id`, `name`, `description`, `designation`, `
 
 CREATE TABLE `tbl_life_at_packfora` (
   `id` int(11) NOT NULL,
+  `image` text DEFAULT NULL,
   `video` varchar(255) DEFAULT NULL,
   `is_delete` enum('1','0') NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
@@ -564,13 +578,13 @@ CREATE TABLE `tbl_life_at_packfora` (
 -- Dumping data for table `tbl_life_at_packfora`
 --
 
-INSERT INTO `tbl_life_at_packfora` (`id`, `video`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'uploads/cherrie3.mp4', '1', '2025-06-02 14:38:36', '2025-06-02 14:39:00'),
-(2, 'uploads/joel.mp4', '1', '2025-06-02 14:48:07', '2025-06-02 14:48:07'),
-(3, 'uploads/sheryll.mp4', '1', '2025-06-02 14:48:14', '2025-06-02 14:48:14'),
-(4, 'uploads/supriya.mp4', '1', '2025-06-02 14:48:25', '2025-06-02 14:48:25'),
-(5, 'uploads/Aries.mp4', '1', '2025-06-02 14:48:32', '2025-06-02 14:48:32'),
-(6, 'uploads/tom_mp4.mp4', '1', '2025-06-02 14:48:47', '2025-06-02 16:08:36');
+INSERT INTO `tbl_life_at_packfora` (`id`, `image`, `video`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'uploads/1750674560_cherrie-thumbnail.webp', 'uploads/cherrie3.mp4', '1', '2025-06-02 14:38:36', '2025-06-23 15:59:20'),
+(2, 'uploads/1750674601_joel-thumbnail.webp', 'uploads/joel.mp4', '1', '2025-06-02 14:48:07', '2025-06-23 16:00:01'),
+(3, 'uploads/1750674250_sheryll-thumbnail.webp', 'uploads/sheryll.mp4', '1', '2025-06-02 14:48:14', '2025-06-23 15:54:23'),
+(4, 'uploads/1750674651_supriya-thumbnail.webp', 'uploads/supriya.mp4', '1', '2025-06-02 14:48:25', '2025-06-23 16:00:51'),
+(5, 'uploads/1750674527_aries-thumbnail.webp', 'uploads/Aries.mp4', '1', '2025-06-02 14:48:32', '2025-06-23 15:58:47'),
+(6, 'uploads/1750674690_thomas-thumbnail.webp', 'uploads/tom_mp4.mp4', '1', '2025-06-02 14:48:47', '2025-06-23 16:01:30');
 
 -- --------------------------------------------------------
 
@@ -738,15 +752,15 @@ CREATE TABLE `tbl_services` (
 --
 
 INSERT INTO `tbl_services` (`id`, `service_name`, `description`, `image`, `link`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'Talent Flex', NULL, NULL, NULL, '1', '2025-06-04 09:52:14', '2025-06-04 09:52:22'),
-(2, 'Sustainability', NULL, NULL, NULL, '1', '2025-06-04 09:52:14', '2025-06-04 09:52:26'),
-(3, 'Supply Chain Automation', NULL, NULL, NULL, '1', '2025-06-04 09:52:14', '2025-06-04 09:52:29'),
+(1, 'Talent Flex', 'Get the right expertise, when and where you need it. Talent Flex helps you stay ahead by bridging skill gaps, enhancing productivity, and enabling businesses to manage complex packaging priorities.', 'uploads/talent-flexx.webp', 'talent-flex.php', '1', '2025-06-04 09:52:14', '2025-06-23 09:58:54'),
+(2, 'Sustainability', 'We help you stay ahead with smart, sustainable solutions that drive growth while protecting the planet.Packfora\'s solutions have consistently helped global brands achieve their environmental and business goals.', 'uploads/sustainability.webp', 'sustainability.php', '1', '2025-06-04 09:52:14', '2025-06-23 09:58:47'),
+(3, 'Supply Chain Automation', 'Transform your Supply Chain Automation today focus on Affordability, Scalability, & Digital Backbone with our customised solutions', 'uploads/supply-chain-automation.webp', 'supply-chain-automation.php', '1', '2025-06-04 09:52:14', '2025-06-23 09:58:38'),
 (4, 'Product Innovation', NULL, NULL, NULL, '1', '2025-06-04 09:52:14', '2025-06-04 09:52:33'),
-(5, 'Design to Value', 'Design cost-effective packaging solutions that align with evolving industry trends and consumer expectations.', 'uploads/design-to-value.webp', 'https://sda.in.net/web/packfora/final/design-to-value.php', '1', '2025-06-04 09:52:14', '2025-06-18 15:55:20'),
-(6, 'Mold Management', NULL, NULL, NULL, '1', '2025-06-04 09:54:05', '2025-06-04 09:54:05'),
-(7, 'Packaging Innovation & Engineering', 'Pushing the boundaries of packaging with next-gen innovations—leveraging rapid prototyping, sustainable materials, and design innovation.', 'uploads/packaging-innovation-engineering.webp', 'https://sda.in.net/web/packfora/final/packaging-innovation-and-engineering.php', '1', '2025-06-04 09:54:05', '2025-06-18 15:58:36'),
-(8, 'Packaging Procurement', NULL, NULL, NULL, '1', '2025-06-04 09:54:05', '2025-06-04 09:54:05'),
-(9, 'Specification Managemen', NULL, NULL, NULL, '1', '2025-06-04 09:54:05', '2025-06-04 09:54:05');
+(5, 'Design to Value', 'Design cost-effective packaging solutions that align with evolving industry trends and consumer expectations.', 'uploads/design-to-value.webp', 'design-to-value.php', '1', '2025-06-04 09:52:14', '2025-06-23 09:59:00'),
+(6, 'MaxMold', 'MaxMold is a smart, secure mold lifecycle platform that brings together end -to-end workflow intelligence, real-time monitoring, and expert-built automation.', 'uploads/maxmold.webp', 'maxmold.php', '1', '2025-06-04 09:54:05', '2025-06-23 10:54:01'),
+(7, 'Packaging Innovation & Engineering', 'Pushing the boundaries of packaging with next-gen innovations—leveraging rapid prototyping, sustainable materials, and design innovation.', 'uploads/packaging-innovation-engineering.webp', 'packaging-innovation-and-engineering.php', '1', '2025-06-04 09:54:05', '2025-06-23 09:59:08'),
+(8, 'Packaging Procurement', 'Packaging Spend typically accounts for ~ 5% to max 15% of the total procurement spend of an organization. With the right approach, we can reduce costs, improve efficiency, and enhance brand impact.', 'uploads/packaging-procurement.webp', 'packaging-procurement.php', '1', '2025-06-04 09:54:05', '2025-06-23 10:00:35'),
+(9, 'Specification Management', 'We understand the complexities of packaging specification management and deliver digital solutions that ensure accuracy, compliance, and operational efficiency', 'uploads/specification-management.webp', 'specification-management.php', '1', '2025-06-04 09:54:05', '2025-06-23 10:59:07');
 
 -- --------------------------------------------------------
 
@@ -806,6 +820,34 @@ INSERT INTO `tbl_shine_with_us` (`id`, `title`, `description`, `image`, `is_dele
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_slider`
+--
+
+CREATE TABLE `tbl_slider` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `subtitle` text DEFAULT NULL,
+  `button_text` varchar(255) DEFAULT NULL,
+  `button_link` varchar(255) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `slide_order` int(11) DEFAULT NULL,
+  `status` tinyint(1) DEFAULT 1,
+  `is_delete` enum('1','0') NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_slider`
+--
+
+INSERT INTO `tbl_slider` (`id`, `title`, `subtitle`, `button_text`, `button_link`, `image`, `slide_order`, `status`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'Unlock Unimaginable Business Impact Using Packaging as a Business Weapon', '', 'Learn more about us', 'why-packfora.php', NULL, 1, 1, '0', NULL, NULL),
+(2, 'Unlock Unimaginable Business Impact Using Packaging as a Business Weapon', '', 'Learn more about us', 'why-packfora.php', 'uploads/banner-01.webp', 1, 1, '1', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_smart_to_circular`
 --
 
@@ -853,7 +895,7 @@ CREATE TABLE `tbl_story_behind_maxmold` (
 --
 
 INSERT INTO `tbl_story_behind_maxmold` (`id`, `image`, `description`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'uploads/founders.webp', 'MaxMold was born out of lived frustration—and a deep belief that things could be better.  Our two founders, Dahyalal Pandya and Ramaiah Muthusubramanian, spent years on the ground, managing the chaos that comes with mold failure: urgent fixes, missed timelines, and the helplessness of not knowing what went wrong until it was too late.  They didn’t just want a better solution—they needed one.  Inspired by structured systems in industries like aerospace and automotive, they began applying scientific principles to mold management—and saw the impact immediately. But it still relied on manual effort and personal discipline.  That’s when the bigger vision took shape: what if we could turn this know-how into a platform? One that brings structure, foresight, and intelligence into a space that’s long been reactive and invisible.  That vision became MaxMold.', '1', '2025-06-20 10:59:00', '2025-06-20 10:59:00');
+(1, 'uploads/founders.webp', 'MaxMold was born out of lived frustration—and a deep belief that things could be better.  Our two founders, Dahyalal Pandya and Ramaiah Muthusubramanian, spent years on the ground, managing the chaos that comes with mold failure: urgent fixes, missed timelines, and the helplessness of not knowing what went wrong until it was too late.  They didn’t just want a better solution—they needed one.  Inspired by structured systems in industries like aerospace and automotive, they began applying scientific principles to mold management—and saw the impact immediately. But it still relied on manual effort and personal discipline.  That’s when the bigger vision took shape: what if we could turn this know-how into a platform? One that brings structure, foresight, and intelligence into a space that’s long been reactive and invisible.  That vision became MaxMold.', '1', '2025-06-20 10:59:00', '2025-06-24 12:46:44');
 
 -- --------------------------------------------------------
 
@@ -960,6 +1002,24 @@ INSERT INTO `tbl_video_banner` (`id`, `fk_service_id`, `video`, `is_delete`, `cr
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_whitepaper_download`
+--
+
+CREATE TABLE `tbl_whitepaper_download` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `company` varchar(100) DEFAULT NULL,
+  `role` varchar(100) DEFAULT NULL,
+  `industry` varchar(100) DEFAULT NULL,
+  `country` varchar(100) NOT NULL,
+  `optin` tinyint(1) DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_why_people_choose_packfora`
 --
 
@@ -980,7 +1040,7 @@ CREATE TABLE `tbl_why_people_choose_packfora` (
 INSERT INTO `tbl_why_people_choose_packfora` (`id`, `title`, `description`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
 (1, 'Work Your Way', 'Whether you\'re on-site, remote, or working across time zones — flexibility is built into the way we work.', 'uploads/work-your-way.webp', '1', '2025-06-02 10:42:54', '2025-06-02 10:42:54'),
 (2, 'Second Chances, Fresh Starts', 'We support professionals returning after a career break because talent doesn\'t come with an expiry date.', 'uploads/second-chances-fresh-starts.webp', '1', '2025-06-02 10:43:25', '2025-06-02 10:43:25'),
-(3, 'Spousal Careers', 'We believe when one person thrives, families thrive too. That\'s why we offer dual-career opportunities for spouses and partners.', 'uploads/spousal-careers.webp', '1', '2025-06-02 10:43:47', '2025-06-02 10:43:47'),
+(3, 'Spousal Careers', 'We believe when one person thrives, families thrive too. That\'s why we offer dual-career opportunities for spouses and partners.', 'uploads/spousal-careers.webp', '0', '2025-06-02 10:43:47', '2025-06-23 14:52:40'),
 (4, 'Performance That Gets Recognized', 'We celebrate outcomes and reward effort — with feedback, recognition, and opportunities to grow.', 'uploads/performance-that-gets-recognized.webp', '1', '2025-06-02 10:44:22', '2025-06-02 10:46:07');
 
 -- --------------------------------------------------------
@@ -1041,12 +1101,6 @@ ALTER TABLE `current_opening`
 -- Indexes for table `our_clients`
 --
 ALTER TABLE `our_clients`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `sliders`
---
-ALTER TABLE `sliders`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1189,6 +1243,12 @@ ALTER TABLE `tbl_shine_with_us`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tbl_slider`
+--
+ALTER TABLE `tbl_slider`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_smart_to_circular`
 --
 ALTER TABLE `tbl_smart_to_circular`
@@ -1225,6 +1285,12 @@ ALTER TABLE `tbl_video_banner`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tbl_whitepaper_download`
+--
+ALTER TABLE `tbl_whitepaper_download`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_why_people_choose_packfora`
 --
 ALTER TABLE `tbl_why_people_choose_packfora`
@@ -1256,7 +1322,7 @@ ALTER TABLE `contact_inquiries`
 -- AUTO_INCREMENT for table `contact_requests`
 --
 ALTER TABLE `contact_requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `current_opening`
@@ -1268,13 +1334,7 @@ ALTER TABLE `current_opening`
 -- AUTO_INCREMENT for table `our_clients`
 --
 ALTER TABLE `our_clients`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `sliders`
---
-ALTER TABLE `sliders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `tbl_blogs`
@@ -1286,7 +1346,7 @@ ALTER TABLE `tbl_blogs`
 -- AUTO_INCREMENT for table `tbl_built_reliability`
 --
 ALTER TABLE `tbl_built_reliability`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_case_study`
@@ -1340,13 +1400,13 @@ ALTER TABLE `tbl_how_we_do_it`
 -- AUTO_INCREMENT for table `tbl_impact_boxes`
 --
 ALTER TABLE `tbl_impact_boxes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_impact_sections`
 --
 ALTER TABLE `tbl_impact_sections`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_knowledge_centre`
@@ -1415,6 +1475,12 @@ ALTER TABLE `tbl_shine_with_us`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT for table `tbl_slider`
+--
+ALTER TABLE `tbl_slider`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `tbl_smart_to_circular`
 --
 ALTER TABLE `tbl_smart_to_circular`
@@ -1449,6 +1515,12 @@ ALTER TABLE `tbl_user`
 --
 ALTER TABLE `tbl_video_banner`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tbl_whitepaper_download`
+--
+ALTER TABLE `tbl_whitepaper_download`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_why_people_choose_packfora`
