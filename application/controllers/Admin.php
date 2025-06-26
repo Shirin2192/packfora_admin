@@ -7103,7 +7103,6 @@ class Admin extends CI_Controller {
 			}
 		}
 	}
-
 	public function get_case_study_data(){
 		$response['data'] = $this->model->selectWhereData('tbl_case_study',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
 		echo json_encode($response);
@@ -7825,7 +7824,7 @@ class Admin extends CI_Controller {
 	}
 	public function get_blogs_data()
 	{
-		$response['data'] = $this->model->selectWhereData('tbl_blogs',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		$response['data'] = $this->model->selectWhereData('tbl_blogs',array('is_delete'=>'1','id'=>1), '*', false, array('id' => 'DESC'));
 		echo json_encode($response);
 	}
 	public function get_blogs_details()
@@ -7977,7 +7976,7 @@ class Admin extends CI_Controller {
 	}
 	public function get_more_blogs_data()
 	{
-		$response['data'] = $this->model->selectWhereData('tbl_blogs',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		$response['data'] = $this->model->selectWhereData('tbl_blogs',array('is_delete'=>'1','id !='=>1), '*', false, array('id' => 'DESC'));
 		echo json_encode($response);
 	}
 	public function get_more_blogs_details()
@@ -7989,25 +7988,25 @@ class Admin extends CI_Controller {
 	public function update_more_blogs()
 	{
 		$this->load->library('form_validation');
-    	$this->form_validation->set_rules('title', 'Title', 'required|trim');
-    	$this->form_validation->set_rules('description', 'Description', 'required|trim');
-    	$this->form_validation->set_rules('link', 'Link', 'required|trim');
+    	$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+    	$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+    	$this->form_validation->set_rules('edit_link', 'Link', 'required|trim');
 
 		if ($this->form_validation->run() === FALSE) {
 			echo json_encode([
 				'status' => 'error',
 				'errors' => [
-					'title' => form_error('title'),
-					'description' => form_error('description'),
-					'link' => form_error('link'),
+					'edit_title' => form_error('edit_title'),
+					'edit_description' => form_error('edit_description'),
+					'edit_link' => form_error('edit_link'),
 				]
 			]);
 			return;
 		}
 
 		$id = $this->input->post('id');
-		$title = $this->input->post('title');
-		$description = $this->input->post('description');
+		$title = $this->input->post('edit_title');
+		$description = $this->input->post('edit_description');
 		$previous_image = $this->input->post('edit_previous_image');
 		$link = $this->input->post('edit_link');
 
@@ -8302,6 +8301,163 @@ class Admin extends CI_Controller {
 			} else {
 				$response['status'] = false;
 				$response['message'] = 'Failed to delete data';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	public function design_value_banner_video(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/design_value_banner_video');
+		}
+	}
+	public function save_design_value_banner_video() {
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('title', 'Title', 'required|trim');
+        $this->form_validation->set_rules('sub_title', 'Sub Title', 'required|trim');
+        $this->form_validation->set_rules('description', 'Description', 'required|trim');
+        $this->form_validation->set_rules('video', 'Video', 'callback_video_check');
+        if ($this->form_validation->run() == FALSE) {
+            echo json_encode([
+                'status' => 'error',
+                'errors' => [
+                    'title' => form_error('title'),
+                    'sub_title' => form_error('sub_title'),
+                    'description' => form_error('description'),
+                    'video' => form_error('video')
+                ]
+            ]);
+        } else {
+            $video_name = '';
+            if (!empty($_FILES['video']['name'])) {
+                $config['upload_path']   = './uploads/';
+                $config['allowed_types'] = 'mp4|mov|avi|wmv|webm';
+                $config['max_size']      = 51200; // 50MB
+                $this->load->library('upload', $config);
+                if (!$this->upload->do_upload('video')) {
+                    echo json_encode([
+                        'status' => 'error',
+                        'errors' => [
+                            'video' => $this->upload->display_errors()
+                        ]
+                    ]);
+                    return;
+                } else {
+                    $upload_data = $this->upload->data();
+                    $video_name = 'uploads/' . $upload_data['file_name'];
+                }
+            }
+			// Prepare data for insertion
+			
+            $insert_data = [
+                'video' => $video_name,
+				'title' => $this->input->post('title'),
+				'sub_title' => $this->input->post('sub_title'),
+				'description' => $this->input->post('description'),
+				'fk_service_id' => 5, // Assuming 1 is the service ID for Talent Flex
+            ];
+            $this->model->insertData('tbl_service_banner_video',$insert_data);
+            echo json_encode(['status' => 'success', 'message' => 'Video uploaded successfully']);
+        }
+    }
+	public function get_design_value_banner_video_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_service_banner_video',array('is_delete'=>'1','fk_service_id' => 5), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_design_value_banner_video_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_service_banner_video',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_design_value_banner_video()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_sub_title', 'Sub Title', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					'edit_sub_title' => form_error('edit_sub_title'),
+					'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+		$id = $this->input->post('id');
+		$previous_video = $this->input->post('edit_previous_video');
+		$video_name = $previous_video;
+		// Only validate file if a new file is uploaded
+		if (!empty($_FILES['edit_video']['name'])) {
+			$config['upload_path']   = './uploads/';
+			$config['allowed_types'] = 'mp4|mov|avi|wmv|webm';
+			$config['max_size']      = 51200; // 50MB
+			$this->load->library('upload', $config);
+			if (!$this->upload->do_upload('edit_video')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => [
+						'edit_video' => $this->upload->display_errors('', '')
+					]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$video_name = 'uploads/' . $upload_data['file_name'];
+				// Optional: delete old video if exists and is different
+				if ($previous_video && file_exists($previous_video) && $previous_video != $video_name) {
+					@unlink($previous_video);
+				}
+			}
+		} else {
+			// If no new file, ensure previous video exists
+			if (empty($previous_video)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => [
+						'edit_video' => 'The Video field is required.'
+					]
+				]);
+				return;
+			}
+		}
+		$data = [
+			'video' => $video_name,
+			'title' => $this->input->post('edit_title'),
+			'sub_title' => $this->input->post('edit_sub_title'),
+			'description' => $this->input->post('edit_description')
+		];
+		if ($this->model->updateData('tbl_service_banner_video', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Video Banner updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update Video Banner data.']);
+		}
+	}
+	public function delete_design_value_banner_video()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_service_banner_video', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Video Banner deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Video Banner.';
 			}
 		} else {
 			$response['status'] = false;

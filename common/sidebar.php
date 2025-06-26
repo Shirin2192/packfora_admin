@@ -106,6 +106,7 @@
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/supply_chain_success_stories">Success Stories</a></li>
 
                     <li class="nav-item ps-3"><span class="menu-child-header">Design To Value</span></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/design_value_banner_video">Banner Video</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_design_to_value">Discover the Benefits</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/design_to_value_success_stories">Success Stories</a></li>
 
@@ -139,7 +140,7 @@
             </a>
             <div class="collapse" id="howWeDoItMenu">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"><span class="menu-sub-header">Case Studies</span></li>
+                    <!-- <li class="nav-item"><span class="menu-sub-header">Case Studies</span></li> -->
                     <!-- <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_that_drives_business_impact">Packaging that Drives Business Impact</a></li> -->
 
                     <li class="nav-item"><span class="menu-sub-header">Knowledge Centre</span></li>

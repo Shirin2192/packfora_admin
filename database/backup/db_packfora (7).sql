@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 26, 2025 at 02:12 PM
+-- Generation Time: Jun 24, 2025 at 02:46 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -139,8 +139,7 @@ CREATE TABLE `current_opening` (
 
 INSERT INTO `current_opening` (`id`, `title`, `description`, `location`, `is_delete`, `created_at`, `updated_at`) VALUES
 (1, 'Packaging Consultant', 'Lead Clients projects to deisgn suatainable packaging solutions.', 'Location: Remote | Full-Time', '1', '2025-05-28 05:38:08', '2025-06-23 11:27:06'),
-(2, 'Sustainable Specialist', 'Advise clients on eco-friendly materials and circular economy strategies.', 'Location: New York, NY | Full-Time', '1', '2025-05-28 05:41:54', '2025-05-28 05:41:54'),
-(3, 'Packaging', 'TEST', 'Onsite', '0', '2025-06-26 09:20:05', '2025-06-26 09:22:55');
+(2, 'Sustainable Specialist', 'Advise clients on eco-friendly materials and circular economy strategies.', 'Location: New York, NY | Full-Time', '1', '2025-05-28 05:41:54', '2025-05-28 05:41:54');
 
 -- --------------------------------------------------------
 
@@ -161,20 +160,26 @@ CREATE TABLE `our_clients` (
 --
 
 INSERT INTO `our_clients` (`id`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'uploads/clients/0236e2b84a2c768be6322d37f46aa8c2.webp', '1', '2025-06-26 11:04:36', '2025-06-26 11:04:36'),
-(2, 'uploads/clients/ebe5b80564f49982fe35f2b65617126c.webp', '1', '2025-06-26 11:04:42', '2025-06-26 11:04:42'),
-(3, 'uploads/clients/89b797d678f9ffddeb0c4d9119ba520d.webp', '1', '2025-06-26 11:04:47', '2025-06-26 11:04:47'),
-(4, 'uploads/clients/a1744b38c307be4d1bfe4772a0ccbd0c.webp', '1', '2025-06-26 11:05:00', '2025-06-26 11:05:00'),
-(5, 'uploads/clients/800da3c264367a91ad027736a4a2bcf2.webp', '1', '2025-06-26 11:05:07', '2025-06-26 11:05:07'),
-(6, 'uploads/clients/36dd77a0abb5d125da30212545aea16b.webp', '1', '2025-06-26 11:05:11', '2025-06-26 11:05:11'),
-(7, 'uploads/clients/b8d6e1898bb7cc7c727a2b397c778f6c.webp', '1', '2025-06-26 11:05:24', '2025-06-26 11:05:24'),
-(8, 'uploads/clients/beba7f9049fa1c808f9d0550a73eca12.webp', '1', '2025-06-26 11:05:39', '2025-06-26 11:05:39'),
-(9, 'uploads/clients/2898b36dac41bae513ee7234d8eb023c.webp', '1', '2025-06-26 11:05:44', '2025-06-26 11:05:44'),
-(10, 'uploads/clients/91a9b652ca4ddda037d3da516ba3e3cf.webp', '1', '2025-06-26 11:05:52', '2025-06-26 11:05:52'),
-(11, 'uploads/clients/0e1b7735eb45fb5d3e2dd80fef3f5cba.webp', '1', '2025-06-26 11:05:57', '2025-06-26 11:05:57'),
-(12, 'uploads/clients/6d1e41856cd1dc1d20f89c2a7ab17df5.webp', '1', '2025-06-26 11:06:02', '2025-06-26 11:06:02'),
-(13, 'uploads/clients/3916400e615756df559ab8fe8c491dd7.webp', '1', '2025-06-26 11:06:11', '2025-06-26 11:06:11'),
-(14, 'uploads/clients/aff1fa7c321850f09822d5532c094a1e.webp', '1', '2025-06-26 11:06:16', '2025-06-26 11:06:16');
+(1, 'uploads/clients/ea4e4cc2604bed9518d158485b180f90.webp', '1', '2025-06-23 11:09:59', '2025-06-23 11:09:59'),
+(2, 'uploads/clients/6de0b2f0447610a7830ec0485393559f.webp', '1', '2025-06-23 11:11:50', '2025-06-23 11:11:50'),
+(3, 'uploads/clients/3bfca6f287410cb8d55216d75f963ec6.webp', '1', '2025-06-23 11:12:15', '2025-06-23 11:12:15'),
+(4, 'uploads/clients/b00d5e03892f0771c31ab36cdee3607d.webp', '1', '2025-06-23 11:12:38', '2025-06-23 11:12:38'),
+(5, 'uploads/clients/55c57c6c8bef2318a8daf82ebd051c55.webp', '1', '2025-06-23 11:12:54', '2025-06-23 11:12:54'),
+(6, 'uploads/clients/e078ca252e600b2dd2d73d98d642d4a2.webp', '1', '2025-06-23 11:13:11', '2025-06-23 11:13:11'),
+(7, 'uploads/clients/ddd9c9ac11f30c110f7de0b32f98edf9.webp', '1', '2025-06-23 11:13:31', '2025-06-23 11:13:31'),
+(8, 'uploads/clients/870bbfd7930cb8cfac10d7f49b609bd3.webp', '1', '2025-06-23 11:16:20', '2025-06-23 11:16:20'),
+(9, 'uploads/clients/bdc5a0e1c82603e2e40ff9116569dcfa.webp', '1', '2025-06-23 11:16:25', '2025-06-23 11:16:25'),
+(10, 'uploads/clients/a6f62a30dfc361d7b0ab1409541c764d.webp', '1', '2025-06-23 11:16:31', '2025-06-23 11:16:31'),
+(11, 'uploads/clients/18d286094b5dbe5db28ee1fce5c44c6f.webp', '1', '2025-06-23 11:16:42', '2025-06-23 11:16:42'),
+(12, 'uploads/clients/1713ca04eb5600899757bb1d4b431b1c.webp', '1', '2025-06-23 11:16:49', '2025-06-23 11:16:49'),
+(13, 'uploads/clients/4c90a91e89a137bd726fa588b683de7c.webp', '1', '2025-06-23 11:17:00', '2025-06-23 11:17:00'),
+(14, 'uploads/clients/8ae02a1b00b57d0ca1e98376480bde8f.webp', '1', '2025-06-23 11:17:11', '2025-06-23 11:17:11'),
+(15, 'uploads/clients/b2e04b5dc916826ec552a9b082f0e5c9.webp', '1', '2025-06-23 11:17:16', '2025-06-23 11:17:16'),
+(16, 'uploads/clients/f9a32f35f7f8816e3824ace1001014f4.webp', '1', '2025-06-23 11:17:30', '2025-06-23 11:17:30'),
+(17, 'uploads/clients/4241600bfeecb4f9d5258d3deaee80e3.webp', '1', '2025-06-23 11:17:35', '2025-06-23 11:17:35'),
+(18, 'uploads/clients/47cf185e408308fbe8976ceade48d970.webp', '1', '2025-06-23 11:17:39', '2025-06-23 11:17:39'),
+(19, 'uploads/clients/2c1437f54a44332666e63bde995ba57d.webp', '1', '2025-06-23 11:17:44', '2025-06-23 11:17:44'),
+(20, 'uploads/clients/8b8cd3fe4096a3e6b5398696d2b2aaa1.webp', '1', '2025-06-23 11:17:48', '2025-06-23 11:17:48');
 
 -- --------------------------------------------------------
 
@@ -198,11 +203,7 @@ CREATE TABLE `tbl_blogs` (
 --
 
 INSERT INTO `tbl_blogs` (`id`, `title`, `description`, `image`, `link`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'Late Varianting in Packaging: On-Demand Corrugate Printing for Agility and Sustainability', 'In recent conversations with both global FMCG firms and high-growth nutraceutical startups, one challenge keeps surfacing: packaging is lagging the rest of the supply chain.  Earlier this year, we worked with a client preparing to launch a personalized subscription product across multiple markets. Formulations were finalized; marketing was locked in—but a last-minute regulatory update required changes to their packaging artwork. Because the corrugate boxes were pre-printed weeks in advance, everything stalled. The delay cost them a high visibility launch window.  Scenarios like these highlight a deeper issue: traditional packaging workflows—planned early, printed in bulk, and forecasted far in advance—no longer align with today\'s market dynamics.', 'uploads/main-blog2.webp', NULL, '1', '2025-06-20 09:46:31', '2025-06-20 09:47:23'),
-(2, 'Product Innovation', 'Leverage data-driven insights to accelerate go-to-market strategies and amplify packaging\'s role in brand growth.', 'uploads/product-innovation.webp', '#', '1', '2025-06-26 09:09:30', '2025-06-26 09:09:30'),
-(3, 'Design to Value', 'Design cost-effective packaging solutions that align with evolving industry trends and consumer expectations.', 'uploads/design-to-value_(1).webp', 'design-to-value.php', '1', '2025-06-26 09:10:39', '2025-06-26 09:27:12'),
-(4, 'Mold Management', 'Optimize production with advanced mold management, extending lifecycle value and minimizing costs.', 'uploads/mold-management.webp', '#', '1', '2025-06-26 09:11:03', '2025-06-26 09:11:03'),
-(5, 'Packaging Innovation & Engineering', 'Pushing the boundaries of packaging with next-gen innovations—leveraging rapid prototyping.', 'uploads/packaging-innovation-engineering_(1).webp', 'packaging-innovation-and-engineering.php', '1', '2025-06-26 09:11:26', '2025-06-26 09:28:16');
+(1, 'Late Varianting in Packaging: On-Demand Corrugate Printing for Agility and Sustainability', 'In recent conversations with both global FMCG firms and high-growth nutraceutical startups, one challenge keeps surfacing: packaging is lagging the rest of the supply chain.  Earlier this year, we worked with a client preparing to launch a personalized subscription product across multiple markets. Formulations were finalized; marketing was locked in—but a last-minute regulatory update required changes to their packaging artwork. Because the corrugate boxes were pre-printed weeks in advance, everything stalled. The delay cost them a high visibility launch window.  Scenarios like these highlight a deeper issue: traditional packaging workflows—planned early, printed in bulk, and forecasted far in advance—no longer align with today\'s market dynamics.', 'uploads/main-blog2.webp', NULL, '1', '2025-06-20 09:46:31', '2025-06-20 09:47:23');
 
 -- --------------------------------------------------------
 
@@ -246,18 +247,15 @@ CREATE TABLE `tbl_case_study` (
   `date` date DEFAULT NULL,
   `is_delete` enum('1','0') NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `tags` text DEFAULT NULL
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_case_study`
 --
 
-INSERT INTO `tbl_case_study` (`id`, `title`, `description`, `link`, `image`, `date`, `is_delete`, `created_at`, `updated_at`, `tags`) VALUES
-(1, 'Foods', 'Packfora enabled a leading FMCG brand to cut costs by 30% while enhancing recyclability and sustainability.', 'case-study-inner.php', 'uploads/case-study-thumb-01.webp', '2025-05-05', '1', '2025-06-24 14:05:29', '2025-06-26 12:33:16', NULL),
-(2, 'Personal Care', 'How Packfora streamlined a major pharma company in their specification management.', 'pharma-case-study.php', 'uploads/case-study-thumb-02.webp', '2025-05-03', '1', '2025-06-26 11:59:26', '2025-06-26 11:59:26', NULL),
-(3, 'Plastic Packaging', 'Check out how Packfora reimagined packaging for a new1.5L water bottle.', '1.5-litre-bottle-case-study.php', 'uploads/case-study-thumb-03.webp', '2025-05-01', '1', '2025-06-26 12:01:15', '2025-06-26 12:01:15', NULL);
+INSERT INTO `tbl_case_study` (`id`, `title`, `description`, `link`, `image`, `date`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'Foods', 'Packfora enabled a leading FMCG brand to cut costs by 30% while enhancing recyclability and sustainability.', 'case-study-inner.php', 'uploads/case-study-01.webp', '2025-05-05', '1', '2025-06-24 14:05:29', '2025-06-24 14:32:38');
 
 -- --------------------------------------------------------
 
@@ -320,7 +318,7 @@ INSERT INTO `tbl_discover_benefits` (`id`, `fk_service_id`, `title`, `descriptio
 (10, 3, 'Supply Chain Resilience', 'Improved adaptability to market shifts and disruptions.', 'uploads/supply-chain-resilience.png', '1', '2025-06-06 10:52:58', '2025-06-06 10:54:35'),
 (11, 5, 'Strategic Value Driver Model', 'Our proprietary DTV framework maximizes value by addressing material efficiency, technological advancements, and procurement strategies-all in one holistic solution.', 'uploads/strategic-value-driver-model.png', '1', '2025-06-10 09:13:04', '2025-06-13 09:06:31'),
 (12, 5, 'People, Planet & Profit', 'Sustainability is at the core of our process. By balancing economic, environmental, and consumer needs, we help brands achieve triple-bottom-line impact.', 'uploads/people-planet-profit.png', '1', '2025-06-10 12:38:10', '2025-06-10 12:38:10'),
-(13, 5, 'End-to-End Optimization', 'From concept to commercialization, we ensure every element of packaging is designed for efficiency, sustainability, and long-term success.', 'uploads/end-to-end-optimization.png', '1', '2025-06-10 12:38:40', '2025-06-26 17:12:19'),
+(13, 5, 'End-to-End Optimization', 'From concept to commercialization, we ensure every element of packaging is designed for efficiency, sustainability, and long-term success.', 'uploads/end-to-end-optimization.png', '1', '2025-06-10 12:38:40', '2025-06-10 12:39:07'),
 (14, 7, 'Sustainability-Driven', 'Optimize materials, reduce waste, and lower carbon footprint.', 'uploads/sustainability-driven.png', '1', '2025-06-16 11:45:17', '2025-06-16 11:46:41'),
 (15, 8, 'Build a Strong Foundationeeeeeeeeee', 'Rapid Sourcing & Tail Spend Management Supplier Lifecycle Management', 'uploads/build-a-strong-foundation.png', '1', '2025-06-16 14:29:55', '2025-06-16 14:35:44');
 
@@ -406,7 +404,7 @@ CREATE TABLE `tbl_global_culture` (
 INSERT INTO `tbl_global_culture` (`id`, `title`, `description`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
 (1, 'Clientele', 'Trusted by brands across continents', 'uploads/clientele.png', '1', '2025-06-02 11:58:54', '2025-06-02 11:58:54'),
 (2, 'Projects', 'International in spirit, even when local in scope', 'uploads/projects.png', '1', '2025-06-02 12:20:41', '2025-06-02 12:20:41'),
-(3, 'Culture', 'Diverse, inclusive, and deeply collaborative', 'uploads/culture.png', '1', '2025-06-02 12:21:10', '2025-06-26 14:22:33');
+(3, 'Culture', 'Diverse, inclusive, and deeply collaborative', 'uploads/culture.png', '1', '2025-06-02 12:21:10', '2025-06-23 15:02:32');
 
 -- --------------------------------------------------------
 
@@ -791,8 +789,7 @@ INSERT INTO `tbl_service_banner_video` (`id`, `fk_service_id`, `title`, `sub_tit
 (2, 2, 'Sustainability', 'Sustainability is the New Core of Packaging', 'Stricter regulations, plastic bans, and growing demand for eco-friendly products are reshaping packaging industry sustainability is not just a requirement, but also a competitive advantage. We help you stay ahead with smart, sustainable solutions that drive growth while protecting the planet.', 'uploads/sustainability.mp4', '1', '2025-06-05 09:15:54', '2025-06-05 09:18:17'),
 (3, 3, 'Supply Chain Automation', 'Automate. Streamline. Optimize.', 'Supply Chain Automation is designed to simplify and enhance the entire supply chain process, from procurement to delivery. By integrating advanced automation technology, we enable businesses to operate with greater speed, efficiency, and precision across all levels of their supply chain.', 'uploads/supply-chain-automation.mp4', '1', '2025-06-05 15:16:25', '2025-06-05 15:17:04'),
 (4, 7, 'Packaging Innovation and Engineering', 'Inspire. Innovate. Impact.', 'We design packaging solutions that blend innovation, sustainability, and efficiency. By leveraging cutting-edge technology, strategic thinking, and deep industry expertise, we create packaging that delivers value for people, the planet, and profit.', 'uploads/innovation-and-engineering.mp4', '1', '2025-06-16 10:39:21', '2025-06-16 10:46:14'),
-(5, 8, 'Packaging Procurement', 'Optimise Your Packaging', 'Packaging Spend typically accounts for ~ 5% to max 15% of the total procurement spend of an organization. With the right approach, we can reduce costs, improve efficiency, and enhance brand impact.', 'uploads/packaging-procurement.mp4', '1', '2025-06-16 13:48:00', '2025-06-16 13:49:58'),
-(6, 5, 'Design to Value', 'Smarter Packaging. Shining Impact.', 'We believe that packaging is a strategic business weapon and our Design to Value (DTV) creates impact similarly by blending innovation & efficiency to create packaging solutions that optimize costs, enhance consumer experience, and future-proof your business.', 'uploads/dtv.webm', '1', '2025-06-26 16:14:57', '2025-06-26 16:14:57');
+(5, 8, 'Packaging Procurement', 'Optimise Your Packaging', 'Packaging Spend typically accounts for ~ 5% to max 15% of the total procurement spend of an organization. With the right approach, we can reduce costs, improve efficiency, and enhance brand impact.', 'uploads/packaging-procurement.mp4', '1', '2025-06-16 13:48:00', '2025-06-16 13:49:58');
 
 -- --------------------------------------------------------
 
@@ -956,12 +953,7 @@ INSERT INTO `tbl_success_stories` (`id`, `fk_service_id`, `title`, `description`
 (10, 7, 'Global Health Company', 'Delivered a comprehensive sustainability agenda, developing an ambitious program targeting 2030 goals.', 'uploads/global-health.webp', '1', '2025-06-16 12:17:18', '2025-06-16 12:18:46'),
 (11, 8, 'Unlock Embedded Cost through Should Cost Modelling', 'Optimized packaging costs by building Should Cost Models, mapping the value chain, and identifying negotiation levers. Linked conversion costs to market dynamics like power, labour, and interest rates while estimating real-time wastage—empowering the client to unlock 3-4% savings on total spend.', 'uploads/unlock-embedded-cost-through-should-cost-modelling.webp', '1', '2025-06-16 15:03:44', '2025-06-16 15:03:44'),
 (12, 8, 'Cost Model Analysis to unlock Savings opportunities', 'By benchmarking costs for aerosol cans, cartons, corrugates, and laminates, we uncovered pricing gaps, identified competitive suppliers, optimized specifications, and introduced automation—unlocking 13% in savings through smarter negotiations.', 'uploads/cost-model-analysis-to-unlock-savings-opportunities.webp', '1', '2025-06-16 15:05:59', '2025-06-16 15:06:24'),
-(13, NULL, 'Triple Bottom Line Approach', 'We integrate People, Planet and Profit into every packaging solution. Balancing impact and profitability.', 'uploads/we-do-01.png', '0', '2025-06-17 09:27:40', '2025-06-17 09:28:49'),
-(14, 5, 'Productivity Savings for High-Volume Packaging', 'Optimized fruit box specifications, reducing inventory by 23% and unlocking $8.4M in annual savings.', 'uploads/productivity-saving-for-high-volume.webp', '1', '2025-06-26 17:14:16', '2025-06-26 17:14:16'),
-(15, 5, 'Sustainable Frozen Food Packaging Transformation', 'Transitioned from non-recyclable laminated plastic to fossil-free, recyclable pouches—maintaining performance while enhancing sustainability.', 'uploads/sustainable-frozen-food-packaging.webp', '1', '2025-06-26 17:16:17', '2025-06-26 17:16:17'),
-(16, 5, 'Thermoformed PP Bowl Optimization', 'Achieved up to 9% reduction in plastic consumption through advanced material optimization, lowering costs without compromising strength.', 'uploads/thermoformed-PP-otimization.webp', '1', '2025-06-26 17:17:30', '2025-06-26 17:17:30'),
-(17, 5, 'Corrugate Cost-Saving Pipeline', 'Built a $4.1M annual savings roadmap for a leading CPG brand, halving implementation time while improving manufacturability.', 'uploads/corrugate-cost-saving-pipeline.webp', '1', '2025-06-26 17:19:16', '2025-06-26 17:19:16'),
-(18, 5, 'ISTA-Test Protocol Development for India', 'Developed localized ISTA-equivalent testing protocols to minimize Defects Per Million Opportunities (DPMO), driving packaging innovation and process efficiency.', 'uploads/ISTA-test.webp', '1', '2025-06-26 17:20:09', '2025-06-26 17:20:09');
+(13, NULL, 'Triple Bottom Line Approach', 'We integrate People, Planet and Profit into every packaging solution. Balancing impact and profitability.', 'uploads/we-do-01.png', '0', '2025-06-17 09:27:40', '2025-06-17 09:28:49');
 
 -- --------------------------------------------------------
 
@@ -1075,7 +1067,7 @@ INSERT INTO `tbl_work_with_technocarts` (`id`, `title`, `description`, `is_delet
 (2, 'Subject Matter Experts (SMEs)', 'Technical specialists driving deep impact.', '1', '2025-06-02 13:51:02', '2025-06-02 13:51:02'),
 (3, 'Producers & Converters', 'Partners who bring big ideas to life.', '1', '2025-06-02 13:52:35', '2025-06-02 13:52:35'),
 (4, 'Design Houses', 'Creatives who fuse form with function.', '1', '2025-06-02 13:52:54', '2025-06-02 13:52:54'),
-(5, 'Technology Leaders like Dassault Systèmes', 'Tools that keep us future-ready.', '1', '2025-06-02 13:53:16', '2025-06-26 14:39:57');
+(5, 'Technology Leaders like Dassault Systèmes', 'Tools that keep us future-ready.', '1', '2025-06-02 13:53:16', '2025-06-02 13:53:16');
 
 --
 -- Indexes for dumped tables
@@ -1336,19 +1328,19 @@ ALTER TABLE `contact_requests`
 -- AUTO_INCREMENT for table `current_opening`
 --
 ALTER TABLE `current_opening`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `our_clients`
 --
 ALTER TABLE `our_clients`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `tbl_blogs`
 --
 ALTER TABLE `tbl_blogs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_built_reliability`
@@ -1360,7 +1352,7 @@ ALTER TABLE `tbl_built_reliability`
 -- AUTO_INCREMENT for table `tbl_case_study`
 --
 ALTER TABLE `tbl_case_study`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_contact_us`
@@ -1474,7 +1466,7 @@ ALTER TABLE `tbl_services`
 -- AUTO_INCREMENT for table `tbl_service_banner_video`
 --
 ALTER TABLE `tbl_service_banner_video`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tbl_shine_with_us`
@@ -1510,7 +1502,7 @@ ALTER TABLE `tbl_student_talent_economy`
 -- AUTO_INCREMENT for table `tbl_success_stories`
 --
 ALTER TABLE `tbl_success_stories`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `tbl_user`

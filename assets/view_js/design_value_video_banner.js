@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    $('#MoreBlogsForm').on('submit', function (e) {
+    $('#DesignValueVideoBannerForm').on('submit', function (e) {
         e.preventDefault();
-       // Clear previous error messages
-        $('#error_title, #error_description, #error_image, #error_link').text('');
+        // Clear previous error messages
+        $('#error_video').text('');
         var formData = new FormData(this);
         $.ajax({
-            url: frontend + "admin/save_more_blogs",  // Adjust URL accordingly
+            url: frontend + "admin/save_design_value_banner_video",  // Adjust URL accordingly
             type: 'POST',
             data: formData,
             processData: false,
@@ -21,9 +21,9 @@ $(document).ready(function () {
                         timerProgressBar: true,
                         showConfirmButton: false
                     });
-                    $('#MoreBlogsForm')[0].reset();
+                    $('#DesignValueVideoBannerForm')[0].reset();
                      // Reload the DataTable
-                    MoreBlogsTable.ajax.reload(null, false);
+                    DesignValueVideoBannerTable.ajax.reload(null, false);
                 } else if (response.status === 'error') {
                     $.each(response.errors, function (key, val) {
                         $('#error_' + key).text(val);
@@ -40,9 +40,9 @@ $(document).ready(function () {
         console.error('The "frontend" variable is not defined.');
         return;
     }
-    MoreBlogsTable = $('#MoreBlogsTable').DataTable({
+    DesignValueVideoBannerTable = $('#DesignValueVideoBannerTable').DataTable({
         ajax: {
-            url: frontend + "admin/get_more_blogs_data",  // Adjust URL accordingly
+            url: frontend + "admin/get_design_value_banner_video_data",  // Adjust URL accordingly
             type: 'POST',
             dataSrc: function (json) {
                 // Ensure the response is an array; adjust if your backend wraps data in an object
@@ -66,12 +66,16 @@ $(document).ready(function () {
                 orderable: false
             },
             { data: 'title' },
+            { data: 'sub_title' },
             { data: 'description' },
-            { data: 'link' },
-            { data: 'image', render: function (data) {
-                // Ensure 'frontend' ends with a slash if needed
-                var imageUrl = frontend + data;
-                return `<img src="${imageUrl}" alt="Image" style="width: 50px; height: 50px;">`;
+           { data: 'video', render: function (data) {
+                var videoUrl = frontend + data;
+                return `
+                    <video width="100" height="70" controls>
+                        <source src="${videoUrl}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                `;
             }},
             {
 				data: null,
@@ -96,20 +100,27 @@ $(document).ready(function () {
     });
 
     // Optional: Handle clicks for view/edit/delete
-    $("#MoreBlogsTable").on("click", ".view-btn", function (e) {
+    $("#DesignValueVideoBannerTable").on("click", ".view-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
+
         $.ajax({
-            url: frontend + "admin/get_more_blogs_details",
+            url: frontend + "admin/get_design_value_banner_video_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
                 $("#view_title").text(response.data.title);
+                $("#view_sub_title").text(response.data.sub_title);
                 $("#view_description").text(response.data.description);
-                if (response.data.image) {
-                const imageUrl = frontend + response.data.image;
-                $("#view_image").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px;">');
+                if (response.data.video) {
+                const imageUrl = frontend + response.data.video;
+                $("#view_image").html(`
+                    <video width="320" height="240" controls>
+                        <source src="${imageUrl}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                `);
             } else {
                 $("#view_image").html('');
             }
@@ -123,27 +134,32 @@ $(document).ready(function () {
         });
     });
 
-    $("#MoreBlogsTable").on("click", ".edit-btn", function (e) {
+    $("#DesignValueVideoBannerTable").on("click", ".edit-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
         // Fetch details from server via POST
         $.ajax({
-            url: frontend + "admin/get_more_blogs_details",
+            url: frontend + "admin/get_design_value_banner_video_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
                     $("#edit_id").val(response.data.id);
                     $("#edit_title").val(response.data.title);
-                    $('#edit_id').val(response.data.id);
+                    $("#edit_sub_title").val(response.data.sub_title);
                     $("#edit_description").val(response.data.description);
-                    $("#edit_link").val(response.data.link);
-                    $("#edit_previous_image").val(response.data.image); // Handle empty image case
-                    if (response.data.image) {
-                        const imageUrl = frontend + response.data.image;
-                        $("#edit_image_preview").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px;">');
+                    $("#edit_id").val(response.data.id);
+                    $("#edit_previous_video").val(response.data.video); // Handle empty image case
+                    if (response.data.video) {
+                        const imageUrl = frontend + response.data.video;
+                        $("#edit_video_preview").html(`
+                            <video width="320" height="240" controls>
+                                <source src="${imageUrl}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        `);
                     } else {
-                        $("#edit_image_preview").html('');
+                        $("#edit_video_preview").html('');
                     }
                     $('#EditModal').modal('show');
                 
@@ -151,12 +167,12 @@ $(document).ready(function () {
             error: function () {
                 $("#edit_title").val("Error loading data");
                 $("#edit_description").val("Error loading data");
-                $("#edit_image_preview").html('');
+                $("#edit_video_preview").html('');
             },
         });
     });
     // Delete action
-	$("#MoreBlogsTable").on("click", ".delete-btn", function (e) {
+	$("#DesignValueVideoBannerTable").on("click", ".delete-btn", function (e) {
 		e.preventDefault();
 		const id = $(this).data("id");
 
@@ -171,14 +187,14 @@ $(document).ready(function () {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				$.ajax({
-					url: frontend + "admin/delete_more_blogs",
+					url: frontend + "admin/delete_design_value_banner_video",
 					type: "POST",
 					data: { id: id },
 					dataType: "json",
 					success: function (response) {
 						if (response.status) {
 							Swal.fire("Deleted!", response.message, "success");
-							MoreBlogsTable.ajax.reload(null, false);
+							DesignValueVideoBannerTable.ajax.reload(null, false);
 						} else {
 							Swal.fire("Error", response.message, "error");
 						}
@@ -192,15 +208,15 @@ $(document).ready(function () {
 	});
 });
 
-$('#EditMoreBlogsForm').submit(function (e) {
+$('#EditDesignValueVideoBannerForm').submit(function (e) {
     e.preventDefault();
 
     let formData = new FormData(this);
     // Clear previous errors
-    $('#error_edit_title, #error_edit_description, #error_edit_image, #error_edit_link').text('');
+    $('#error_edit_video').text('');
 
     $.ajax({
-        url: frontend + "admin/update_more_blogs", // adjust to your route
+        url: frontend + "admin/update_design_value_banner_video", // adjust to your route
         type: "POST",
         data: formData,
         dataType: "json",
@@ -217,24 +233,15 @@ $('#EditMoreBlogsForm').submit(function (e) {
                     showConfirmButton: false
                 });
                 // Reset the form
-                $('#EditMoreBlogsForm')[0].reset();
+                $('#EditDesignValueVideoBannerForm')[0].reset();
                 // Clear previous image preview
-                $('#edit_image_preview').html('');
+                $('#edit_video_preview').html('');
                 // Reload the DataTable
-                MoreBlogsTable.ajax.reload(null, false);
+                DesignValueVideoBannerTable.ajax.reload(null, false);
                 $('#EditModal').modal('hide');
                 // Optional: refresh data table or show toast
             } else if (response.status === 'error') {
                 // Show validation errors
-                if (response.errors.title) {
-                    $('#error_edit_title').text(response.errors.title);
-                }
-                if (response.errors.link) {
-                    $('#error_edit_link').text(response.errors.link);
-                }
-                if (response.errors.description) {
-                    $('#error_edit_description').text(response.errors.description);
-                }
                 if (response.errors.image) {
                     $('#error_edit_image').text(response.errors.image);
                 }
