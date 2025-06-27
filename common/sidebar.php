@@ -83,7 +83,21 @@
             </a>
             <div class="collapse" id="whatWeDoMenu">
                 <ul class="nav flex-column sub-menu">
+
                     <li class="nav-item"><span class="menu-sub-header">Services</span></li>
+                    <li class="nav-item ps-3"><span class="menu-child-header">Design To Value</span></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/design_value_banner_video">Banner Video</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_design_to_value">Discover the Benefits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/design_to_value_success_stories">Success Stories</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/design_value_our_leaders">Our Leaders</a></li>
+
+                    <li class="nav-item ps-3"><span class="menu-child-header">Packaging Innovation & Engineering</span></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_innovation_video_banner">Video Banner</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_innovation_our_offerings">Our Offerings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_packaging_innovation">Discover the Benefits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_innovation_success_stories">Success Stories</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_innovation_our_leaders">Our Leaders</a></li>
+                    
                     <li class="nav-item ps-3"><span class="menu-child-header">Talent Flex</span></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/talent_flex_banner_video">Banner Video</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/talent_flex_our_offerings">Our Offerings</a></li>
@@ -105,16 +119,6 @@
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_supply_chain_automation">Benefits of Supply Chain Automation</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/supply_chain_success_stories">Success Stories</a></li>
 
-                    <li class="nav-item ps-3"><span class="menu-child-header">Design To Value</span></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/design_value_banner_video">Banner Video</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_design_to_value">Discover the Benefits</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/design_to_value_success_stories">Success Stories</a></li>
-
-                    <li class="nav-item ps-3"><span class="menu-child-header">Packaging Innovation & Engineering</span></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_innovation_video_banner">Video Banner</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_innovation_our_offerings">Our Offerings</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_packaging_innovation">Discover the Benefits</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_innovation_success_stories">Success Stories</a></li>
 
                     <li class="nav-item ps-3"><span class="menu-child-header">Packaging Procurement</span></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_procurement_video_banner">Video Banner</a></li>
