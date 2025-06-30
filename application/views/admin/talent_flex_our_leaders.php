@@ -53,8 +53,15 @@
                                                     <div class="text-danger" id="error_designation"></div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="link">Link</label>
+                                                    <input type="text" class="form-control" name="link"
+                                                        id="link" placeholder="Link">
+                                                    <div class="text-danger" id="error_link"></div>
+                                                </div>
+                                            </div>
+                                        
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="image">Image</label>
@@ -79,6 +86,7 @@
                                                     <th>Sr. No.</th>
                                                     <th>Name</th>
                                                     <th>Designation</th>
+                                                    <th>Link</th>
                                                     <th>Image</th>
                                                     <th>Action</th>
                                                 </tr>
@@ -117,6 +125,10 @@
                                 <p id="view_designation"></p>
                             </div>
                             <div class="col-md-6">
+                                <label for="view_link">Link</label>
+                                <p id="view_link"></p>
+                            </div>
+                            <div class="col-md-6">
                                 <label for="view_image">Image</label>
                                 <div id="view_image"></div>
                             </div>
@@ -151,6 +163,12 @@
                                     <input type="text" class="form-control" id="edit_designation"
                                         name="edit_designation">
                                     <div class="text-danger" id="error_edit_designation"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="edit_link" class="form-label">Link</label>
+                                    <input type="text" class="form-control" id="edit_link"
+                                        name="edit_link">
+                                    <div class="text-danger" id="error_edit_link"></div>
                                 </div>
                             </div>
                             <div class="row mb-3">

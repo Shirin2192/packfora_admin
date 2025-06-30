@@ -47,9 +47,9 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="description">Description</label>
-                                                    <input type="text" class="form-control" name="description"
-                                                        id="description" placeholder="description">
+                                                    <label for="description">Description (Enter each point on a new line)</label>
+                                                    <textarea class="form-control" name="description" id="description" rows="6"
+                                                        placeholder="Enter each point on a new line"></textarea>
                                                     <div class="text-danger" id="error_description"></div>
                                                 </div>
                                             </div>
@@ -148,8 +148,9 @@
                                     <div class="text-danger" id="error_edit_title"></div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="edit_description" class="form-label">Description</label>
-                                    <input type="text" class="form-control" id="edit_description" name="edit_description">
+                                    <label for="edit_description" class="form-label">Description (One point per line)</label>
+                                    <textarea class="form-control" id="edit_description" name="edit_description" rows="6"
+                                        placeholder="Enter each point on a new line (e.g.&#10;- Point one&#10;- Point two)"></textarea>
                                     <div class="text-danger" id="error_edit_description"></div>
                                 </div>
                             </div>

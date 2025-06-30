@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    $('#TalentFlexOurLeadersForm').on('submit', function (e) {
+    $('#SupplyChainOurLeadersForm').on('submit', function (e) {
         e.preventDefault();
        // Clear previous error messages
         $('#error_name, #error_designation, #error_image, #error_link').text('');
         var formData = new FormData(this);
         $.ajax({
-            url: frontend + "admin/save_talent_flex_our_leaders",  // Adjust URL accordingly
+            url: frontend + "admin/save_supply_chain_our_leaders",  // Adjust URL accordingly
             type: 'POST',
             data: formData,
             processData: false,
@@ -21,9 +21,9 @@ $(document).ready(function () {
                         timerProgressBar: true,
                         showConfirmButton: false
                     });
-                    $('#TalentFlexOurLeadersForm')[0].reset();
+                    $('#SupplyChainOurLeadersForm')[0].reset();
                      // Reload the DataTable
-                    TalentFlexOurLeadersTable.ajax.reload(null, false);
+                    SupplyChainOurLeadersTable.ajax.reload(null, false);
                 } else if (response.status === 'error') {
                     $.each(response.errors, function (key, val) {
                         $('#error_' + key).text(val);
@@ -40,9 +40,9 @@ $(document).ready(function () {
         console.error('The "frontend" variable is not defined.');
         return;
     }
-    TalentFlexOurLeadersTable = $('#TalentFlexOurLeadersTable').DataTable({
+    SupplyChainOurLeadersTable = $('#SupplyChainOurLeadersTable').DataTable({
         ajax: {
-            url: frontend + "admin/get_talent_flex_our_leaders_data",  // Adjust URL accordingly
+            url: frontend + "admin/get_supply_chain_our_leaders_data",  // Adjust URL accordingly
             type: 'POST',
             dataSrc: function (json) {
                 // Ensure the response is an array; adjust if your backend wraps data in an object
@@ -74,11 +74,11 @@ $(document).ready(function () {
                 return `<img src="${imageUrl}" alt="Image" style="width: 50px; height: 50px;">`;
             }},
             {
-				data: null,
-				orderable: false,
-				render: function (data, type, row) {
-					return `
-						 <a href="#" class="view-btn" data-id="${row.id}" title="View">
+                data: null,
+                orderable: false,
+                render: function (data, type, row) {
+                    return `
+                         <a href="#" class="view-btn" data-id="${row.id}" title="View">
                             <i class="fas fa-eye text-info "></i>
                         </a>
                         <a href="#" class="edit-btn" data-id="${row.id}" title="Edit">
@@ -87,21 +87,21 @@ $(document).ready(function () {
                         <a href="#" class="delete-btn" data-id="${row.id}" title="Delete">
                             <i class="fas fa-trash-alt text-danger"></i>
                         </a>
-					`;
-				},
-			},
+                    `;
+                },
+            },
         ],
         order: [[0, 'desc']],
         responsive: true
     });
 
     // Optional: Handle clicks for view/edit/delete
-    $("#TalentFlexOurLeadersTable").on("click", ".view-btn", function (e) {
+    $("#SupplyChainOurLeadersTable").on("click", ".view-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
 
         $.ajax({
-            url: frontend + "admin/get_talent_flex_our_leaders_details",
+            url: frontend + "admin/get_supply_chain_our_leaders_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
@@ -125,12 +125,12 @@ $(document).ready(function () {
         });
     });
 
-    $("#TalentFlexOurLeadersTable").on("click", ".edit-btn", function (e) {
+    $("#SupplyChainOurLeadersTable").on("click", ".edit-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
         // Fetch details from server via POST
         $.ajax({
-            url: frontend + "admin/get_talent_flex_our_leaders_details",
+            url: frontend + "admin/get_supply_chain_our_leaders_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
@@ -157,51 +157,51 @@ $(document).ready(function () {
         });
     });
     // Delete action
-	$("#TalentFlexOurLeadersTable").on("click", ".delete-btn", function (e) {
-		e.preventDefault();
-		const id = $(this).data("id");
+    $("#SupplyChainOurLeadersTable").on("click", ".delete-btn", function (e) {
+        e.preventDefault();
+        const id = $(this).data("id");
 
-		Swal.fire({
-			title: "Are you sure?",
-			text: "This image will be deleted!",
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#d33",
-			cancelButtonColor: "#6c757d",
-			confirmButtonText: "Yes, delete it!",
-		}).then((result) => {
-			if (result.isConfirmed) {
-				$.ajax({
-					url: frontend + "admin/delete_talent_flex_our_leaders",
-					type: "POST",
-					data: { id: id },
-					dataType: "json",
-					success: function (response) {
-						if (response.status) {
-							Swal.fire("Deleted!", response.message, "success");
-							TalentFlexOurLeadersTable.ajax.reload(null, false);
-						} else {
-							Swal.fire("Error", response.message, "error");
-						}
-					},
-					error: function () {
-						Swal.fire("Error", "Server error, please try again", "error");
-					},
-				});
-			}
-		});
-	});
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This image will be deleted!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: frontend + "admin/delete_supply_chain_our_leaders",
+                    type: "POST",
+                    data: { id: id },
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.status) {
+                            Swal.fire("Deleted!", response.message, "success");
+                            SupplyChainOurLeadersTable.ajax.reload(null, false);
+                        } else {
+                            Swal.fire("Error", response.message, "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error", "Server error, please try again", "error");
+                    },
+                });
+            }
+        });
+    });
 });
 
-$('#EditTalentFlexOurLeadersForm').submit(function (e) {
+$('#EditSupplyChainOurLeadersForm').submit(function (e) {
     e.preventDefault();
 
     let formData = new FormData(this);
     // Clear previous errors
-    $('#error_edit_name, #error_edit_designation, #error_edit_image').text('');
+    $('#error_edit_name, #error_edit_designation, #error_edit_image, #error_edit_link').text('');
 
     $.ajax({
-        url: frontend + "admin/update_talent_flex_our_leaders", // adjust to your route
+        url: frontend + "admin/update_supply_chain_our_leaders", // adjust to your route
         type: "POST",
         data: formData,
         dataType: "json",
@@ -218,11 +218,11 @@ $('#EditTalentFlexOurLeadersForm').submit(function (e) {
                     showConfirmButton: false
                 });
                 // Reset the form
-                $('#EditTalentFlexOurLeadersForm')[0].reset();
+                $('#EditSupplyChainOurLeadersForm')[0].reset();
                 // Clear previous image preview
                 $('#edit_image_preview').html('');
                 // Reload the DataTable
-                TalentFlexOurLeadersTable.ajax.reload(null, false);
+                SupplyChainOurLeadersTable.ajax.reload(null, false);
                 $('#EditModal').modal('hide');
                 // Optional: refresh data table or show toast
             } else if (response.status === 'error') {

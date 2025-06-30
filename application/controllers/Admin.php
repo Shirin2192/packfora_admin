@@ -2957,6 +2957,7 @@ class Admin extends CI_Controller {
 			$imagePath = 'uploads/' . $uploadData['file_name'];
 			$name = $this->input->post('name');
 			$designation = $this->input->post('designation');
+			$link = $this->input->post('link');
 			// Prepare data for insertion
 			$existingData = $this->model->selectWhereData('tbl_our_leaders', ['fk_service_id' => 1, 'name'=> $name,'is_delete' => '1'], '*');
 			if (!empty($existingData)) {
@@ -2970,6 +2971,7 @@ class Admin extends CI_Controller {
 					'fk_service_id'=> 1,
 					'name' => $name,
 					'designation' => $designation,
+					'link' => $link,
 					'image' => $imagePath,
 				];
 				// Insert into database
@@ -3048,6 +3050,7 @@ class Admin extends CI_Controller {
 		}
 		$name = $this->input->post('edit_name');
 		$designation = $this->input->post('edit_designation');
+		$link = $this->input->post('edit_link');
 
 		$existingData = $this->model->selectWhereData('tbl_our_leaders', ['fk_service_id' => 1, 'name'=> $name, 'is_delete' => '1', 'id !=' => $id], '*');
 		if (!empty($existingData)) {
@@ -3062,6 +3065,7 @@ class Admin extends CI_Controller {
 				'name' => $name,
 				'designation' => $designation,
 				'image' => $image,
+				'link' => $link,
 			];
 			if ($this->model->updateData('tbl_our_leaders', $data, array('id' => $id, 'fk_service_id' => 1, 'is_delete' => '1'))) {
 				echo json_encode(['status' => 'success', 'message' => 'Talent Flex Our Leaders updated successfully.']);
@@ -6061,23 +6065,23 @@ class Admin extends CI_Controller {
 	public function update_benefits_of_packaging_procurement()
 	{
 		$this->load->library('form_validation');
-    	$this->form_validation->set_rules('title', 'Title', 'required|trim');
-    	$this->form_validation->set_rules('description', 'Description', 'required|trim');
+    	$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+    	$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
 
 		if ($this->form_validation->run() === FALSE) {
 			echo json_encode([
 				'status' => 'error',
 				'errors' => [
-					'title' => form_error('title'),
-					'description' => form_error('description'),
+					'edit_title' => form_error('edit_title'),
+					'edit_description' => form_error('edit_description'),
 				]
 			]);
 			return;
 		}
 
 		$id = $this->input->post('id');
-		$title = $this->input->post('title');
-		$description = $this->input->post('description');
+		$title = $this->input->post('edit_title');
+		$description = $this->input->post('edit_description');
 		$previous_image = $this->input->post('edit_previous_image');
 
 		$image = $previous_image;
@@ -8822,6 +8826,374 @@ class Admin extends CI_Controller {
 		if ($id) {
 			// Soft delete by setting is_delete = 0 (you can change logic)
 			$update = $this->model->updateData('tbl_our_leaders', ['is_delete' => '0'], ['id' => $id, 'fk_service_id' => 4]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Our Leaders deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Our Leaders.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	// sustainability_our_leaders
+	public function sustainability_our_leaders(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/sustainability_our_leaders');
+		}
+	}
+	public function save_sustainability_our_leaders() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('name', 'Name', 'required|trim');
+		$this->form_validation->set_rules('designation', 'Designation', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'name' => form_error('name'),
+					'designation' => form_error('designation')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$name = $this->input->post('name');
+			$designation = $this->input->post('designation');
+			$link = $this->input->post('link');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_our_leaders', ['fk_service_id' => 1, 'name'=> $name,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				// If data already exists, update it
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Design Value Our Leaders already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 2,
+					'name' => $name,
+					'designation' => $designation,
+					'link' => $link,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_our_leaders',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Our Leaders saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Our Leaders.']);
+				}
+			}
+		}
+	}
+	public function get_sustainability_our_leaders_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_our_leaders',array('fk_service_id' => 2, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_sustainability_our_leaders_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_our_leaders',array('fk_service_id' => 2, 'is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_sustainability_our_leaders()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_name', 'Name', 'required|trim');
+		$this->form_validation->set_rules('edit_designation', 'Designation', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_name' => form_error('edit_name'),
+					'edit_designation' => form_error('edit_designation')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$name = $this->input->post('edit_name');
+		$designation = $this->input->post('edit_designation');
+		$link = $this->input->post('edit_link');
+
+		$existingData = $this->model->selectWhereData('tbl_our_leaders', ['fk_service_id' => 2, 'name'=> $name, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Our Leaders with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'name' => $name,
+				'designation' => $designation,
+				'image' => $image,
+				'link' => $link,
+			];
+			if ($this->model->updateData('tbl_our_leaders', $data, array('id' => $id, 'fk_service_id' => 2, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Our Leaders updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Our Leaders data.']);
+			}
+		}	
+	}
+	public function delete_sustainability_our_leaders()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_our_leaders', ['is_delete' => '0'], ['id' => $id, 'fk_service_id' => 2]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Our Leaders deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Our Leaders.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	// supply_chain_our_leaders
+	public function supply_chain_our_leaders(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/supply_chain_our_leaders');
+		}
+	}
+	public function save_supply_chain_our_leaders() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('name', 'Name', 'required|trim');
+		$this->form_validation->set_rules('designation', 'Designation', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'name' => form_error('name'),
+					'designation' => form_error('designation')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$name = $this->input->post('name');
+			$designation = $this->input->post('designation');
+			$link = $this->input->post('link');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_our_leaders', ['fk_service_id' => 1, 'name'=> $name,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				// If data already exists, update it
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Design Value Our Leaders already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 3,
+					'name' => $name,
+					'designation' => $designation,
+					'link' => $link,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_our_leaders',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Our Leaders saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Our Leaders.']);
+				}
+			}
+		}
+	}
+	public function get_supply_chain_our_leaders_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_our_leaders',array('fk_service_id' => 3, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_supply_chain_our_leaders_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_our_leaders',array('fk_service_id' => 3, 'is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_supply_chain_our_leaders()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_name', 'Name', 'required|trim');
+		$this->form_validation->set_rules('edit_designation', 'Designation', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_name' => form_error('edit_name'),
+					'edit_designation' => form_error('edit_designation')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$name = $this->input->post('edit_name');
+		$designation = $this->input->post('edit_designation');
+		$link = $this->input->post('edit_link');
+
+		$existingData = $this->model->selectWhereData('tbl_our_leaders', ['fk_service_id' => 3, 'name'=> $name, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Our Leaders with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'name' => $name,
+				'designation' => $designation,
+				'image' => $image,
+				'link' => $link,
+			];
+			if ($this->model->updateData('tbl_our_leaders', $data, array('id' => $id, 'fk_service_id' => 3, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Our Leaders updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Our Leaders data.']);
+			}
+		}	
+	}
+	public function delete_supply_chain_our_leaders()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_our_leaders', ['is_delete' => '0'], ['id' => $id, 'fk_service_id' => 2]);
 			if ($update) {
 				$response['status'] = true;
 				$response['message'] = 'Our Leaders deleted successfully.';
