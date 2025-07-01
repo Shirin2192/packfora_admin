@@ -128,6 +128,13 @@
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_packaging_procurement">Discover the Benefits</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_procurement_success_stories">Success Stories</a></li>
                      <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/packaging_procurement_our_leaders">Our Leaders</a></li>  
+
+                     <li class="nav-item ps-3"><span class="menu-child-header">Specification Management</span></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/specification_management_banner_video">Video Banner</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/specification_management_our_offerings">Our Offerings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/benefits_of_specification_management">Discover the Benefits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/specification_management_success_stories">Success Stories</a></li>
+                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/specification_management_our_leaders">Our Leaders</a></li>  
                 </ul>
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"><span class="menu-sub-header">Digital</span></li>

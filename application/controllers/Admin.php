@@ -2653,56 +2653,56 @@ class Admin extends CI_Controller {
 	{
 		$this->load->library('form_validation');
 
-    $this->form_validation->set_rules('title', 'Title', 'required|trim');
-    $this->form_validation->set_rules('description', 'Description', 'required|trim');
+	    $this->form_validation->set_rules('title', 'Title', 'required|trim');
+	    $this->form_validation->set_rules('description', 'Description', 'required|trim');
 
-    if ($this->form_validation->run() === FALSE) {
-        echo json_encode([
-            'status' => 'error',
-            'errors' => [
-                'title' => form_error('title'),
-                'description' => form_error('description'),
-            ]
-        ]);
-        return;
-    }
+	    if ($this->form_validation->run() === FALSE) {
+	        echo json_encode([
+	            'status' => 'error',
+	            'errors' => [
+	                'title' => form_error('title'),
+	                'description' => form_error('description'),
+	            ]
+	        ]);
+	        return;
+	    }
 
-    $id = $this->input->post('id');
-    $title = $this->input->post('title');
-    $description = $this->input->post('description');
-    $previous_image = $this->input->post('edit_previous_image');
+	    $id = $this->input->post('id');
+	    $title = $this->input->post('title');
+	    $description = $this->input->post('description');
+	    $previous_image = $this->input->post('edit_previous_image');
 
-    $image = $previous_image;
-    if (!empty($_FILES['edit_image']['name'])) {
-        $config['upload_path'] = './uploads/';
-        $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
-        $config['max_size'] = 2048;
+	    $image = $previous_image;
+	    if (!empty($_FILES['edit_image']['name'])) {
+	        $config['upload_path'] = './uploads/';
+	        $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+	        $config['max_size'] = 2048;
 
-        $this->load->library('upload', $config);
+	        $this->load->library('upload', $config);
 
-        if (!$this->upload->do_upload('edit_image')) {
-            echo json_encode([
-                'status' => 'error',
-                'errors' => ['edit_image' => $this->upload->display_errors('', '')]
-            ]);
-            return;
-        } else {
-            $upload_data = $this->upload->data();
-            $image = 'uploads/' . $upload_data['file_name'];
+	        if (!$this->upload->do_upload('edit_image')) {
+	            echo json_encode([
+	                'status' => 'error',
+	                'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+	            ]);
+	            return;
+	        } else {
+	            $upload_data = $this->upload->data();
+	            $image = 'uploads/' . $upload_data['file_name'];
 
-            // Optional: delete old image
-            if ($previous_image && file_exists($previous_image)) {
-                @unlink($previous_image);
-            }
-        }
-    }
+	            // Optional: delete old image
+	            if ($previous_image && file_exists($previous_image)) {
+	                @unlink($previous_image);
+	            }
+	        }
+	    }
 
-    // Update DB
-    $data = [
-        'title' => $title,
-        'description' => $description,
-        'image' => $image,
-    ];
+	    // Update DB
+	    $data = [
+	        'title' => $title,
+	        'description' => $description,
+	        'image' => $image,
+	    ];
 
 		if ($this->model->updateData('tbl_discover_benefits', $data, array('id' => $id, 'is_delete' => '1'))) {
 			echo json_encode(['status' => 'success', 'message' => 'Discover the Benefits of Talent Flex updated successfully.']);
@@ -9200,6 +9200,861 @@ class Admin extends CI_Controller {
 			} else {
 				$response['status'] = false;
 				$response['message'] = 'Failed to delete the Our Leaders.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	// packaging_procurement_our_leaders
+	public function packaging_procurement_our_leaders(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/packaging_procurement_our_leaders');
+		}
+	}
+	public function save_packaging_procurement_our_leaders() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('name', 'Name', 'required|trim');
+		$this->form_validation->set_rules('designation', 'Designation', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'name' => form_error('name'),
+					'designation' => form_error('designation')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$name = $this->input->post('name');
+			$designation = $this->input->post('designation');
+			$link = $this->input->post('link');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_our_leaders', ['fk_service_id' => 1, 'name'=> $name,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				// If data already exists, update it
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Design Value Our Leaders already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 8,
+					'name' => $name,
+					'designation' => $designation,
+					'link' => $link,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_our_leaders',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Our Leaders saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Our Leaders.']);
+				}
+			}
+		}
+	}
+	public function get_packaging_procurement_our_leaders_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_our_leaders',array('fk_service_id' => 8, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_packaging_procurement_our_leaders_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_our_leaders',array('fk_service_id' => 8, 'is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_packaging_procurement_our_leaders()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_name', 'Name', 'required|trim');
+		$this->form_validation->set_rules('edit_designation', 'Designation', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_name' => form_error('edit_name'),
+					'edit_designation' => form_error('edit_designation')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$name = $this->input->post('edit_name');
+		$designation = $this->input->post('edit_designation');
+		$link = $this->input->post('edit_link');
+
+		$existingData = $this->model->selectWhereData('tbl_our_leaders', ['fk_service_id' => 8, 'name'=> $name, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Our Leaders with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'name' => $name,
+				'designation' => $designation,
+				'image' => $image,
+				'link' => $link,
+			];
+			if ($this->model->updateData('tbl_our_leaders', $data, array('id' => $id, 'fk_service_id' => 8, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Our Leaders updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Our Leaders data.']);
+			}
+		}	
+	}
+	public function delete_packaging_procurement_our_leaders()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_our_leaders', ['is_delete' => '0'], ['id' => $id, 'fk_service_id' => 8]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Our Leaders deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Our Leaders.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	// Services /Talent Flex
+	public function specification_management_banner_video(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/specification_management_banner_video');
+		}
+	}
+	public function save_specification_management_banner_video() {
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('title', 'Title', 'required|trim');
+        $this->form_validation->set_rules('sub_title', 'Sub Title', 'required|trim');
+        $this->form_validation->set_rules('description', 'Description', 'required|trim');
+        $this->form_validation->set_rules('video', 'Video', 'callback_video_check');
+        if ($this->form_validation->run() == FALSE) {
+            echo json_encode([
+                'status' => 'error',
+                'errors' => [
+                    'title' => form_error('title'),
+                    'sub_title' => form_error('sub_title'),
+                    'description' => form_error('description'),
+                    'video' => form_error('video')
+                ]
+            ]);
+        } else {
+            $video_name = '';
+            if (!empty($_FILES['video']['name'])) {
+                $config['upload_path']   = './uploads/';
+                $config['allowed_types'] = 'mp4|mov|avi|wmv|webm';
+                $config['max_size']      = 51200; // 50MB
+                $this->load->library('upload', $config);
+                if (!$this->upload->do_upload('video')) {
+                    echo json_encode([
+                        'status' => 'error',
+                        'errors' => [
+                            'video' => $this->upload->display_errors()
+                        ]
+                    ]);
+                    return;
+                } else {
+                    $upload_data = $this->upload->data();
+                    $video_name = 'uploads/' . $upload_data['file_name'];
+                }
+            }
+			// Prepare data for insertion
+			
+            $insert_data = [
+                'video' => $video_name,
+				'title' => $this->input->post('title'),
+				'sub_title' => $this->input->post('sub_title'),
+				'description' => $this->input->post('description'),
+				'fk_service_id' => 9, // Assuming 1 is the service ID for Talent Flex
+            ];
+            $this->model->insertData('tbl_service_banner_video',$insert_data);
+            echo json_encode(['status' => 'success', 'message' => 'Video uploaded successfully']);
+        }
+    }
+	public function get_specification_management_banner_video_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_service_banner_video',array('is_delete'=>'1','fk_service_id' => 9), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_specification_management_banner_video_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_service_banner_video',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_specification_management_banner_video()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_sub_title', 'Sub Title', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					'edit_sub_title' => form_error('edit_sub_title'),
+					'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+		$id = $this->input->post('id');
+		$previous_video = $this->input->post('edit_previous_video');
+		$video_name = $previous_video;
+		// Only validate file if a new file is uploaded
+		if (!empty($_FILES['edit_video']['name'])) {
+			$config['upload_path']   = './uploads/';
+			$config['allowed_types'] = 'mp4|mov|avi|wmv|webm';
+			$config['max_size']      = 51200; // 50MB
+			$this->load->library('upload', $config);
+			if (!$this->upload->do_upload('edit_video')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => [
+						'edit_video' => $this->upload->display_errors('', '')
+					]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$video_name = 'uploads/' . $upload_data['file_name'];
+				// Optional: delete old video if exists and is different
+				if ($previous_video && file_exists($previous_video) && $previous_video != $video_name) {
+					@unlink($previous_video);
+				}
+			}
+		} else {
+			// If no new file, ensure previous video exists
+			if (empty($previous_video)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => [
+						'edit_video' => 'The Video field is required.'
+					]
+				]);
+				return;
+			}
+		}
+		$data = [
+			'video' => $video_name,
+			'title' => $this->input->post('edit_title'),
+			'sub_title' => $this->input->post('edit_sub_title'),
+			'description' => $this->input->post('edit_description')
+		];
+		if ($this->model->updateData('tbl_service_banner_video', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Video Banner updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update Video Banner data.']);
+		}
+	}
+	public function delete_specification_management_banner_video()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_service_banner_video', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Video Banner deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Video Banner.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	// specification_management_our_offerings
+	public function specification_management_our_offerings(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/specification_management_our_offerings');
+		}
+	}
+	public function save_specification_management_our_offering() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_our_offering', ['fk_service_id' => 1, 'title'=> $title,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				// If data already exists, update it
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Talent Flex Our Offerings already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 9,
+					'title' => $title,
+					'description' => $description,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_our_offering',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Talent Flex Our Offerings saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Talent Flex Our Offerings.']);
+				}
+			}
+		}
+	}
+	public function get_specification_management_our_offerings_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_our_offering',array('fk_service_id' => 9, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_specification_management_our_offering_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_our_offering',array('fk_service_id' => 9, 'is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_specification_management_our_offering()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$title = $this->input->post('edit_title');
+		$description = $this->input->post('edit_description');
+
+		$existingData = $this->model->selectWhereData('tbl_our_offering', ['fk_service_id' =>9, 'title'=> $title, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Talent Flex Our Offering with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'title' => $title,
+				'description' => $description,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_our_offering', $data, array('id' => $id, 'fk_service_id' => 9, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Talent Flex Our Offering updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Talent Flex Our Offering data.']);
+			}
+		}	
+	}
+	public function delete_specification_management_our_offering()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_our_offering', ['is_delete' => '0'], ['id' => $id, 'fk_service_id' => 9]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Talent Flex Our Offering deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Talent Flex Our Offering.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	// benefits_of_specification_management
+	public function benefits_of_specification_management(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/benefits_of_specification_management');
+		}
+	}
+	public function save_benefits_of_specification_management()
+	{
+		$this->load->library('form_validation');
+		// Set rules
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		// $this->form_validation->set_rules('description', 'Description', 'required');
+
+		if (empty($_FILES['image']['name'])) {
+			$this->form_validation->set_rules('image', 'Image', 'required');
+		}
+
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					// 'description' => form_error('description'),
+					'image' => form_error('image'),
+				]
+			]);
+		} else {
+			// File Upload (optional)
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp|svg';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['image' => $this->upload->display_errors('', '')]
+				]);
+			} else {
+				$uploadData = $this->upload->data();
+				$imagePath = 'uploads/' . $uploadData['file_name'];
+				// Prepare data for insertion
+				$data = [
+					'title' => $this->input->post('title'),
+					'description' => $this->input->post('description'),
+					'image' => $imagePath,
+					'fk_service_id' => 9, // Assuming 1 is the service ID for Talent Flex
+				];
+				// Insert into database
+				$this->model->insertData('tbl_discover_benefits', $data);
+
+				// Save to database or proceed with business logic
+				echo json_encode(['status' => 'success', 'message' => 'Discover the Benefits of Specification Management data saved successfully.']);
+			}
+		}
+	}
+	public function get_benefits_of_specification_management_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_discover_benefits',array('is_delete'=>'1','fk_service_id' => 9), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_benefits_of_specification_management_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_discover_benefits',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_benefits_of_specification_management()
+	{
+		$this->load->library('form_validation');
+
+	    $this->form_validation->set_rules('title', 'Title', 'required|trim');
+	    // $this->form_validation->set_rules('description', 'Description', 'required|trim');
+
+	    if ($this->form_validation->run() === FALSE) {
+	        echo json_encode([
+	            'status' => 'error',
+	            'errors' => [
+	                'title' => form_error('title'),
+	                // 'description' => form_error('description'),
+	            ]
+	        ]);
+	        return;
+	    }
+
+	    $id = $this->input->post('id');
+	    $title = $this->input->post('title');
+	    $description = $this->input->post('description');
+	    $previous_image = $this->input->post('edit_previous_image');
+
+	    $image = $previous_image;
+	    if (!empty($_FILES['edit_image']['name'])) {
+	        $config['upload_path'] = './uploads/';
+	        $config['allowed_types'] = 'jpg|jpeg|png|gif|webp|svg';
+	        $config['max_size'] = 2048;
+
+	        $this->load->library('upload', $config);
+
+	        if (!$this->upload->do_upload('edit_image')) {
+	            echo json_encode([
+	                'status' => 'error',
+	                'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+	            ]);
+	            return;
+	        } else {
+	            $upload_data = $this->upload->data();
+	            $image = 'uploads/' . $upload_data['file_name'];
+
+	            // Optional: delete old image
+	            if ($previous_image && file_exists($previous_image)) {
+	                @unlink($previous_image);
+	            }
+	        }
+	    }
+
+	    // Update DB
+	    $data = [
+	        'title' => $title,
+	        'description' => $description,
+	        'image' => $image,
+	    ];
+
+		if ($this->model->updateData('tbl_discover_benefits', $data, array('id' => $id, 'is_delete' => '1'))) {
+			echo json_encode(['status' => 'success', 'message' => 'Discover the Benefits of Specification Management updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update Discover the Benefits of Specification Management data.']);
+		}
+	}
+	public function delete_benefits_of_specification_management()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_discover_benefits', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Discover the Benefits of Specification Management deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Discover the Benefits of Specification Management.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+
+	// specification_management_success_stories
+	public function specification_management_success_stories(){
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/specification_management_success_stories');
+		}
+	}
+	public function save_specification_management_success_stories() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+		// $this->form_validation->set_rules('description', 'Description', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'title' => form_error('title'),
+					// 'description' => form_error('description')
+				]
+			]);
+			return;
+		}		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			// Prepare data for insertion
+			$existingData = $this->model->selectWhereData('tbl_success_stories', ['fk_service_id' => 1, 'title'=> $title,'is_delete' => '1'], '*');
+			if (!empty($existingData)) {
+				// If data already exists, update it
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Specification Management Success Stories already exists.'
+				]);
+			}else {
+				$data = [
+					'fk_service_id'=> 9,
+					'title' => $title,
+					'description' => $description,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_success_stories',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Talent Flex Success Stories saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save Specification Management Success Stories.']);
+				}
+			}
+		}
+	}
+	public function get_specification_management_success_stories_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_success_stories',array('fk_service_id' => 9, 'is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_specification_management_success_stories_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_success_stories',array('fk_service_id' => 9, 'is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_specification_management_success_stories()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		// $this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+					'edit_title' => form_error('edit_title'),
+					// 'edit_description' => form_error('edit_description')
+				]
+			]);
+			return;
+		}
+
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$title = $this->input->post('edit_title');
+		$description = $this->input->post('edit_description');
+
+		$existingData = $this->model->selectWhereData('tbl_success_stories', ['fk_service_id' => 9, 'title'=> $title, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Specification Management Our Offering with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'title' => $title,
+				'description' => $description,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_success_stories', $data, array('id' => $id, 'fk_service_id' => 9, 'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Specification Management Our Offering updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update Specification Management Our Offering data.']);
+			}
+		}	
+	}
+
+	public function delete_specification_management_success_stories()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_success_stories', ['is_delete' => '0'], ['id' => $id, 'fk_service_id' =>9]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Specification Management Our Offering deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Specification Management Our Offering.';
 			}
 		} else {
 			$response['status'] = false;
