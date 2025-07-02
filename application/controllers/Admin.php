@@ -6812,6 +6812,7 @@ class Admin extends CI_Controller {
 		$name = $this->input->post('edit_name');
 		$designation = $this->input->post('edit_designation');
 		$description = $this->input->post('edit_description');
+		$link = $this->input->post('edit_link');
 
 		$existingData = $this->model->selectWhereData('tbl_leadership_team', ['name'=> $name, 'is_delete' => '1', 'id !=' => $id], '*');
 		if (!empty($existingData)) {
@@ -6826,6 +6827,7 @@ class Admin extends CI_Controller {
 				'name' => $name,
 				'designation' => $designation,
 				'description' => $description,
+				'link' => $link,
 				'image' => $image,
 			];
 			if ($this->model->updateData('tbl_leadership_team', $data, array('id' => $id,'is_delete' => '1'))) {
@@ -10055,6 +10057,154 @@ class Admin extends CI_Controller {
 			} else {
 				$response['status'] = false;
 				$response['message'] = 'Failed to delete the Specification Management Our Offering.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
+	public function impact_enabled()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/impact_enabled');
+		}
+	}
+	public function save_impact_enabled() {
+		$this->load->library('form_validation');
+		
+		
+		if (empty($_FILES['image']['name'])) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => 'The Image field is required.']
+			]);
+			return;
+		}
+		// File Upload
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp|svg';
+		$config['max_size'] = 2048;
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('image')) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => ['image' => $this->upload->display_errors()]
+			]);
+			return;
+		} else {
+			$uploadData = $this->upload->data();
+			$imagePath = 'uploads/' . $uploadData['file_name'];			
+			$description = $this->input->post('description');		
+			
+				$data = [					
+					'description' => $description,
+					'image' => $imagePath,
+				];
+				// Insert into database
+				if($this->model->insertData('tbl_impact_enabled',$data)){
+					echo json_encode(['status' => 'success', 'message' => 'Data saved successfully.']);
+				}else{
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save data']);
+				}
+		}
+	}
+	public function get_impact_enabled_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_impact_enabled',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_impact_enabled_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_impact_enabled',array('is_delete'=>'1','id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_impact_enabled()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+				]
+			]);
+			return;
+		}
+		$id = $this->input->post('id');
+		$previous_image = $this->input->post('edit_previous_image');
+		if (!empty($_FILES['edit_image']['name'])) {
+			$config['upload_path'] = './uploads/';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+			$config['max_size'] = 2048;
+			$this->load->library('upload', $config);
+			if (!$this->upload->do_upload('edit_image')) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+				]);
+				return;
+			} else {
+				$upload_data = $this->upload->data();
+				$image = 'uploads/' . $upload_data['file_name'];
+
+				if ($previous_image && file_exists($previous_image)) {
+					unlink($previous_image);
+				}
+			}
+		} else {
+			if (empty($previous_image)) {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['edit_image' => 'The Image field is required.']
+				]);
+				return;
+			} else {
+				$image = $previous_image; // Use previous image if no new upload
+			}
+		}
+		$title = $this->input->post('edit_title');
+		$description = $this->input->post('edit_description');
+		$existingData = $this->model->selectWhereData('tbl_impact_enabled', ['title'=> $title, 'is_delete' => '1', 'id !=' => $id], '*');
+		if (!empty($existingData)) {
+			// If data already exists, return error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Specification Management Our Offering with this title already exists.'
+			]);
+			return;
+		} else {
+			$data = [
+				'description' => $description,
+				'image' => $image,
+			];
+			if ($this->model->updateData('tbl_impact_enabled', $data, array('id' => $id,'is_delete' => '1'))) {
+				echo json_encode(['status' => 'success', 'message' => 'Data updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update data.']);
+			}
+		}	
+	}
+
+	public function delete_impact_enabled()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_impact_enabled', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Data deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the data';
 			}
 		} else {
 			$response['status'] = false;

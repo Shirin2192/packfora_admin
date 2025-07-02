@@ -9,7 +9,6 @@
     <!-- plugins:css -->
     <?php include('common/css_files.php');?>
 </head>
-
 <body>
     <div class="container-scroller">
         <!-- partial:../../partials/_navbar.html -->
@@ -22,11 +21,11 @@
             <div class="main-panel">
                 <div class="content-wrapper">
                     <div class="page-header">
-                        <h3 class="page-title">Leadership Team </h3>
+                        <h3 class="page-title">Impact Enabled </h3>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Leadership Team</li>
+                                <li class="breadcrumb-item active" aria-current="page">Impact Enabled</li>
                             </ol>
                         </nav>
                     </div>
@@ -34,39 +33,15 @@
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <form id="LeadershipTeamForm" class="forms-sample"
+                                    <form id="ImpactEnabledForm" class="forms-sample"
                                         enctype="multipart/form-data">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="name">Name</label>
-                                                    <input type="text" class="form-control" name="name" id="name"
-                                                        placeholder="name">
-                                                    <div class="text-danger" id="error_name"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="designation">Designation</label>
-                                                    <input type="text" class="form-control" name="designation" id="designation"
-                                                        placeholder="Designation">
-                                                    <div class="text-danger" id="error_designation"></div>
-                                                </div>
-                                            </div>
+                                        <div class="row">                                         
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="description">Description</label>
                                                     <input type="text" class="form-control" name="description"
                                                         id="description" placeholder="description">
                                                     <div class="text-danger" id="error_description"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="link">Link</label>
-                                                    <input type="text" class="form-control" name="link" id="link"
-                                                        placeholder="link">
-                                                    <div class="text-danger" id="error_link"></div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -87,13 +62,10 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table id="LeadershipTeamTable" class="display">
+                                        <table id="ImpactEnabledTable" class="display">
                                             <thead>
                                                 <tr>
-                                                    <th>Sr. No.</th>
-                                                    <th>Title</th>
-                                                    <th>Designation</th>
-                                                    <th>Description</th>
+                                                    <th>Sr. No.</th>                         <th>Description</th>
                                                     <th>Image</th>
                                                     <th>Action</th>
                                                 </tr>
@@ -121,15 +93,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="modalBodyContent">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="view_name">Name</label>
-                                <p id="view_name"></p>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="view_designation">Designation</label>
-                                <p id="view_designation"></p>
-                            </div>
+                        <div class="row">                            
                             <div class="col-md-6">
                                 <label for="view_image">Image</label>
                                 <div id="view_image"></div>
@@ -156,26 +120,12 @@
                         <h5 class="modal-title" id="EditModalLabel">Edit Leadership Team</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form id="EditLeadershipTeamForm" enctype="multipart/form-data">
+                    <form id="EditImpactEnabledForm" enctype="multipart/form-data">
                         <div class="modal-body" id="modalBodyContent">
                             <input type="hidden" id="edit_id" name="id">
                             <input type="hidden" id="edit_previous_image" name="edit_previous_image">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="edit_name" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="edit_name" name="edit_name">
-                                    <div class="text-danger" id="error_edit_title"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="edit_designation" class="form-label">Designation</label>
-                                    <input type="text" class="form-control" id="edit_designation" name="edit_designation">
-                                    <div class="text-danger" id="error_edit_designation"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="edit_link" class="form-label">Link</label>
-                                    <input type="text" class="form-control" id="edit_link" name="edit_link">
-                                    <div class="text-danger" id="error_edit_link"></div>
-                                </div>
+                            <div class="row mb-3">                               
+                                
                                 <div class="col-md-6">
                                     <label for="edit_description" class="form-label">Description</label>
                                     <input type="text" class="form-control" id="edit_description" name="edit_description">
@@ -207,7 +157,7 @@
     <!-- container-scroller -->
     <!-- plugins:js -->
     <?php include('common/js_files.php');?>
-    <script src="<?= base_url()?>assets/view_js/leadership_team.js"></script>
+    <script src="<?= base_url()?>assets/view_js/impact_enabled.js"></script>
     <!-- End custom js for this page -->
     <script>
 

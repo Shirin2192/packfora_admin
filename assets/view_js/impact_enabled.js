@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    $('#LeadershipTeamForm').on('submit', function (e) {
+    $('#ImpactEnabledForm').on('submit', function (e) {
         e.preventDefault();
        // Clear previous error messages
         $('#error_title, #error_description, #error_image, #error_designation').text('');
         var formData = new FormData(this);
         $.ajax({
-            url: frontend + "admin/save_leadership_team",  // Adjust URL accordingly
+            url: frontend + "admin/save_impact_enabled",  // Adjust URL accordingly
             type: 'POST',
             data: formData,
             processData: false,
@@ -21,9 +21,9 @@ $(document).ready(function () {
                         timerProgressBar: true,
                         showConfirmButton: false
                     });
-                    $('#LeadershipTeamForm')[0].reset();
+                    $('#ImpactEnabledForm')[0].reset();
                      // Reload the DataTable
-                    LeadershipTeamTable.ajax.reload(null, false);
+                    ImpactEnabledTable.ajax.reload(null, false);
                 } else if (response.status === 'error') {
                     $.each(response.errors, function (key, val) {
                         $('#error_' + key).text(val);
@@ -40,9 +40,9 @@ $(document).ready(function () {
         console.error('The "frontend" variable is not defined.');
         return;
     }
-    LeadershipTeamTable = $('#LeadershipTeamTable').DataTable({
+    ImpactEnabledTable = $('#ImpactEnabledTable').DataTable({
         ajax: {
-            url: frontend + "admin/get_leadership_team_data",  // Adjust URL accordingly
+            url: frontend + "admin/get_impact_enabled_data",  // Adjust URL accordingly
             type: 'POST',
             dataSrc: function (json) {
                 // Ensure the response is an array; adjust if your backend wraps data in an object
@@ -65,8 +65,6 @@ $(document).ready(function () {
                 title: 'Sr. No.',
                 orderable: false
             },
-            { data: 'name' },
-            { data: 'designation' },
             { data: 'description' },
             { data: 'image', render: function (data) {
                 // Ensure 'frontend' ends with a slash if needed
@@ -96,18 +94,16 @@ $(document).ready(function () {
     });
 
     // Optional: Handle clicks for view/edit/delete
-    $("#LeadershipTeamTable").on("click", ".view-btn", function (e) {
+    $("#ImpactEnabledTable").on("click", ".view-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
 
         $.ajax({
-            url: frontend + "admin/get_leadership_team_details",
+            url: frontend + "admin/get_impact_enabled_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
-                $("#view_name").text(response.data.name);
-                $("#view_designation").text(response.data.designation);
                 $("#view_description").text(response.data.description);
                 if (response.data.image) {
                 const imageUrl = frontend + response.data.image;
@@ -125,22 +121,18 @@ $(document).ready(function () {
         });
     });
 
-    $("#LeadershipTeamTable").on("click", ".edit-btn", function (e) {
+    $("#ImpactEnabledTable").on("click", ".edit-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
         // Fetch details from server via POST
         $.ajax({
-            url: frontend + "admin/get_leadership_team_details",
+            url: frontend + "admin/get_impact_enabled_details",
             type: "POST",
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
                     $("#edit_id").val(response.data.id);
-                    $("#edit_name").val(response.data.name);
-                    $("#edit_designation").val(response.data.designation);
-                    $('#edit_id').val(response.data.id);
                     $("#edit_description").val(response.data.description);
-                    $("#edit_link").val(response.data.link);
                     $("#edit_previous_image").val(response.data.image); // Handle empty image case
                     if (response.data.image) {
                         const imageUrl = frontend + response.data.image;
@@ -159,7 +151,7 @@ $(document).ready(function () {
         });
     });
     // Delete action
-	$("#LeadershipTeamTable").on("click", ".delete-btn", function (e) {
+	$("#ImpactEnabledTable").on("click", ".delete-btn", function (e) {
 		e.preventDefault();
 		const id = $(this).data("id");
 
@@ -174,14 +166,14 @@ $(document).ready(function () {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				$.ajax({
-					url: frontend + "admin/delete_leadership_team",
+					url: frontend + "admin/delete_impact_enabled",
 					type: "POST",
 					data: { id: id },
 					dataType: "json",
 					success: function (response) {
 						if (response.status) {
 							Swal.fire("Deleted!", response.message, "success");
-							LeadershipTeamTable.ajax.reload(null, false);
+							ImpactEnabledTable.ajax.reload(null, false);
 						} else {
 							Swal.fire("Error", response.message, "error");
 						}
@@ -195,7 +187,7 @@ $(document).ready(function () {
 	});
 });
 
-$('#EditLeadershipTeamForm').submit(function (e) {
+$('#EditImpactEnabledForm').submit(function (e) {
     e.preventDefault();
 
     let formData = new FormData(this);
@@ -203,7 +195,7 @@ $('#EditLeadershipTeamForm').submit(function (e) {
     $('#error_edit_title, #error_edit_description, #error_edit_image').text('');
 
     $.ajax({
-        url: frontend + "admin/update_leadership_team", // adjust to your route
+        url: frontend + "admin/update_impact_enabled", // adjust to your route
         type: "POST",
         data: formData,
         dataType: "json",
@@ -220,11 +212,11 @@ $('#EditLeadershipTeamForm').submit(function (e) {
                     showConfirmButton: false
                 });
                 // Reset the form
-                $('#EditLeadershipTeamForm')[0].reset();
+                $('#EditImpactEnabledForm')[0].reset();
                 // Clear previous image preview
                 $('#edit_image_preview').html('');
                 // Reload the DataTable
-                LeadershipTeamTable.ajax.reload(null, false);
+                ImpactEnabledTable.ajax.reload(null, false);
                 $('#EditModal').modal('hide');
                 // Optional: refresh data table or show toast
             } else if (response.status === 'error') {
