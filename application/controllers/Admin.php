@@ -10212,6 +10212,139 @@ class Admin extends CI_Controller {
 		}
 		echo json_encode($response);
 	}
+
+	public function our_pillar()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/our_pillar');
+		}
+	}
+	public function save_pillars_section()
+	{
+	    $this->load->library('form_validation');
+
+	    $this->form_validation->set_rules('main_title', 'Main Title', 'required|trim');
+	    $this->form_validation->set_rules('subtitle', 'Subtitle', 'required|trim');
+	    $this->form_validation->set_rules('sub_heading', 'Sub Heading', 'required|trim');
+
+	    for ($i = 1; $i <= 3; $i++) {
+	        $this->form_validation->set_rules("optimize_desc_$i", "Optimize Description $i", 'trim');
+	    }
+
+	    if ($this->form_validation->run() == FALSE) {
+	        $errors = [];
+	        foreach ($_POST as $key => $value) {
+	            $errors[$key] = form_error($key);
+	        }
+	        echo json_encode(['status' => false, 'errors' => $errors]);
+	        return;
+	    }
+
+	    $upload_path = './uploads/';
+	    if (!is_dir($upload_path)) {
+	        mkdir($upload_path, 0777, true);
+	    }
+
+	    // Insert intro
+	    $intro_data = [
+	        'main_title' => $this->input->post('main_title'),
+	        'subtitle' => $this->input->post('subtitle'),
+	        'sub_heading' => $this->input->post('sub_heading'),
+	    ];
+	    $this->model->insertData('tbl_pillars_intro', $intro_data);
+
+	    // Science titles
+	    for ($i = 1; $i <= 3; $i++) {
+	        $title = $this->input->post("science_title_$i");
+	        if (!empty($title)) {
+	            $this->model->insertData('tbl_science_backed', [
+	                'title' => $title,
+	            ]);
+	        }
+	    }
+
+	    // Optimize icons and descriptions
+	    for ($i = 1; $i <= 3; $i++) {
+	        $desc = $this->input->post("optimize_desc_$i");
+	        $file_input = "optimize_icon_$i";
+	        $icon_filename = '';
+
+	        if (!empty($_FILES[$file_input]['name'])) {
+	            $config['upload_path'] = $upload_path;
+	            $config['allowed_types'] = 'jpg|jpeg|png|webp|svg';
+	            $config['file_name'] = 'icon_' . time() . "_$i";
+	            $this->load->library('upload', $config);
+
+	            if (!$this->upload->do_upload($file_input)) {
+	                echo json_encode(['status' => false, 'errors' => [$file_input => $this->upload->display_errors()]]);
+	                return;
+	            }
+	            $icon_filename = 'uploads/' . $this->upload->data('file_name');
+	        }
+
+	        if (!empty($desc)) {
+	            $this->model->insertData('tbl_optimize_packaging', [
+	                'icon' => $icon_filename,
+	                'description' => $desc,
+	            ]);
+	        }
+	    }
+
+	    // Right side image
+	    if (!empty($_FILES['right_image']['name'])) {
+	        $config['upload_path'] = $upload_path;
+	        $config['allowed_types'] = 'jpg|jpeg|png|webp|svg';
+	        $config['file_name'] = 'right_' . time();
+	        $this->load->library('upload', $config);
+
+	        if (!$this->upload->do_upload('right_image')) {
+	            echo json_encode(['status' => false, 'errors' => ['right_image' => $this->upload->display_errors()]]);
+	            return;
+	        }
+
+	        $image_path = 'uploads/' . $this->upload->data('file_name');
+	        $this->model->insertData('tbl_optimize_image', [
+	            'image' => $image_path,
+	        ]);
+	    }
+
+	    echo json_encode(['status' => true, 'message' => 'Pillars section saved successfully!']);
+	}
+	public function get_all_pillar()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_pillars_intro',array('is_delete'=>'1'),'*',false,array('id'=>'DESC'));
+		echo json_encode($response);
+	}
+	public function get_pillar_by_id() {
+    $id = $this->input->post('id');
+
+    // Intro
+    $intro = $this->model->selectWhereData('tbl_pillars_intro', ['id' => $id, 'is_delete' => '1']);
+
+    // Science titles
+    $science = $this->model->selectWhereData('tbl_science_backed',array('is_delete', 1),'*',false,array('id'=>'DESC'));
+    $science_titles = array_column($science, 'title');
+
+    // Optimize packaging
+    $optimize = $this->model->selectWhereData('tbl_optimize_packaging',array('is_delete'=> 1),'*', false,array('id'=>'DESC'));
+
+    // Right side image
+    $right_image = $this->model->selectWhereData('tbl_optimize_image',array('is_delete'=> 1),'*');
+   
+    echo json_encode([
+        'status' => true,
+        'data' => [
+            'intro' => $intro,
+            'science_titles' => $science_titles,
+            'optimize_points' => $optimize,
+            'right_image' => $right_image['image'] ?? ''
+        ]
+    ]);
+}
+
 }
 
     	

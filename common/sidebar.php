@@ -71,6 +71,7 @@
                     <li class="nav-item"><span class="menu-sub-header">Our Capabilities</span></li>
                     <!-- <li class="nav-item ps-3"><span class="menu-child-header">Talent Flex</span></li> -->
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/impact_enabled">Impact Enabled</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/our_pillar">Our Pillar</a></li>
                                     
                 </ul>
                 <ul class="nav flex-column sub-menu">
