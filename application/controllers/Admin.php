@@ -7041,76 +7041,83 @@ class Admin extends CI_Controller {
 		if (!$admin_session) {
 			redirect(base_url('common/index')); // Redirect to login page if session is not active
 		} else {
-			$this->load->view('admin/case_study');
+			$response['tags'] = $this->model->selectWhereData('tbl_case_study_tags',array(),'*',false);
+			$this->load->view('admin/case_study',$response);
 		}
 	}
-	public function save_case_study() {
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('description', 'Description', 'required|trim');
-		$this->form_validation->set_rules('link', 'Link', 'required|trim');
-		$this->form_validation->set_rules('title', 'Title', 'required|trim');
-		$this->form_validation->set_rules('date', 'Date', 'required|trim');
-		if ($this->form_validation->run() == FALSE) {
-			echo json_encode([
-				'status' => 'error',
-				'errors' => [
-					'description' => form_error('description'),
-					'link' => form_error('link'),
-					'title' => form_error('title'),
-					'date' => form_error('date'),
-				]
-			]);
-			return;
-		}		
-		if (empty($_FILES['image']['name'])) {
-			echo json_encode([
-				'status' => 'error',
-				'errors' => ['image' => 'The Image field is required.']
-			]);
-			return;
-		}
-		// File Upload
-		$config['upload_path'] = './uploads/';
-		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
-		$config['max_size'] = 2048;
-		$this->load->library('upload', $config);
-		if (!$this->upload->do_upload('image')) {
-			echo json_encode([
-				'status' => 'error',
-				'errors' => ['image' => $this->upload->display_errors()]
-			]);
-			return;
-		} else {
-			$uploadData = $this->upload->data();
-			$imagePath = 'uploads/' . $uploadData['file_name'];
-			$description = $this->input->post('description');
-			$link = $this->input->post('link');
-			$title = $this->input->post('title');
-			$date = $this->input->post('date');
-			// Prepare data for insertion
-			$existingData = $this->model->selectWhereData('tbl_case_study', ['description'=> $description,'is_delete' => '1'], '*');
-			if (!empty($existingData)) {
-				echo json_encode([
-					'status' => 'error',
-					'errors' => ['description' => "Data Already Exist"]
-				]);
-			}else {
-				$data = [
-					'description' => $description,
-					'link' => $link,
-					'image' => $imagePath,
-					'title' => $title,
-					'date' => $date,
-				];
-				// Insert into database
-				if($this->model->insertData('tbl_case_study',$data)){
-					echo json_encode(['status' => 'success', 'message' => 'Data saved successfully.']);
-				}else{
-					echo json_encode(['status' => 'error', 'message' => 'Failed to save Data.']);
-				}
-			}
-		}
+	public function save_case_study()	
+	{
+	    $this->load->library('form_validation');
+
+	    // Validate fields
+	    $this->form_validation->set_rules('title', 'Title', 'required');
+	    // $this->form_validation->set_rules('badge', 'Badge', 'required');
+	    // $this->form_validation->set_rules('description', 'Description', 'required');
+	    $this->form_validation->set_rules('link', 'Link', 'required');
+	    // $this->form_validation->set_rules('date', 'Publish Date', 'required');
+	    // $this->form_validation->set_rules('tags[]', 'Tags', 'required');
+
+	    if (empty($_FILES['image']['name'])) {
+	        $this->form_validation->set_rules('image', 'Image', 'required');
+	    }
+
+	    if ($this->form_validation->run() == FALSE) {
+	        // Return validation errors
+	        echo json_encode([
+	            'status' => 'error',
+	            'errors' => [
+	                'title' => form_error('title'),
+	                // 'badge' => form_error('badge'),
+	                'image' => form_error('image'),
+	                // 'description' => form_error('description'),
+	                'link' => form_error('link'),
+	                // 'date' => form_error('date'),
+	                // 'tags' => form_error('tags[]'),
+	            ]
+	        ]);
+	        return;
+	    }
+
+	    // Upload image
+	    $config['upload_path']   = './uploads/';
+	    $config['allowed_types'] = 'jpg|jpeg|png|webp';
+	    $config['encrypt_name']  = TRUE;
+
+	    $this->load->library('upload', $config);
+
+	    if (!$this->upload->do_upload('image')) {
+	        echo json_encode([
+	            'status' => 'error',
+	            'errors' => ['image' => $this->upload->display_errors('', '')]
+	        ]);
+	        return;
+	    }
+
+	    $upload_data = $this->upload->data();
+	    $image = $upload_data['file_name'];
+
+	    $tags = $this->input->post('tags');
+
+	    // Prepare data
+	    $data = [
+	        'title' => $this->input->post('title'),
+	        'badge' => $this->input->post('badge'),
+	        'image' => $image,
+	        'description' => $this->input->post('description'),
+	        // 'case_study_link' => $this->input->post('link'),
+	        'slug_url' => $this->input->post('link'),
+	        'publish_date' => $this->input->post('date'),
+	        'tag_id'=> implode(',', $tags),
+	    ];
+
+	    // Insert into main table
+	    $case_study_id = $this->model->insertData('tbl_case_study', $data);
+	    echo json_encode([
+	        'status' => 'success',
+	        'message' => 'Case Study saved successfully.'
+	    ]);
 	}
+
 	public function get_case_study_data(){
 		$response['data'] = $this->model->selectWhereData('tbl_case_study',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
 		echo json_encode($response);
@@ -10319,32 +10326,108 @@ class Admin extends CI_Controller {
 		echo json_encode($response);
 	}
 	public function get_pillar_by_id() {
-    $id = $this->input->post('id');
+		    $id = $this->input->post('id');
 
-    // Intro
-    $intro = $this->model->selectWhereData('tbl_pillars_intro', ['id' => $id, 'is_delete' => '1']);
+		    // Intro
+		    $intro = $this->model->selectWhereData('tbl_pillars_intro', ['id' => $id, 'is_delete' => '1']);
 
-    // Science titles
-    $science = $this->model->selectWhereData('tbl_science_backed',array('is_delete', 1),'*',false,array('id'=>'DESC'));
-    $science_titles = array_column($science, 'title');
+		    // Science titles
+		    $science = $this->model->selectWhereData('tbl_science_backed',array('is_delete', 1),'*',false,array('id'=>'DESC'));
+		    $science_titles = array_column($science, 'title');
 
-    // Optimize packaging
-    $optimize = $this->model->selectWhereData('tbl_optimize_packaging',array('is_delete'=> 1),'*', false,array('id'=>'DESC'));
+		    // Optimize packaging
+		    $optimize = $this->model->selectWhereData('tbl_optimize_packaging',array('is_delete'=> 1),'*', false,array('id'=>'DESC'));
 
-    // Right side image
-    $right_image = $this->model->selectWhereData('tbl_optimize_image',array('is_delete'=> 1),'*');
-   
-    echo json_encode([
-        'status' => true,
-        'data' => [
-            'intro' => $intro,
-            'science_titles' => $science_titles,
-            'optimize_points' => $optimize,
-            'right_image' => $right_image['image'] ?? ''
-        ]
-    ]);
-}
+		    // Right side image
+		    $right_image = $this->model->selectWhereData('tbl_optimize_image',array('is_delete'=> 1),'*');
+		   
+		    echo json_encode([
+		        'status' => true,
+		        'data' => [
+		            'intro' => $intro,
+		            'science_titles' => $science_titles,
+		            'optimize_points' => $optimize,
+		            'right_image' => $right_image['image'] ?? ''
+		        ]
+		    ]);
+	}
 
+	public function case_study_tags()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/case_study_tag');
+		}
+	}
+	public function save_case_study_tags() {
+	    $this->load->library('form_validation');
+
+	    // Set validation rules
+	    $this->form_validation->set_rules('name', 'Tag Name', 'required|trim');
+	    $this->form_validation->set_rules('category', 'Category', 'required|trim');
+
+	    if ($this->form_validation->run() == FALSE) {
+	        // Send back validation errors
+	        echo json_encode([
+	            'status' => 'error',
+	            'message' => validation_errors()
+	        ]);
+	    } else {
+	        $name = $this->input->post('name');
+	        $category = $this->input->post('category');
+
+	        $data = [
+	            'name' => $name,
+	            'category' => $category
+	        ];
+
+	        if ($this->model->insertData('tbl_case_study_tags', $data)) {
+	            echo json_encode(['status' => 'success', 'message' => 'Tag saved successfully.']);
+	        } else {
+	            echo json_encode(['status' => 'error', 'message' => 'Failed to save tag.']);
+	        }
+	    }
+	}
+	public function get_case_study_tags_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_case_study_tags',array(), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_case_study_tags_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_case_study_tags',array('id'=> $id), '*');
+		echo json_encode($response);
+	}
+	public function update_case_study_tags()
+	{
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('id', 'ID', 'required');
+		
+		if ($this->form_validation->run() === FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'errors' => [
+					'id' => form_error('id'),
+				]
+			]);
+			return;
+		}
+		$id = $this->input->post('id');
+		$name = $this->input->post('edit_name');
+		$category = $this->input->post('edit_category');
+			$data = [
+				'category' => $category,
+				'name' => $name,
+			];
+			if ($this->model->updateData('tbl_case_study_tags', $data, array('id' => $id))) {
+				echo json_encode(['status' => 'success', 'message' => 'Data updated successfully.']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to update data.']);
+			}
+		}
 }
 
     	

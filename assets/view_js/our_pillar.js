@@ -103,42 +103,42 @@ $('#PillarsFullForm').on('submit', function(e) {
     });
     });
 
-      $("#pillarsTable").on("click", ".edit-btn", function (e) {
+    $("#pillarsTable").on("click", ".edit-btn", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
 
-       $.ajax({
-        url: frontend + 'admin/get_pillar_by_id',
-        type: 'POST',
-        data: { id: id },
-        dataType: 'json',
-        success: function(response) {
-            if (response.status === true) {
-                const data = response.data;
+           $.ajax({
+            url: frontend + 'admin/get_pillar_by_id',
+            type: 'POST',
+            data: { id: id },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === true) {
+                    const data = response.data;
 
-                $('#edit_main_title').val(data.intro.main_title);
-                $('#edit_subtitle').val(data.intro.subtitle);
-                $('#edit_sub_heading').val(data.intro.sub_heading);
+                    $('#edit_main_title').val(data.intro.main_title);
+                    $('#edit_subtitle').val(data.intro.subtitle);
+                    $('#edit_sub_heading').val(data.intro.sub_heading);
 
-                $('#edit_science_title_1').val(data.science_titles[0]);
-                $('#edit_science_title_2').val(data.science_titles[1]);
-                $('#edit_science_title_3').val(data.science_titles[2]);
+                    $('#edit_science_title_1').val(data.science_titles[0]);
+                    $('#edit_science_title_2').val(data.science_titles[1]);
+                    $('#edit_science_title_3').val(data.science_titles[2]);
 
-                for (let i = 0; i < 3; i++) {
-                    $('#edit_opt_desc_' + (i + 1)).val(data.optimize_points[i]?.description ?? '');
-                    if (data.optimize_points[i]?.icon) {
-                        $('#edit_opt_icon_' + (i + 1)).html('<img src="' + frontend + data.optimize_points[i].icon + '" width="50">');
+                    for (let i = 0; i < 3; i++) {
+                        $('#edit_opt_desc_' + (i + 1)).val(data.optimize_points[i]?.description ?? '');
+                        if (data.optimize_points[i]?.icon) {
+                            $('#edit_opt_icon_' + (i + 1)).html('<img src="' + frontend + data.optimize_points[i].icon + '" width="50">');
+                        }
                     }
-                }
-                if (data.right_image) {
-                    $('#edit_right_image_preview').html('<img src="' + frontend + data.right_image + '" class="img-fluid" width="200">');
+                    if (data.right_image) {
+                        $('#edit_right_image_preview').html('<img src="' + frontend + data.right_image + '" class="img-fluid" width="200">');
+                    } else {
+                        $('#edit_right_image_preview').html('');
+                    }
+                    $('#EditModal').modal('show');
                 } else {
-                    $('#edit_right_image_preview').html('');
+                    alert('No data found!');
                 }
-                $('#EditModal').modal('show');
-            } else {
-                alert('No data found!');
             }
-        }
-    });
+        });
     });

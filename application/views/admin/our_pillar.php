@@ -199,49 +199,91 @@
         </div>
 
         <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
 
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="EditModalLabel">Edit Current Opening Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form id="EditDiscovertheBenefitsofDesignValueForm" enctype="multipart/form-data">
-                        <div class="modal-body" id="modalBodyContent">
-                            <input type="hidden" id="edit_id" name="id">
-                            <input type="hidden" id="edit_previous_image" name="edit_previous_image">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="edit_title" class="form-label">Title</label>
-                                    <input type="text" class="form-control" id="edit_title" name="title">
-                                    <div class="text-danger" id="error_edit_title"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="edit_description" class="form-label">Description</label>
-                                    <input type="text" class="form-control" id="edit_description" name="description">
-                                    <div class="text-danger" id="error_edit_description"></div>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="edit_image" class="form-label">Image</label>
-                                    <input type="file" class="form-control" id="edit_image" name="edit_image">
-                                    <div id="current_image" class="mt-2"></div>
-                                    <div class="text-danger" id="error_edit_image"></div>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div id="edit_image_preview"></div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Update</button>
-                        </div>
-                    </form>
-                </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="EditModalLabel">Edit Pillar Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
+            <form id="EditDiscovertheBenefitsofDesignValueForm" enctype="multipart/form-data">
+                <div class="modal-body" id="modalBodyContent">
+                    <input type="hidden" id="edit_id" name="id">
+                    <input type="hidden" id="edit_previous_image" name="edit_previous_image">
+
+                    <!-- Intro Section -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="edit_main_title" class="form-label">Main Title</label>
+                            <input type="text" class="form-control" id="edit_main_title" name="main_title">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="edit_subtitle" class="form-label">Subtitle</label>
+                            <input type="text" class="form-control" id="edit_subtitle" name="subtitle">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="edit_sub_heading" class="form-label">Sub Heading</label>
+                            <input type="text" class="form-control" id="edit_sub_heading" name="sub_heading">
+                        </div>
+                    </div>
+
+                    <!-- Science Titles -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="edit_science_title_1" class="form-label">Science Title 1</label>
+                            <input type="text" class="form-control" id="edit_science_title_1" name="science_title_1">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="edit_science_title_2" class="form-label">Science Title 2</label>
+                            <input type="text" class="form-control" id="edit_science_title_2" name="science_title_2">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="edit_science_title_3" class="form-label">Science Title 3</label>
+                            <input type="text" class="form-control" id="edit_science_title_3" name="science_title_3">
+                        </div>
+                    </div>
+
+                    <!-- Optimize Points (Descriptions and Icons) -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="edit_opt_desc_1" class="form-label">Optimize Description 1</label>
+                            <input type="text" class="form-control" id="edit_opt_desc_1" name="opt_desc_1">
+                            <div id="edit_opt_icon_1" class="mt-2"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="edit_opt_desc_2" class="form-label">Optimize Description 2</label>
+                            <input type="text" class="form-control" id="edit_opt_desc_2" name="opt_desc_2">
+                            <div id="edit_opt_icon_2" class="mt-2"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="edit_opt_desc_3" class="form-label">Optimize Description 3</label>
+                            <input type="text" class="form-control" id="edit_opt_desc_3" name="opt_desc_3">
+                            <div id="edit_opt_icon_3" class="mt-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side Image -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="edit_image" class="form-label">Right Side Image</label>
+                            <input type="file" class="form-control" id="edit_image" name="edit_image">
+                            <div id="edit_right_image_preview" class="mt-2"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+
         </div>
+    </div>
+</div>
+
         <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
