@@ -66,13 +66,15 @@ $(document).ready(function () {
                 title: 'Sr. No.',
                 orderable: false
             },
-            { data: 'image', render: function (data) {
+            { data: 'image', 
+                render: function (data) {
                 // Ensure 'frontend' ends with a slash if needed
-                var imageUrl = frontend + data;
+                var imageUrl = frontend +data;
+                console.log(imageUrl);
                 return `<img src="${imageUrl}" alt="Image" style="width: 50px; height: 50px; background-color:#5555; ">`;
             }},            
+            { data: 'title' },
             { data: 'description' },
-            { data: 'link' },
             {
 				data: null,
 				orderable: false,
@@ -127,45 +129,69 @@ $(document).ready(function () {
     });
 
     $("#CaseSṭudyTable").on("click", ".edit-btn", function (e) {
-        e.preventDefault();
-        const id = $(this).data("id");
-        // Fetch details from server via POST
-        $.ajax({
-            url: frontend + "admin/get_case_study_details",
-            type: "POST",
-            dataType: "json",
-            data: { id: id }, // send id in POST data
-            success: function (response) {
-                    $("#edit_id").val(response.data.id);
-                    $("#edit_link").val(response.data.link);
-                    $('#edit_id').val(response.data.id);
-                    $("#edit_description").val(response.data.description);
-                    $("#edit_title").val(response.data.title);
-                    // Original format: yyyy-mm-dd
-                    let originalDate = response.data.date;
-                    if (originalDate && /^\d{4}-\d{2}-\d{2}$/.test(originalDate)) {
-                        $("#edit_date").val(originalDate);  // directly set for <input type="date">
-                    } else {
-                        console.warn("Invalid or missing date format:", originalDate);
-                        $("#edit_date").val(""); // optional: clear field on bad format
-                    }
-                    $("#edit_previous_image").val(response.data.image); // Handle empty image case
-                    if (response.data.image) {
-                        const imageUrl = frontend + response.data.image;
-                        $("#edit_image_preview").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px; background-color:#5555;">');
-                    } else {
-                        $("#edit_image_preview").html('');
-                    }
-                    $('#EditModal').modal('show');
-                
-            },
-            error: function () {
-                $("#edit_title").val("Error loading data");
-                $("#edit_description").val("Error loading data");
-                $("#edit_image_preview").html('');
-            },
-        });
+    e.preventDefault();
+    const id = $(this).data("id");
+
+    // Fetch details from server
+    $.ajax({
+        url: frontend + "admin/get_case_study_details",
+        type: "POST",
+        dataType: "json",
+        data: { id: id },
+        success: function (response) {
+                const data = response.data;
+
+                $("#edit_id").val(data.id);
+                $("#edit_title").val(data.title);
+                $("#edit_description").val(data.description);
+                $("#edit_link").val(data.slug_url);
+                $("#edit_badge").val(data.badge);
+                $("#edit_previous_image").val(data.image);
+                $('#edit_previous_video').val(data.video);
+
+                // Date
+                if (data.date && /^\d{4}-\d{2}-\d{2}$/.test(data.date)) {
+                    $("#edit_date").val(data.date);
+                } else {
+                    $("#edit_date").val("");
+                }
+
+                // Tags - assuming it's comma-separated IDs
+                if (data.tag_id) {
+                    const tagArray = data.tag_id.split(',');
+                    $("#edit_tags").val(tagArray).trigger("chosen:updated");
+                }
+
+                // Image Preview
+                if (data.image) {
+                    const imageUrl = frontend + data.image;
+                    $("#current_image").html(`<img src="${imageUrl}" class="img-fluid" style="max-height: 150px; background-color:#5555;">`);
+                } else {
+                    $("#current_image").html('');
+                }
+
+                // Video Preview
+                if (data.video) {
+                    const videoUrl = frontend + data.video;
+                    console.log(videoUrl);
+                    $("#current_video").html(`
+                        <video width="100%" controls style="max-height: 200px;">
+                            <source src="${videoUrl}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    `);
+                } else {
+                    $("#current_video").html('');
+                }
+
+                $('#EditModal').modal('show');
+        },
+        error: function () {
+            alert("Error while fetching case study details.");
+        },
     });
+});
+
     // Delete action
 	$("#CaseSṭudyTable").on("click", ".delete-btn", function (e) {
 		e.preventDefault();

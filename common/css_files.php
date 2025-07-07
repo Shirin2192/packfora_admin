@@ -6,7 +6,7 @@
 	 <link rel="stylesheet" href="<?= base_url();?>assets/vendors/select2/select2.min.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.css" />
- 
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css">
     <!-- endinject -->
     <!-- Plugin css for this page -->
     <!-- End plugin css for this page -->

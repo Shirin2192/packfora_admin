@@ -102,16 +102,9 @@ $(document).ready(function () {
             dataType: "json",
             data: { id: id }, // send id in POST data
             success: function (response) {
-                $("#view_title").text(response.data.title);
-                $("#view_description").text(response.data.description);
-                $("#view_link").text(response.data.link);
-                $("#view_date").text(response.data.date);
-                if (response.data.image) {
-                const imageUrl = frontend + response.data.image;
-                $("#view_image").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px; background-color:#5555;">');
-            } else {
-                $("#view_image").html('');
-            }
+                $("#view_category").text(response.data.category);
+                $("#view_name").text(response.data.name);
+               
             $('#ViewModal').modal('show');
             },
             error: function () {
@@ -133,27 +126,9 @@ $(document).ready(function () {
             data: { id: id }, // send id in POST data
             success: function (response) {
                     $("#edit_id").val(response.data.id);
-                    $("#edit_link").val(response.data.link);
-                    $('#edit_id').val(response.data.id);
-                    $("#edit_description").val(response.data.description);
-                    $("#edit_title").val(response.data.title);
-                    // Original format: yyyy-mm-dd
-                    let originalDate = response.data.date;
-                    if (originalDate && /^\d{4}-\d{2}-\d{2}$/.test(originalDate)) {
-                        $("#edit_date").val(originalDate);  // directly set for <input type="date">
-                    } else {
-                        console.warn("Invalid or missing date format:", originalDate);
-                        $("#edit_date").val(""); // optional: clear field on bad format
-                    }
-                    $("#edit_previous_image").val(response.data.image); // Handle empty image case
-                    if (response.data.image) {
-                        const imageUrl = frontend + response.data.image;
-                        $("#edit_image_preview").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px; background-color:#5555;">');
-                    } else {
-                        $("#edit_image_preview").html('');
-                    }
-                    $('#EditModal').modal('show');
-                
+                    $("#edit_name").val(response.data.name);                   
+                    $("#edit_category").val(response.data.category);                   
+                    $('#EditModal').modal('show');                
             },
             error: function () {
                 $("#edit_title").val("Error loading data");
@@ -204,7 +179,7 @@ $('#EditCaseStudyTagForm').submit(function (e) {
 
     let formData = new FormData(this);
     // Clear previous errors
-    $('#error_edit_link, #error_edit_description, #error_edit_image').text('');
+    $('#error_edit_name, #error_edit_category').text('');
 
     $.ajax({
         url: frontend + "admin/update_case_study_tags", // adjust to your route
@@ -233,14 +208,11 @@ $('#EditCaseStudyTagForm').submit(function (e) {
                 // Optional: refresh data table or show toast
             } else if (response.status === 'error') {
                 // Show validation errors
-                if (response.errors.title) {
-                    $('#error_edit_link').text(response.errors.link);
+                if (response.errors.category) {
+                    $('#error_edit_category').text(response.errors.category);
                 }
-                if (response.errors.description) {
-                    $('#error_edit_description').text(response.errors.description);
-                }
-                if (response.errors.image) {
-                    $('#error_edit_image').text(response.errors.image);
+                if (response.errors.name) {
+                    $('#error_edit_name').text(response.errors.name);
                 }
             }
         }

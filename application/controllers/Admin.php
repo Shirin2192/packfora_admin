@@ -1,5 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+ini_set('post_max_size', '0');           // Unlimited POST size
+ini_set('upload_max_filesize', '0');     // Unlimited file upload size
+ini_set('memory_limit', '-1');           // No memory limit
+ini_set('max_execution_time', '0');      // No timeout
 
 class Admin extends CI_Controller {
 	public function index()
@@ -7045,17 +7049,13 @@ class Admin extends CI_Controller {
 			$this->load->view('admin/case_study',$response);
 		}
 	}
-	public function save_case_study()	
+	public function save_case_study()
 	{
 	    $this->load->library('form_validation');
 
 	    // Validate fields
 	    $this->form_validation->set_rules('title', 'Title', 'required');
-	    // $this->form_validation->set_rules('badge', 'Badge', 'required');
-	    // $this->form_validation->set_rules('description', 'Description', 'required');
 	    $this->form_validation->set_rules('link', 'Link', 'required');
-	    // $this->form_validation->set_rules('date', 'Publish Date', 'required');
-	    // $this->form_validation->set_rules('tags[]', 'Tags', 'required');
 
 	    if (empty($_FILES['image']['name'])) {
 	        $this->form_validation->set_rules('image', 'Image', 'required');
@@ -7067,12 +7067,8 @@ class Admin extends CI_Controller {
 	            'status' => 'error',
 	            'errors' => [
 	                'title' => form_error('title'),
-	                // 'badge' => form_error('badge'),
 	                'image' => form_error('image'),
-	                // 'description' => form_error('description'),
 	                'link' => form_error('link'),
-	                // 'date' => form_error('date'),
-	                // 'tags' => form_error('tags[]'),
 	            ]
 	        ]);
 	        return;
@@ -7094,8 +7090,30 @@ class Admin extends CI_Controller {
 	    }
 
 	    $upload_data = $this->upload->data();
-	    $image = $upload_data['file_name'];
+	    $image = 'uploads/'.$upload_data['file_name'];
 
+	    // --- VIDEO Upload ---
+	    $video = '';
+	    if (!empty($_FILES['video']['name'])) {
+	        $video_config['upload_path']   = './uploads/';
+	        $video_config['allowed_types'] = 'mp4|webm|ogg';
+	        $video_config['encrypt_name']  = TRUE;
+
+	        $this->upload->initialize($video_config); // Reinitialize with video config
+
+	        if (!$this->upload->do_upload('video')) {
+	            echo json_encode([
+	                'status' => 'error',
+	                'errors' => ['video' => $this->upload->display_errors('', '')]
+	            ]);
+	            return;
+	        }
+
+	        $video_data = $this->upload->data();
+	        $video = 'uploads/'.$video_data['file_name'];
+	    }
+
+	    // Tags
 	    $tags = $this->input->post('tags');
 
 	    // Prepare data
@@ -7103,20 +7121,22 @@ class Admin extends CI_Controller {
 	        'title' => $this->input->post('title'),
 	        'badge' => $this->input->post('badge'),
 	        'image' => $image,
+	        'video' => $video, // <-- new field for video
 	        'description' => $this->input->post('description'),
-	        // 'case_study_link' => $this->input->post('link'),
 	        'slug_url' => $this->input->post('link'),
 	        'publish_date' => $this->input->post('date'),
-	        'tag_id'=> implode(',', $tags),
+	        'tag_id' => implode(',', $tags),
 	    ];
 
 	    // Insert into main table
 	    $case_study_id = $this->model->insertData('tbl_case_study', $data);
+
 	    echo json_encode([
 	        'status' => 'success',
 	        'message' => 'Case Study saved successfully.'
 	    ]);
 	}
+
 
 	public function get_case_study_data(){
 		$response['data'] = $this->model->selectWhereData('tbl_case_study',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
@@ -7127,90 +7147,138 @@ class Admin extends CI_Controller {
 		$response['data'] = $this->model->selectWhereData('tbl_case_study',array('is_delete'=>'1','id'=>$id), '*');
 		echo json_encode($response);
 	}
-	public function update_case_study(){
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('id', 'ID', 'required');
-		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
-		$this->form_validation->set_rules('edit_link', 'Link', 'required|trim');
-		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
-		$this->form_validation->set_rules('edit_date', 'Date', 'required|trim');
+	public function update_case_study()
+	{
+	    $this->load->library('form_validation');
 
-		if ($this->form_validation->run() === FALSE) {
-			echo json_encode([
-				'status' => 'error',
-				'errors' => [
-					'id' => form_error('id'),
-					'edit_description' => form_error('edit_description'),
-					'edit_link' => form_error('edit_link'),
-					'edit_title' => form_error('edit_title'),
-					'edit_date' => form_error('edit_date'),
-				]
-			]);
-			return;
-		}
+	    // Validate fields
+	    $this->form_validation->set_rules('id', 'ID', 'required');
+	    $this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+	    $this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+	    $this->form_validation->set_rules('edit_link', 'Link', 'required|trim');
 
-		$id = $this->input->post('id');
-		$previous_image = $this->input->post('edit_previous_image');
-		
-		if (!empty($_FILES['edit_image']['name'])) {
-			$config['upload_path'] = './uploads/';
-			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
-			$config['max_size'] = 2048;
+	    if ($this->form_validation->run() === FALSE) {
+	        echo json_encode([
+	            'status' => 'error',
+	            'errors' => [
+	                'id' => form_error('id'),
+	                'edit_title' => form_error('edit_title'),
+	                'edit_description' => form_error('edit_description'),
+	                'edit_link' => form_error('edit_link'),
+	            ]
+	        ]);
+	        return;
+	    }
 
-			$this->load->library('upload', $config);
+	    $id = $this->input->post('id');
+	    $previous_image = $this->input->post('edit_previous_image');
 
-			if (!$this->upload->do_upload('edit_image')) {
-				echo json_encode([
-					'status' => 'error',
-					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
-				]);
-				return;
-			} else {
-				$upload_data = $this->upload->data();
-				$image = 'uploads/' . $upload_data['file_name'];
+	    // Upload new image
+	    if (!empty($_FILES['edit_image']['name'])) {
+	        $config['upload_path'] = './uploads/';
+	        $config['allowed_types'] = 'jpg|jpeg|png|webp';
+	        $config['encrypt_name']  = TRUE;
 
-				if ($previous_image && file_exists($previous_image)) {
-					unlink($previous_image);
-				}
-			}
-		} else {
-			if (empty($previous_image)) {
-				echo json_encode([
-					'status' => 'error',
-					'errors' => ['edit_image' => 'The Image field is required.']
-				]);
-				return;
-			} else {
-				$image = $previous_image; // Use previous image if no new upload
-			}
-		}
-		$description = $this->input->post('edit_description');
-		$link = $this->input->post('edit_link');
-		$title = $this->input->post('edit_title');
-		$date = $this->input->post('edit_date');
+	        $this->load->library('upload', $config);
 
-		$existingData = $this->model->selectWhereData('tbl_case_study', ['description'=> $description, 'is_delete' => '1', 'id !=' => $id], '*');
-		if (!empty($existingData)) {
-			// If data already exists, return error
-			echo json_encode([
-				'status' => 'error',
-				'message' => 'Data with this description already exists.'
-			]);
-			return;
-		} else {
-			$data = [
-				'description' => $description,
-				'link' => $link,
-				'image' => $image,
-				'title' => $title,
-				'date' => $date,
-			];
-			if ($this->model->updateData('tbl_case_study', $data, array('id' => $id,'is_delete' => '1'))) {
-				echo json_encode(['status' => 'success', 'message' => 'Data updated successfully.']);
-			} else {
-				echo json_encode(['status' => 'error', 'message' => 'Failed to update Data.']);
-			}
-		}		
+	        if (!$this->upload->do_upload('edit_image')) {
+	            echo json_encode([
+	                'status' => 'error',
+	                'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+	            ]);
+	            return;
+	        } else {
+	            $upload_data = $this->upload->data();
+	            $image = 'uploads/' . $upload_data['file_name'];
+
+	            // Delete old image
+	            if ($previous_image && file_exists($previous_image)) {
+	                unlink($previous_image);
+	            }
+	        }
+	    } else {
+	        if (empty($previous_image)) {
+	            echo json_encode([
+	                'status' => 'error',
+	                'errors' => ['edit_image' => 'The Image field is required.']
+	            ]);
+	            return;
+	        } else {
+	            $image = $previous_image;
+	        }
+	    }
+
+	    // Upload new video (optional)
+	    $video = null;
+	    if (!empty($_FILES['edit_video']['name'])) {
+	        $video_config['upload_path']   = './uploads/';
+	        $video_config['allowed_types'] = 'mp4|webm|ogg';
+	        $video_config['encrypt_name']  = TRUE;
+
+	        $this->upload->initialize($video_config);
+
+	        if (!$this->upload->do_upload('edit_video')) {
+	            echo json_encode([
+	                'status' => 'error',
+	                'errors' => ['edit_video' => $this->upload->display_errors('', '')]
+	            ]);
+	            return;
+	        } else {
+	            $video_data = $this->upload->data();
+	            $video = 'uploads/' . $video_data['file_name'];
+	        }
+	    }
+
+	    // Collect form data
+	    $data = [
+	        'title'         => $this->input->post('edit_title'),
+	        'badge'         => $this->input->post('edit_badge'),
+	        'description'   => $this->input->post('edit_description'),
+	        'slug_url'      => $this->input->post('edit_link'),
+	        'publish_date'  => $this->input->post('edit_date'),
+	        'image'         => $image,
+	    ];
+
+	    // Add video if uploaded
+	    if ($video !== null) {
+	        $data['video'] = $video;
+	    }
+
+	    // Handle tags
+	    $tags = $this->input->post('edit_tags');
+	    if (!empty($tags)) {
+	        $data['tag_id'] = implode(',', $tags);
+	    }
+
+	    // Prevent duplicate description
+	    $existingData = $this->model->selectWhereData('tbl_case_study', [
+	        'description' => $data['description'],
+	        'is_delete' => '1',
+	        'id !=' => $id
+	    ], '*');
+
+	    if (!empty($existingData)) {
+	        echo json_encode([
+	            'status' => 'error',
+	            'message' => 'A case study with this description already exists.'
+	        ]);
+	        return;
+	    }
+
+	    // Update the record
+	    $updated = $this->model->updateData('tbl_case_study', $data, ['id' => $id, 'is_delete' => '1']);
+
+	    if ($updated) {
+	        echo json_encode([
+	            'status' => 'success',
+	            'message' => 'Case study updated successfully.'
+	        ]);
+	    } else {
+	        echo json_encode([
+	            'status' => 'error',
+	            'message' => 'Failed to update case study.'
+	        ]);
+	    }
 	}
 	public function delete_case_study()
 	{
@@ -10392,7 +10460,7 @@ class Admin extends CI_Controller {
 	}
 	public function get_case_study_tags_data()
 	{
-		$response['data'] = $this->model->selectWhereData('tbl_case_study_tags',array(), '*', false, array('id' => 'DESC'));
+		$response['data'] = $this->model->selectWhereData('tbl_case_study_tags',array('is_delete' => '1'), '*', false, array('id' => 'DESC'));
 		echo json_encode($response);	
 	}
 	public function get_case_study_tags_details()
@@ -10427,7 +10495,27 @@ class Admin extends CI_Controller {
 			} else {
 				echo json_encode(['status' => 'error', 'message' => 'Failed to update data.']);
 			}
+	}
+	public function delete_case_study_tags()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_case_study_tags', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Data deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the data';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
 		}
+		echo json_encode($response);
+	}
 }
 
     	

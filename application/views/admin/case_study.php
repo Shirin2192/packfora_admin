@@ -75,14 +75,21 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="tags">Tags</label>
-                                                    <select multiple class="form-control" name="tags[]" id="tags">
+                                                    <div><select multiple class="form-control chosen-select" name="tags[]" id="tags">
                                                     <?php
                                                     foreach ($tags as $tags_key => $tags_value) { ?>
                                                         <option value="<?= $tags_value['id']?>"><?= $tags_value['name']?></option>
                                                     <?php }
                                                     ?>
-                                                    </select>
+                                                    </select></div>
                                                     <div class="text-danger" id="error_tags"></div>
+                                                </div>
+                                            </div>
+                                             <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="video">Video</label>
+                                                    <input type="file" class="form-control" name="video" id="video">
+                                                    <div class="text-danger" id="error_video"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -101,8 +108,6 @@
                                                 <th>Image</th>
                                                 <th>Title</th>
                                                 <th>Description</th>
-                                                <th>Link</th>
-                                                <th>Tags</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -129,18 +134,20 @@
                     <div class="modal-body">
                         <input type="hidden" id="edit_id" name="id">
                         <input type="hidden" id="edit_previous_image" name="edit_previous_image">
+                        <input type="hidden" id="edit_previous_video" name="edit_previous_video">
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="edit_title">Title</label>
                                 <input type="text" class="form-control" name="edit_title" id="edit_title">
                                 <div class="text-danger" id="error_edit_title"></div>
-                            </div>
+                            </div>             
                             <div class="col-md-6">
-                                <label for="edit_image">Image</label>
-                                <input type="file" class="form-control" id="edit_image" name="edit_image">
-                                <div id="current_image" class="mt-2"></div>
-                                <div class="text-danger" id="error_edit_image"></div>
-                            </div>
+                                <div class="form-group">
+                                    <label for="edit_badge">Badge</label>
+                                    <input type="text" class="form-control" name="edit_badge" id="edit_badge" placeholder="e.g., Foods, Personal Care">
+                                    <div class="text-danger" id="error_edit_badge"></div>
+                                </div>
+                            </div>               
                             <div class="col-md-6">
                                 <label for="edit_description">Description</label>
                                 <input type="text" class="form-control" id="edit_description" name="edit_description">
@@ -158,8 +165,26 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_tags">Tags</label>
-                                <select multiple class="form-control" name="edit_tags[]" id="edit_tags"></select>
+                                <select multiple class="form-control chosen-select" name="edit_tags[]" id="edit_tags">
+                                    <?php
+                                    foreach ($tags as $tags_key => $tags_value) { ?>
+                                        <option value="<?= $tags_value['id']?>"><?= $tags_value['name']?></option>
+                                    <?php }
+                                    ?>
+                                </select>
                                 <div class="text-danger" id="error_edit_tags"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit_image">Image</label>
+                                <input type="file" class="form-control" id="edit_image" name="edit_image">
+                                <div id="current_image" class="mt-2"></div>
+                                <div class="text-danger" id="error_edit_image"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit_video">Video</label>
+                                <input type="file" class="form-control" id="edit_video" name="edit_video">
+                                <div id="current_video" class="mt-2"></div>
+                                <div class="text-danger" id="error_edit_video"></div>
                             </div>
                         </div>
                     </div>

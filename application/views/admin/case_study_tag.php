@@ -74,7 +74,32 @@
             </div>
         </div>
     </div>
-
+    <!-- View Modal -->
+     <div class="modal fade" id="ViewModal" tabindex="-1" aria-labelledby="ViewModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ViewModalLabel">View Case Study Tags</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="modalBodyContent">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="view_category">Category</label>
+                                <div id="view_category"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="view_name">Name</label>
+                                <div id="view_name"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     <!-- Edit Modal -->
     <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -83,10 +108,9 @@
                     <h5 class="modal-title" id="EditModalLabel">Edit Case Study</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="EditCaseSṭudyTagForm" enctype="multipart/form-data">
+                <form id="EditCaseStudyTagForm" enctype="multipart/form-data">
                     <div class="modal-body">
                         <input type="hidden" id="edit_id" name="id">
-                        <input type="hidden" id="edit_previous_image" name="edit_previous_image">
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="edit_category">category</label>

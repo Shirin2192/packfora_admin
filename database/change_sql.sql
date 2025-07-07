@@ -29,3 +29,5 @@ CREATE TABLE `tbl_case_study_tag_map` (
 );
 ALTER TABLE `tbl_case_study`
 ADD COLUMN `case_study_link` VARCHAR(255) AFTER `slug_url`;
+ALTER TABLE `tbl_case_study_tags` ADD `is_delete` ENUM('1','0') NOT NULL AFTER `category`, ADD `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `is_delete`, ADD `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_at`;
+ALTER TABLE `tbl_case_study` ADD `video` TEXT NULL DEFAULT NULL AFTER `image`;

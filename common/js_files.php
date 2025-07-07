@@ -16,6 +16,7 @@
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
 
 <script>
     document.getElementById("year").textContent = new Date().getFullYear();
@@ -24,3 +25,11 @@
     var frontend = "<?= base_url();?>";
     var controllerName = "<?= $this->router->fetch_class(); ?>";
 </script>
+<script>
+            $(document).ready(function(){
+                $(".chosen-select").chosen({
+                    no_results_text: "No match found!", 
+                    width: "100%",
+                });
+            }); 
+        </script>
