@@ -31,3 +31,23 @@ ALTER TABLE `tbl_case_study`
 ADD COLUMN `case_study_link` VARCHAR(255) AFTER `slug_url`;
 ALTER TABLE `tbl_case_study_tags` ADD `is_delete` ENUM('1','0') NOT NULL AFTER `category`, ADD `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `is_delete`, ADD `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_at`;
 ALTER TABLE `tbl_case_study` ADD `video` TEXT NULL DEFAULT NULL AFTER `image`;
+CREATE TABLE `tbl_value_chain_section` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `main_title` VARCHAR(255) NOT NULL,
+    `main_description` TEXT NOT NULL,
+    `is_active` TINYINT(1) DEFAULT 1,
+    `is_delete` TINYINT(1) DEFAULT 1,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+);
+CREATE TABLE `tbl_value_chain_expertise` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `fk_section_id` INT NOT NULL,
+    `title` VARCHAR(100) NOT NULL,
+    `description` TEXT NOT NULL,
+    `is_active` TINYINT(1) DEFAULT 1,
+    `is_delete` TINYINT(1) DEFAULT 1,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`fk_section_id`) REFERENCES `tbl_value_chain_section`(`id`) ON DELETE CASCADE
+);

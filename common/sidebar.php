@@ -75,7 +75,8 @@
                     <!-- <li class="nav-item ps-3"><span class="menu-child-header">Talent Flex</span></li> -->
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/impact_enabled">Impact Enabled</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/our_pillar">Our Pillar</a></li>
-                                    
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/holistic_model">Holistic Model Lever</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/value_chain_expertise">Value Chain Expertise</a></li>              
                 </ul>
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"><span class="menu-sub-header">Our Leadership</span></li>

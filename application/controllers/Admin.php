@@ -10516,6 +10516,358 @@ class Admin extends CI_Controller {
 		}
 		echo json_encode($response);
 	}
+	public function holistic_model()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/holistic_model');
+		}
+	}
+	public function save_holistic_model_data()
+	{
+	    $title = $this->input->post('title');
+	    $description = $this->input->post('description');
+	    $strategies = $this->input->post('strategy');
+	    $levers = $this->input->post('levers');
+
+	    $errors = [];
+
+	    if (empty($title)) {
+	        $errors['title'] = 'Main Title is required.';
+	    }
+
+	    if (empty($description)) {
+	        $errors['description'] = 'Description is required.';
+	    }
+
+	    // Check each strategy input
+	    if (!empty($strategies)) {
+	        foreach ($strategies as $sectionType => $pillarArray) {
+	            foreach ($pillarArray as $pillar => $value) {
+	                if (empty(trim($value))) {
+	                    $errors["strategy[$sectionType][$pillar]"] = "The $sectionType - $pillar field is required.";
+	                }
+	            }
+	        }
+	    }
+
+	    // Check each lever
+	    if (!empty($levers)) {
+	        foreach ($levers as $key => $value) {
+	            if (empty(trim($value))) {
+	                $errors["levers[$key]"] = "Lever " . ($key + 1) . " is required.";
+	            }
+	        }
+	    }
+
+	    if (!empty($errors)) {
+	        echo json_encode([
+	            'status' => false,
+	            'errors' => $errors,
+	        ]);
+	        return;
+	    }
+
+	    // Insert into tbl_holistic_model_sections
+	    $sectionData = [
+	        'title'       => $title,
+	        'description' => $description,
+	    ];
+
+	    $this->load->model('Model');
+	    $sectionId = $this->Model->insertData('tbl_holistic_model_sections', $sectionData);
+
+	    if ($sectionId) {
+	        foreach ($strategies as $sectionType => $pillars) {
+	            foreach ($pillars as $pillar => $items) {
+	                $this->Model->insertData('tbl_holistic_model_strategies', [
+	                    'section_type' => $sectionType,
+	                    'pillar'       => $pillar,
+	                    'items'        => $items,
+	                ]);
+	            }
+	        }
+
+	        foreach ($levers as $leverText) {
+	            $this->Model->insertData('tbl_holistic_model_levers', [
+	                'title'      => trim($leverText),
+	            ]);
+	        }
+
+	        echo json_encode(['status' => true, 'message' => 'Data saved successfully.']);
+	    } else {
+	        echo json_encode(['status' => false, 'message' => 'Failed to save data.']);
+	    }
+	}
+	public function get_holistic_model_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_holistic_model_sections',array('is_delete' => '1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_holistic_model_details()
+	{
+		$id = $this->input->post('id');
+		$response['section'] = $this->model->getData('tbl_holistic_model_sections', ['id' => $id, 'is_delete' => 1]);
+		$response['levers']  = $this->model->getData('tbl_holistic_model_levers', ['is_active' => 1, 'is_delete' => '1']);
+		$response['strategies'] = $this->model->getData('tbl_holistic_model_strategies', ['
+			is_delete' => '1']);
+
+		echo json_encode($response);	
+	}
+	public function update_holistic_model_data()
+	{
+	    $id          = $this->input->post('id');
+	    $title       = $this->input->post('edit_title');
+	    $description = $this->input->post('edit_description');
+	    $strategies  = $this->input->post('edit_strategy');
+	    $levers      = $this->input->post('edit_levers');
+
+	    $response = ['status' => false, 'message' => 'Something went wrong.'];
+
+	    // Validation
+	    if (empty($id) || empty($title) || empty($description)) {
+	        $response['message'] = 'ID, Title, and Description are required.';
+	        echo json_encode($response);
+	        return;
+	    }
+
+	    $this->load->model('Model');
+
+	    // 1. Update the main section
+	    $sectionUpdate = [
+	        'title'       => $title,
+	        'description' => $description,
+	        'updated_at'  => date('Y-m-d H:i:s'),
+	    ];
+	    $sectionUpdated = $this->Model->updateData('tbl_holistic_model_sections', ['id' => $id], $sectionUpdate);
+
+	    // 2. Update strategies (by section_type + pillar match)
+	    if (!empty($strategies)) {
+	        foreach ($strategies as $sectionType => $pillars) {
+	            foreach ($pillars as $pillar => $items) {
+	                $this->db->where([
+	                    'section_type' => $sectionType,
+	                    'pillar'       => $pillar,
+	                    'is_delete'    => 1
+	                ]);
+	                $this->db->update('tbl_holistic_model_strategies', [
+	                    'items'      => $items,
+	                    'updated_at' => date('Y-m-d H:i:s')
+	                ]);
+	            }
+	        }
+	    }
+
+	    // 3. Update levers by fixed IDs (1 to 4)
+	    if (!empty($levers)) {
+	        foreach ($levers as $index => $leverText) {
+	            $leverId = $index + 1; // levers[] index starts at 0
+	            $this->db->where(['id' => $leverId, 'is_delete' => 1])
+	                     ->update('tbl_holistic_model_levers', [
+	                        'title'      => trim($leverText),
+	                        'updated_at' => date('Y-m-d H:i:s')
+	                     ]);
+	        }
+	    }
+
+	    $response['status'] = true;
+	    $response['message'] = 'Holistic Value Model updated successfully.';
+	    echo json_encode($response);
+	}
+	public function delete_holistic_model_data()
+	{
+	    $id = $this->input->post('id');
+	    $response = ['status' => false, 'message' => 'Invalid request.'];
+
+	    if (!empty($id)) {
+	        $this->load->model('Model');
+
+	        // 1. Soft delete from tbl_holistic_model_sections
+	        $sectionDeleted = $this->Model->updateData('tbl_holistic_model_sections', [
+	            'id' => $id
+	        ], [
+	            'is_delete'  => 0,
+	            'updated_at' => date('Y-m-d H:i:s')
+	        ]);
+
+	        // 2. Soft delete all strategies (related or not, based on your current logic)
+	        $strategyDeleted = $this->Model->updateData('tbl_holistic_model_strategies', [
+	            'is_delete' => 1
+	        ], [
+	            'is_delete'  => 0,
+	            'updated_at' => date('Y-m-d H:i:s')
+	        ]);
+
+	        // 3. Soft delete all levers
+	        $leversDeleted = $this->Model->updateData('tbl_holistic_model_levers', [
+	            'is_delete' => 1
+	        ], [
+	            'is_delete'  => 0,
+	            'updated_at' => date('Y-m-d H:i:s')
+	        ]);
+
+	        if ($sectionDeleted || $strategyDeleted || $leversDeleted) {
+	            $response['status'] = true;
+	            $response['message'] = 'Holistic Value Model section and related records deleted successfully.';
+	        } else {
+	            $response['message'] = 'No records were deleted.';
+	        }
+	    }
+
+	    echo json_encode($response);
+	}
+	public function value_chain_expertise()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$this->load->view('admin/value_chain_expertise');
+		}
+	}
+	public function save_value_chain_section()
+	{
+	    $this->load->model('Model');
+
+	    $main_title       = $this->input->post('main_title', true);
+	    $main_description = $this->input->post('main_description', true);
+	    $expertise_blocks = $this->input->post('expertise');
+
+	    $response = ['status' => false, 'message' => 'Something went wrong.', 'errors' => []];
+
+	    // Basic validation
+	    if (empty($main_title)) {
+	        $response['errors']['main_title'] = 'Main title is required.';
+	    }
+	    if (empty($main_description)) {
+	        $response['errors']['main_description'] = 'Main description is required.';
+	    }
+
+	    if (!empty($response['errors'])) {
+	        $response['status'] = 'error';
+	        echo json_encode($response);
+	        return;
+	    }
+
+	    // Insert into tbl_value_chain_section
+	    $sectionData = [
+	        'main_title'       => $main_title,
+	        'main_description' => $main_description,
+	        'created_at'       => date('Y-m-d H:i:s')
+	    ];
+
+	    $section_id = $this->Model->insertData('tbl_value_chain_section', $sectionData);
+
+	    if ($section_id) {
+	        // Insert each expertise block
+	        if (!empty($expertise_blocks) && is_array($expertise_blocks)) {
+	            foreach ($expertise_blocks as $block) {
+	                $title = isset($block['title']) ? trim($block['title']) : '';
+	                $desc  = isset($block['description']) ? trim($block['description']) : '';
+
+	                if (!empty($title) && !empty($desc)) {
+	                    $this->Model->insertData('tbl_value_chain_expertise', [
+	                        'fk_section_id' => $section_id,
+	                        'title'         => $title,
+	                        'description'   => $desc,
+	                        'created_at'    => date('Y-m-d H:i:s')
+	                    ]);
+	                }
+	            }
+	        }
+
+	        $response['status']  = 'success';
+	        $response['message'] = 'Value Chain Section added successfully.';
+	    }
+
+	    echo json_encode($response);
+	}
+	public function get_value_chain_expertise_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_value_chain_section',array('is_delete' => '1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+	public function get_value_chain_expertise_details()
+	{
+	    $id = $this->input->post('id');
+	    $this->load->model('Model');
+
+	    $response = [
+	        'status' => false,
+	        'message' => 'No data found.',
+	        'section' => [],
+	        'expertise' => []
+	    ];
+
+	    if (!empty($id)) {
+	        // 1. Get section info
+	        $section = $this->model->getData('tbl_value_chain_section', [
+	            'id' => $id,
+	            'is_delete' => 1,
+	        ]);
+
+	        // 2. Get all related expertise blocks
+	        $expertise = $this->model->getData('tbl_value_chain_expertise', [
+	            'fk_section_id' => $id,
+	            'is_delete' => 1,
+	        ]);
+
+	        if (!empty($section)) {
+	            $response['status'] = true;
+	            $response['section'] = $section[0]; // Assuming one section row
+	            $response['expertise'] = $expertise;
+	            $response['message'] = 'Data fetched successfully.';
+	        }
+	    } else {
+	        $response['message'] = 'Invalid request. ID missing.';
+	    }
+
+	    echo json_encode($response);
+	}
+
+	public function update_value_chain_data()
+	{
+	    $this->load->model('Model');
+	    $response = ['status' => false, 'message' => 'Something went wrong.'];
+
+	    $id              = $this->input->post('id');
+	    $main_title      = $this->input->post('edit_main_title');
+	    $main_desc       = $this->input->post('edit_main_description');
+	    $expertise_items = $this->input->post('edit_expertise');  // Should include id, title, description
+
+	    // Validate
+	    if (empty($id) || empty($main_title) || empty($main_desc)) {
+	        $response['message'] = 'Main Title and Description are required.';
+	        echo json_encode($response);
+	        return;
+	    }
+
+	    // 1. Update Main Section
+	    $section_data = [
+	        'main_title'      => $main_title,
+	        'main_description'=> $main_desc,
+	    ];
+	    $this->Model->updateData('tbl_value_chain_section',$section_data,['id' => $id]);
+
+	    // 2. Update Each Expertise Block by ID
+	    if (!empty($expertise_items) && is_array($expertise_items)) {
+	        foreach ($expertise_items as $item) {
+	            if (!empty($item['id']) && !empty($item['title']) && !empty($item['description'])) {
+	                $expertise_data = [
+	                    'title'       => trim($item['title']),
+	                    'description' => trim($item['description']),
+	                ];
+	                $this->Model->updateData('tbl_value_chain_expertise', $expertise_data, ['id' => $item['id']]);
+	            }
+	        }
+	    }
+
+	    $response['status']  = true;
+	    $response['message'] = 'Value Chain data updated successfully.';
+	    echo json_encode($response);
+	}
 }
 
     	
