@@ -53,6 +53,13 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
+                                                    <label for="main_image">Main Image</label>
+                                                    <input type="file" class="form-control" name="main_image" id="main_image">
+                                                    <div class="text-danger" id="error_main_image"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
                                                     <label for="description">Description</label>
                                                     <input type="text" class="form-control" name="description" id="description" placeholder="Description">
                                                     <div class="text-danger" id="error_description"></div>
@@ -135,6 +142,7 @@
                         <input type="hidden" id="edit_id" name="id">
                         <input type="hidden" id="edit_previous_image" name="edit_previous_image">
                         <input type="hidden" id="edit_previous_video" name="edit_previous_video">
+                        <input type="hidden" name="edit_previous_main_image" value="existing_main_image_path.jpg" />
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="edit_title">Title</label>
@@ -180,6 +188,14 @@
                                 <div id="current_image" class="mt-2"></div>
                                 <div class="text-danger" id="error_edit_image"></div>
                             </div>
+                            <div class="col-md-6">
+                                <label for="edit_image">MainImage</label>
+                                <input type="file" name="edit_main_image" class="form-control" id="edit_main_image" />
+                                
+                                <div id="current_main_image" class="mt-2"></div>
+                                <div class="text-danger" id="error_edit_main_image"></div>
+                            </div>
+                            
                             <div class="col-md-6">
                                 <label for="edit_video">Video</label>
                                 <input type="file" class="form-control" id="edit_video" name="edit_video">

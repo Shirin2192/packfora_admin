@@ -26,10 +26,10 @@
     var controllerName = "<?= $this->router->fetch_class(); ?>";
 </script>
 <script>
-            $(document).ready(function(){
-                $(".chosen-select").chosen({
-                    no_results_text: "No match found!", 
-                    width: "100%",
-                });
-            }); 
-        </script>
+    $(document).ready(function(){
+        $(".chosen-select").chosen({
+            no_results_text: "No match found!", 
+            width: "100%",
+        });
+    }); 
+</script>

@@ -186,11 +186,12 @@
                             <!-- Expertise Blocks -->
                             <hr>
                             <h5 class="mb-3">Value Chain Expertise Blocks</h5>
-                            <div id="editExpertiseContainer">
+                           <div id="editExpertiseContainer">
                                 <?php for ($i = 0; $i < 4; $i++): ?>
                                     <div class="card mb-3">
                                         <div class="card-body">
                                             <h6>Expertise Block <?= $i + 1 ?></h6>
+                                            <input type="text" class="form-control" name="edit_id[<?= $i ?>]" id="edit_id_<?= $i ?>">
                                             <div class="mb-3">
                                                 <label>Title</label>
                                                 <input type="text" class="form-control" name="edit_expertise[<?= $i ?>][title]" id="edit_expertise_title_<?= $i ?>" placeholder="e.g. Consumer">
@@ -205,6 +206,7 @@
                                     </div>
                                 <?php endfor; ?>
                             </div>
+
                         </div>
 
                         <!-- Modal Footer -->

@@ -163,7 +163,7 @@ $(document).ready(function () {
         const id = $(this).data("id");
 
         $.ajax({
-            url: frontend + "admin/get_value_chain_expertise_details", // updated endpoint
+            url: frontend + "admin/get_value_chain_expertise_details",
             type: "POST",
             dataType: "json",
             data: { id },
@@ -177,12 +177,15 @@ $(document).ready(function () {
                     $("#edit_main_description").val(section.main_description);
                 }
 
-                // 2. EXPERTISE BLOCKS (Consumer, Brand, etc.)
+                // 2. EXPERTISE BLOCKS
                 if (Array.isArray(response.expertise)) {
-                    $("input[name^='edit_expertise'][name$='[title]']").val("");      // clear all
+                    // Clear previous values
+                    $("input[name^='edit_id']").val("");
+                    $("input[name^='edit_expertise'][name$='[title]']").val("");
                     $("textarea[name^='edit_expertise'][name$='[description]']").val("");
 
                     response.expertise.forEach(function (item, index) {
+                        $(`input[name='edit_id[${index}]']`).val(item.id);
                         $(`input[name='edit_expertise[${index}][title]']`).val(item.title);
                         $(`textarea[name='edit_expertise[${index}][description]']`).val(item.description);
                     });

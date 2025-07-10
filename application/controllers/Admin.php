@@ -7061,13 +7061,17 @@ class Admin extends CI_Controller {
 	        $this->form_validation->set_rules('image', 'Image', 'required');
 	    }
 
+	    if (empty($_FILES['main_image']['name'])) {
+	        $this->form_validation->set_rules('main_image', 'Main Image', 'required');
+	    }
+
 	    if ($this->form_validation->run() == FALSE) {
-	        // Return validation errors
 	        echo json_encode([
 	            'status' => 'error',
 	            'errors' => [
 	                'title' => form_error('title'),
 	                'image' => form_error('image'),
+	                'main_image' => form_error('main_image'),
 	                'link' => form_error('link'),
 	            ]
 	        ]);
@@ -7081,6 +7085,7 @@ class Admin extends CI_Controller {
 
 	    $this->load->library('upload', $config);
 
+	    // Upload thumbnail image
 	    if (!$this->upload->do_upload('image')) {
 	        echo json_encode([
 	            'status' => 'error',
@@ -7088,19 +7093,29 @@ class Admin extends CI_Controller {
 	        ]);
 	        return;
 	    }
-
 	    $upload_data = $this->upload->data();
-	    $image = 'uploads/'.$upload_data['file_name'];
+	    $image = 'uploads/' . $upload_data['file_name'];
 
-	    // --- VIDEO Upload ---
+	    // Upload main image
+	    $this->upload->initialize($config); // reinitialize before new upload
+	    if (!$this->upload->do_upload('main_image')) {
+	        echo json_encode([
+	            'status' => 'error',
+	            'errors' => ['main_image' => $this->upload->display_errors('', '')]
+	        ]);
+	        return;
+	    }
+	    $main_image_data = $this->upload->data();
+	    $main_image = 'uploads/' . $main_image_data['file_name'];
+
+	    // Upload video
 	    $video = '';
 	    if (!empty($_FILES['video']['name'])) {
 	        $video_config['upload_path']   = './uploads/';
 	        $video_config['allowed_types'] = 'mp4|webm|ogg';
 	        $video_config['encrypt_name']  = TRUE;
 
-	        $this->upload->initialize($video_config); // Reinitialize with video config
-
+	        $this->upload->initialize($video_config);
 	        if (!$this->upload->do_upload('video')) {
 	            echo json_encode([
 	                'status' => 'error',
@@ -7108,9 +7123,8 @@ class Admin extends CI_Controller {
 	            ]);
 	            return;
 	        }
-
 	        $video_data = $this->upload->data();
-	        $video = 'uploads/'.$video_data['file_name'];
+	        $video = 'uploads/' . $video_data['file_name'];
 	    }
 
 	    // Tags
@@ -7121,14 +7135,15 @@ class Admin extends CI_Controller {
 	        'title' => $this->input->post('title'),
 	        'badge' => $this->input->post('badge'),
 	        'image' => $image,
-	        'video' => $video, // <-- new field for video
+	        'main_image' => $main_image, // <-- Added main_image
+	        'video' => $video,
 	        'description' => $this->input->post('description'),
 	        'slug_url' => $this->input->post('link'),
 	        'publish_date' => $this->input->post('date'),
 	        'tag_id' => implode(',', $tags),
 	    ];
 
-	    // Insert into main table
+	    // Insert into DB
 	    $case_study_id = $this->model->insertData('tbl_case_study', $data);
 
 	    echo json_encode([
@@ -7136,6 +7151,7 @@ class Admin extends CI_Controller {
 	        'message' => 'Case Study saved successfully.'
 	    ]);
 	}
+
 
 
 	public function get_case_study_data(){
@@ -7172,6 +7188,7 @@ class Admin extends CI_Controller {
 
 	    $id = $this->input->post('id');
 	    $previous_image = $this->input->post('edit_previous_image');
+	    $previous_main_image = $this->input->post('edit_previous_main_image');
 
 	    // Upload new image
 	    if (!empty($_FILES['edit_image']['name'])) {
@@ -7191,7 +7208,6 @@ class Admin extends CI_Controller {
 	            $upload_data = $this->upload->data();
 	            $image = 'uploads/' . $upload_data['file_name'];
 
-	            // Delete old image
 	            if ($previous_image && file_exists($previous_image)) {
 	                unlink($previous_image);
 	            }
@@ -7205,6 +7221,40 @@ class Admin extends CI_Controller {
 	            return;
 	        } else {
 	            $image = $previous_image;
+	        }
+	    }
+
+	    // Upload new main image
+	    if (!empty($_FILES['edit_main_image']['name'])) {
+	        $main_image_config['upload_path']   = './uploads/';
+	        $main_image_config['allowed_types'] = 'jpg|jpeg|png|webp';
+	        $main_image_config['encrypt_name']  = TRUE;
+
+	        $this->upload->initialize($main_image_config);
+
+	        if (!$this->upload->do_upload('edit_main_image')) {
+	            echo json_encode([
+	                'status' => 'error',
+	                'errors' => ['edit_main_image' => $this->upload->display_errors('', '')]
+	            ]);
+	            return;
+	        } else {
+	            $main_image_data = $this->upload->data();
+	            $main_image = 'uploads/' . $main_image_data['file_name'];
+
+	            if ($previous_main_image && file_exists($previous_main_image)) {
+	                unlink($previous_main_image);
+	            }
+	        }
+	    } else {
+	        if (empty($previous_main_image)) {
+	            echo json_encode([
+	                'status' => 'error',
+	                'errors' => ['edit_main_image' => 'The Main Image field is required.']
+	            ]);
+	            return;
+	        } else {
+	            $main_image = $previous_main_image;
 	        }
 	    }
 
@@ -7237,14 +7287,13 @@ class Admin extends CI_Controller {
 	        'slug_url'      => $this->input->post('edit_link'),
 	        'publish_date'  => $this->input->post('edit_date'),
 	        'image'         => $image,
+	        'main_image'    => $main_image,
 	    ];
 
-	    // Add video if uploaded
 	    if ($video !== null) {
 	        $data['video'] = $video;
 	    }
 
-	    // Handle tags
 	    $tags = $this->input->post('edit_tags');
 	    if (!empty($tags)) {
 	        $data['tag_id'] = implode(',', $tags);
@@ -7268,18 +7317,12 @@ class Admin extends CI_Controller {
 	    // Update the record
 	    $updated = $this->model->updateData('tbl_case_study', $data, ['id' => $id, 'is_delete' => '1']);
 
-	    if ($updated) {
-	        echo json_encode([
-	            'status' => 'success',
-	            'message' => 'Case study updated successfully.'
-	        ]);
-	    } else {
-	        echo json_encode([
-	            'status' => 'error',
-	            'message' => 'Failed to update case study.'
-	        ]);
-	    }
+	    echo json_encode([
+	        'status' => $updated ? 'success' : 'error',
+	        'message' => $updated ? 'Case study updated successfully.' : 'Failed to update case study.'
+	    ]);
 	}
+
 	public function delete_case_study()
 	{
 		$id = $this->input->post('id');
@@ -10835,31 +10878,39 @@ class Admin extends CI_Controller {
 	    $id              = $this->input->post('id');
 	    $main_title      = $this->input->post('edit_main_title');
 	    $main_desc       = $this->input->post('edit_main_description');
-	    $expertise_items = $this->input->post('edit_expertise');  // Should include id, title, description
+	    $expertise_items = $this->input->post('edit_expertise'); // array of title/description
+	    $edit_ids        = $this->input->post('edit_id');        // array of IDs
 
-	    // Validate
+	    // 1. Validate required fields
 	    if (empty($id) || empty($main_title) || empty($main_desc)) {
 	        $response['message'] = 'Main Title and Description are required.';
 	        echo json_encode($response);
 	        return;
 	    }
 
-	    // 1. Update Main Section
+	    // 2. Update Main Section
 	    $section_data = [
-	        'main_title'      => $main_title,
-	        'main_description'=> $main_desc,
+	        'main_title'       => trim($main_title),
+	        'main_description' => trim($main_desc),
 	    ];
-	    $this->Model->updateData('tbl_value_chain_section',$section_data,['id' => $id]);
+	    $this->Model->updateData('tbl_value_chain_section', $section_data, ['id' => $id]);
 
-	    // 2. Update Each Expertise Block by ID
+	    // 3. Update Expertise Items
 	    if (!empty($expertise_items) && is_array($expertise_items)) {
-	        foreach ($expertise_items as $item) {
-	            if (!empty($item['id']) && !empty($item['title']) && !empty($item['description'])) {
+	        foreach ($expertise_items as $index => $item) {
+	            $title        = isset($item['title']) ? trim($item['title']) : '';
+	            $description  = isset($item['description']) ? trim($item['description']) : '';
+	            $expertise_id = isset($edit_ids[$index]) ? $edit_ids[$index] : null;
+
+	            if (!empty($title) && !empty($description) && !empty($expertise_id)) {
 	                $expertise_data = [
-	                    'title'       => trim($item['title']),
-	                    'description' => trim($item['description']),
+	                    'title'       => $title,
+	                    'description' => $description,
 	                ];
-	                $this->Model->updateData('tbl_value_chain_expertise', $expertise_data, ['id' => $item['id']]);
+	                $this->Model->updateData('tbl_value_chain_expertise', $expertise_data, ['id' => $expertise_id]);
+
+	                // Optional: Debugging logs
+	                // log_message('error', "Updated ID: {$expertise_id} | " . $this->db->last_query());
 	            }
 	        }
 	    }
@@ -10868,6 +10919,8 @@ class Admin extends CI_Controller {
 	    $response['message'] = 'Value Chain data updated successfully.';
 	    echo json_encode($response);
 	}
+
+
 }
 
     	
