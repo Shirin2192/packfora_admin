@@ -79,10 +79,8 @@ $(document).ready(function () {
 				data: null,
 				orderable: false,
 				render: function (data, type, row) {
-					return `
-						 <a href="#" class="view-btn" data-id="${row.id}" title="View">
-                            <i class="fas fa-eye text-info "></i>
-                        </a>
+					return `			 
+                      
                         <a href="#" class="edit-btn" data-id="${row.id}" title="Edit">
                             <i class="fas fa-edit text-warning "></i>
                         </a>
@@ -93,6 +91,8 @@ $(document).ready(function () {
 				},
 			},
         ],
+        // <a href="#" class="view-btn" data-id="${row.id}" title="View">
+        //                     <i class="fas fa-eye text-info "></i>  </a>
         order: [[0, 'desc']],
         responsive: true
     });

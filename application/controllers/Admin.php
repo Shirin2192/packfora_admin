@@ -10919,7 +10919,182 @@ class Admin extends CI_Controller {
 	    $response['message'] = 'Value Chain data updated successfully.';
 	    echo json_encode($response);
 	}
+	public function case_study_solution()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$response['data'] = $this->model->selectWhereData('tbl_case_study',array('is_delete'=>'1'),'*',false);
+			$this->load->view('admin/case_study_solution',$response);
+		}
+	}
+	public function save_case_study_solution()
+	{
+	    $this->load->library(['form_validation', 'upload']);
 
+	    // Validate main inputs
+	    $this->form_validation->set_rules('case_study_id', 'Case Study', 'required');
+	    $this->form_validation->set_rules('main_title', 'Main Title', 'required|trim');
+	    $this->form_validation->set_rules('main_description', 'Main Description', 'required|trim');
+
+	    if ($this->form_validation->run() === FALSE) {
+	        echo json_encode([
+	            'status' => 'error',
+	            'errors' => [
+	                'case_study_id' => form_error('case_study_id'),
+	                'main_title' => form_error('main_title'),
+	                'main_description' => form_error('main_description')
+	            ]
+	        ]);
+	        return;
+	    }
+
+	    // Validate at least one card
+	    $titles = $this->input->post('card_title');
+	    $descriptions = $this->input->post('card_description');
+	    $files = $_FILES['card_image'];
+
+	    if (empty($titles) || !is_array($titles)) {
+	        echo json_encode([
+	            'status' => 'error',
+	            'errors' => ['card_title_error' => 'At least one solution card is required.']
+	        ]);
+	        return;
+	    }
+
+	    // Upload directory
+	    $uploadPath = './uploads/solutions/';
+	    if (!file_exists($uploadPath)) {
+	        mkdir($uploadPath, 0777, true);
+	    }
+
+	    // Insert main section (header)
+	    $headerData = [
+	        'case_study_id' => $this->input->post('case_study_id'),
+	        'main_title' => $this->input->post('main_title'),
+	        'main_description' => $this->input->post('main_description'),
+	    ];
+	    $this->db->insert('tbl_case_study_solution_header', $headerData);
+	    $headerId = $this->db->insert_id();
+
+	    // Loop through cards
+	    $cardData = [];
+	    for ($i = 0; $i < count($titles); $i++) {
+	        $imagePath = '';
+
+	        if (!empty($files['name'][$i])) {
+	            $_FILES['temp_image']['name']     = $files['name'][$i];
+	            $_FILES['temp_image']['type']     = $files['type'][$i];
+	            $_FILES['temp_image']['tmp_name'] = $files['tmp_name'][$i];
+	            $_FILES['temp_image']['error']    = $files['error'][$i];
+	            $_FILES['temp_image']['size']     = $files['size'][$i];
+
+	            $config['upload_path'] = $uploadPath;
+	            $config['allowed_types'] = 'jpg|jpeg|png|svg';
+	            $config['file_name'] = time() . '_' . rand(1000, 9999);
+
+	            $this->upload->initialize($config);
+
+	            if ($this->upload->do_upload('temp_image')) {
+	                $uploadData = $this->upload->data();
+	                $imagePath = 'uploads/solutions/' . $uploadData['file_name'];
+	            }
+	        }
+
+	        $cardData[] = [
+	            'fk_header_id' => $headerId,
+	            'title' => $titles[$i],
+	            'description' => $descriptions[$i],
+	            'image' => $imagePath,
+	        ];
+	       
+	    }   
+	     if (!empty($cardData)) {
+		        $this->db->insert_batch('tbl_case_study_solutions', $cardData);
+		    }
+
+	    echo json_encode([
+	        'status' => 'success',
+	        'message' => 'Case Study Solution section saved successfully.'
+	    ]);
+	}
+	public function get_save_case_study_solution_data()
+	{
+		$response['data'] = $this->model->selectWhereData('tbl_case_study_solutions',array(), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);	
+	}
+
+
+// Case Study Business Impact
+	public function case_study_business_impact()
+	{
+		$admin_session = $this->session->userdata('admin_session'); // Check if admin session exists			
+		if (!$admin_session) {
+			redirect(base_url('common/index')); // Redirect to login page if session is not active
+		} else {
+			$response['data'] = $this->model->selectWhereData('tbl_case_study',array('is_delete'=>'1'),'*',false);
+			$this->load->view('admin/case_study_business_impact',$response);
+		}
+	}
+	public function save_study_business_impact()
+	{
+	    $this->load->library(['form_validation', 'upload']);
+
+	    $response = ['status' => 'error', 'errors' => []];
+
+	    // Set validation rules
+	    $this->form_validation->set_rules('case_study_id', 'Case Study', 'required|trim');
+	    $this->form_validation->set_rules('card_title', 'Title', 'required|trim');
+	    $this->form_validation->set_rules('card_description', 'Description', 'required|trim');
+
+	    if ($this->form_validation->run() === FALSE) {
+	        $response['errors'] = [
+	            'case_study_id' => form_error('case_study_id'),
+	            'card_title' => form_error('card_title'),
+	            'card_description' => form_error('card_description')
+	        ];
+	    } else {
+	        $image = '';
+	        if (!empty($_FILES['card_image']['name'])) {
+	            $uploadPath = './uploads/business_impact/';
+
+	            // ✅ Create directory if not exists
+	            if (!is_dir($uploadPath)) {
+	                mkdir($uploadPath, 0755, true); // recursive = true
+	            }
+
+	            $config['upload_path'] = $uploadPath;
+	            $config['allowed_types'] = 'jpg|jpeg|png|svg';
+	            $config['max_size'] = 2048;
+
+	            $this->upload->initialize($config);
+
+	            if (!$this->upload->do_upload('card_image')) {
+	                $response['errors']['card_image'] = $this->upload->display_errors('', '');
+	                echo json_encode($response); return;
+	            } else {
+	                $uploadData = $this->upload->data();
+	                $image = 'uploads/business_impact/' . $uploadData['file_name'];
+	            }
+	        }
+	        $data = [
+	            'case_study_id' => $this->input->post('case_study_id'),
+	            'title' => $this->input->post('card_title'),
+	            'description' => $this->input->post('card_description'),
+	            'image' => $image,
+	        ];
+	        $this->model->insertData('tbl_case_study_business_impact',$data);
+	        $response['status'] = 'success';
+	        $response['message'] = 'Business impact card added successfully.';
+	    }
+
+	    echo json_encode($response);
+	}
+	public function get_case_study_business()
+	{
+		// code...
+	}
 
 }
 

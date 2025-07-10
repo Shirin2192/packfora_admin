@@ -48,7 +48,13 @@
                     <a class="nav-link" href="<?= base_url(); ?>admin/case_study_tags">Case Study Tags</a>
                   </li>
                    <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url(); ?>admin/case_study">Case Studies</a>
+                    <a class="nav-link" href="<?= base_url(); ?>admin/case_study">Case Study</a>
+                  </li>
+                   <li class="nav-item">
+                    <a class="nav-link" href="<?= base_url(); ?>admin/case_study_solution">Case Study Solutions</a>
+                  </li>
+                   <li class="nav-item">
+                    <a class="nav-link" href="<?= base_url(); ?>admin/case_study_business_impact">Case Study Business Impact</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="<?= base_url(); ?>admin/knowledge_centre">Knowledge Centre</a>
