@@ -11093,7 +11093,7 @@ class Admin extends CI_Controller {
 	}
 	public function get_case_study_business()
 	{
-		// code...
+		
 	}
 
 }
