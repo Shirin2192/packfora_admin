@@ -68,3 +68,4 @@ CREATE TABLE `tbl_case_study_solutions` (
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   );
+ALTER TABLE `tbl_case_study_business_impact` ADD `is_delete` ENUM('1','0') NOT NULL AFTER `image`;

@@ -28,5 +28,17 @@ class Admin_model extends CI_Model {
 		$result = $query->result_array();
 
 	}
+
+	public function get_case_study_solution_details($id="")
+	{
+	    $this->db->select('s.*, h.main_title, h.main_description');
+	    $this->db->from('tbl_case_study_solutions s');
+	    $this->db->join('tbl_case_study_solution_header h', 's.fk_header_id = h.id', 'left');
+	    $this->db->where('s.id',$id);
+	    $query = $this->db->get();
+	    $result = $query->row_array();	   
+	    return $result;
+	}
+
 }
 	

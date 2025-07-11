@@ -11019,13 +11019,118 @@ class Admin extends CI_Controller {
 	        'message' => 'Case Study Solution section saved successfully.'
 	    ]);
 	}
-	public function get_save_case_study_solution_data()
+	public function get_case_study_solution_data()
 	{
 		$response['data'] = $this->model->selectWhereData('tbl_case_study_solutions',array(), '*', false, array('id' => 'DESC'));
 		echo json_encode($response);	
 	}
+	public function get_case_study_solution_details()
+	{
+		$this->load->model('admin_model');
+		$id = $this->input->post('id');
+		$response = $this->admin_model->get_case_study_solution_details($id);
+		echo json_encode($response);	
+	}
+	public function update_case_study_solution()
+	{
+	    $this->load->library('form_validation');
+
+	    // === 1. Validate Inputs ===
+	    $this->form_validation->set_rules('edit_main_title', 'Main Title', 'required|trim');
+	    $this->form_validation->set_rules('edit_main_description', 'Main Description', 'required|trim');
+	    $this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+	    // $this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+	    if ($this->form_validation->run() == FALSE) {
+	        $errors = [
+	            'edit_main_title'       => form_error('edit_main_title'),
+	            'edit_main_description' => form_error('edit_main_description'),
+	            'edit_title'            => form_error('edit_title'),
+	            // 'edit_description'      => form_error('edit_description'),
+	        ];
+	        echo json_encode(['status' => 'error', 'errors' => $errors]);
+	        return;
+	    }
+	    // === 2. Get Inputs ===
+	    $id = $this->input->post('id');
+	    $main_title = $this->input->post('edit_main_title');
+	    $main_description = $this->input->post('edit_main_description');
+	    $title = $this->input->post('edit_title');
+	    $description = $this->input->post('edit_description');
+	    $previous_image = $this->input->post('edit_previous_image');
+	    $image_path = $previous_image; // Assume previous image remains
+		if (!empty($_FILES['edit_image']['name'])) {
+		    $upload_path = './uploads/solutions/';
+		    if (!is_dir($upload_path)) {
+		        mkdir($upload_path, 0755, true);
+		    }
+
+		    $config['upload_path']   = $upload_path;
+		    $config['allowed_types'] = 'jpg|jpeg|png|webp|svg';
+		    $config['file_name']     = time() . '_' . $_FILES['edit_image']['name'];
+		    $this->load->library('upload', $config);
+
+		    if (!$this->upload->do_upload('edit_image')) {
+		        $errors = ['edit_image' => $this->upload->display_errors()];
+		        echo json_encode(['status' => 'error', 'errors' => $errors]);
+		        return;
+		    } else {
+		        // Delete old image if it exists
+		        if (!empty($previous_image) && file_exists($previous_image)) {
+		            unlink($previous_image);
+		        }
+		        $uploaded_file = $this->upload->data('file_name');
+		        $image_path = 'uploads/solutions/' . $uploaded_file;
+		    }
+		}
 
 
+	    // === 4. Get fk_header_id from solution row ===
+	    $solution = $this->db->get_where('tbl_case_study_solutions', ['id' => $id])->row();
+	    if (!$solution) {
+	        echo json_encode(['status' => 'error', 'message' => 'Record not found']);
+	        return;
+	    }
+	    $fk_header_id = $solution->fk_header_id;
+
+	    // === 5. Update tbl_case_study_solution_header ===
+	    $header_data = [
+	        'main_title'       => $main_title,
+	        'main_description' => $main_description,
+	    ];
+	    $this->db->where('id', $fk_header_id)->update('tbl_case_study_solution_header', $header_data);
+
+	    // === 6. Update tbl_case_study_solutions ===
+	    $solution_data = [
+	        'title'       => $title,
+	        'description' => $description,
+	        'image'       => $image_path,
+	    ];
+	    $this->db->where('id', $id)->update('tbl_case_study_solutions', $solution_data);
+
+	    // === 7. Return Success ===
+	    echo json_encode(['status' => 'success', 'message' => 'Case study solution updated successfully.']);
+	}
+	public function delete_case_study_solution()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_case_study_solutions', ['is_delete' => '0'], ['id' => $id]);
+			$this->model->updateData('tbl_case_study_solution_header', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Case Study Solution Details deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Case Study Solution Details.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
+	}
 // Case Study Business Impact
 	public function case_study_business_impact()
 	{
@@ -11091,9 +11196,90 @@ class Admin extends CI_Controller {
 
 	    echo json_encode($response);
 	}
-	public function get_case_study_business()
+	public function get_case_study_business_impact_data()
 	{
-		
+		$response['data'] = $this->model->selectWhereData('tbl_case_study_business_impact',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
+		echo json_encode($response);
+	}
+	public function get_case_study_business_impact_details()
+	{
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_case_study_business_impact',array('id'=>$id), '*');
+		echo json_encode($response);
+	}
+	public function update_case_study_business_impact()
+	{
+	    $this->load->library('form_validation');
+
+	    $this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+	    $this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+
+	    if ($this->form_validation->run() == FALSE) {
+	        $errors = [
+	            'edit_title' => form_error('edit_title'),
+	            'edit_description' => form_error('edit_description'),
+	        ];
+	        echo json_encode(['status' => 'error', 'errors' => $errors]);
+	    } else {
+	        $id = $this->input->post('id');
+	        $title = $this->input->post('edit_title');
+	        $description = $this->input->post('edit_description');
+	        $previous_image = $this->input->post('edit_previous_image');
+
+	        $upload_path = './uploads/business_impact/';
+	        $image = $previous_image; // default to old image
+
+	        if (!empty($_FILES['edit_image']['name'])) {
+	            $config['upload_path'] = $upload_path;
+	            $config['allowed_types'] = 'jpg|jpeg|png|webp';
+	            $config['file_name'] = time() . '_' . $_FILES['edit_image']['name'];
+	            $this->load->library('upload', $config);
+
+	            if (!$this->upload->do_upload('edit_image')) {
+	                $errors = ['edit_image' => $this->upload->display_errors()];
+	                echo json_encode(['status' => 'error', 'errors' => $errors]);
+	                return;
+	            } else {
+	                // ✅ Upload success — delete old image
+	                if (!empty($previous_image) && file_exists($upload_path . $previous_image)) {
+	                    unlink($upload_path . $previous_image);
+	                }
+	                $image = $this->upload->data('file_name');
+	            }
+	        }
+
+	        $updateData = [
+	            'title' => $title,
+	            'description' => $description,
+	            'image' => $image,
+	        ];
+
+	        $this->db->where('id', $id);
+	        $this->db->update('tbl_case_study_business_impact', $updateData);
+
+	        echo json_encode(['status' => 'success']);
+	    }
+	}
+
+	public function delete_case_study_business_impact()
+	{
+		$id = $this->input->post('id');
+		$response = [];
+		if ($id) {
+			// Soft delete by setting is_delete = 0 (you can change logic)
+			$update = $this->model->updateData('tbl_case_study_business_impact', ['is_delete' => '0'], ['id' => $id]);
+			if ($update) {
+				$response['status'] = true;
+				$response['message'] = 'Case Study Business Impact Details deleted successfully.';
+			} else {
+				$response['status'] = false;
+				$response['message'] = 'Failed to delete the Case Study Business Impact Details.';
+			}
+		} else {
+			$response['status'] = false;
+			$response['message'] = 'Invalid request.';
+		}
+		echo json_encode($response);
 	}
 
 }

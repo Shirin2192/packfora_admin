@@ -71,13 +71,14 @@
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <table id="CaseSṭudyTable" class="display">
+                                    <table id="CaseSṭudyBusinessImpactTable" class="display">
                                         <thead>
                                             <tr>
                                                 <th>Sr. No.</th>
-                                                <th>Image</th>
+                                                
                                                 <th>Title</th>
                                                 <th>Description</th>
+                                                <th>Image</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -91,80 +92,66 @@
             </div>
         </div>
     </div>
-
+    <!-- View Modal -->
+    <div class="modal fade" id="ViewModal" tabindex="-1" aria-labelledby="ViewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ViewModalLabel">View Case Study Business Impact</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyContent">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="view_title">Title</label>
+                            <p id="view_title"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="view_description">Description</label>
+                            <p id="view_description"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="view_image">Image</label>
+                            <div id="view_image"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Edit Modal -->
     <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="EditModalLabel">Edit Case Study</h5>
+                    <h5 class="modal-title" id="EditModalLabel">Edit Case Study Business Impact</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="EditCaseStudyForm" enctype="multipart/form-data">
+                <form id="EditCaseStudyBusinessImpactForm" enctype="multipart/form-data">
                     <div class="modal-body">
                         <input type="hidden" id="edit_id" name="id">
-                        <input type="hidden" id="edit_previous_image" name="edit_previous_image">
-                        <input type="hidden" id="edit_previous_video" name="edit_previous_video">
-                        <input type="hidden" name="edit_previous_main_image" value="existing_main_image_path.jpg" />
+                        <input type="hidden" id="edit_previous_image" name="edit_previous_image">                        
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="edit_title">Title</label>
                                 <input type="text" class="form-control" name="edit_title" id="edit_title">
                                 <div class="text-danger" id="error_edit_title"></div>
                             </div>             
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="edit_badge">Badge</label>
-                                    <input type="text" class="form-control" name="edit_badge" id="edit_badge" placeholder="e.g., Foods, Personal Care">
-                                    <div class="text-danger" id="error_edit_badge"></div>
-                                </div>
-                            </div>               
+                                  
                             <div class="col-md-6">
                                 <label for="edit_description">Description</label>
                                 <input type="text" class="form-control" id="edit_description" name="edit_description">
                                 <div class="text-danger" id="error_edit_description"></div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="edit_link">Case Study Link</label>
-                                <input type="text" class="form-control" id="edit_link" name="edit_link">
-                                <div class="text-danger" id="error_edit_link"></div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="edit_date">Publish Date</label>
-                                <input type="date" class="form-control" name="edit_date" id="edit_date">
-                                <div class="text-danger" id="error_edit_date"></div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="edit_tags">Tags</label>
-                                <select multiple class="form-control chosen-select" name="edit_tags[]" id="edit_tags">
-                                    <?php
-                                    foreach ($tags as $tags_key => $tags_value) { ?>
-                                        <option value="<?= $tags_value['id']?>"><?= $tags_value['name']?></option>
-                                    <?php }
-                                    ?>
-                                </select>
-                                <div class="text-danger" id="error_edit_tags"></div>
-                            </div>
+                            </div>                           
                             <div class="col-md-6">
                                 <label for="edit_image">Image</label>
                                 <input type="file" class="form-control" id="edit_image" name="edit_image">
                                 <div id="current_image" class="mt-2"></div>
                                 <div class="text-danger" id="error_edit_image"></div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="edit_image">MainImage</label>
-                                <input type="file" name="edit_main_image" class="form-control" id="edit_main_image" />
-                                
-                                <div id="current_main_image" class="mt-2"></div>
-                                <div class="text-danger" id="error_edit_main_image"></div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <label for="edit_video">Video</label>
-                                <input type="file" class="form-control" id="edit_video" name="edit_video">
-                                <div id="current_video" class="mt-2"></div>
-                                <div class="text-danger" id="error_edit_video"></div>
-                            </div>
+                            </div>                           
                         </div>
                     </div>
                     <div class="modal-footer">
