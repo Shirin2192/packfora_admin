@@ -7264,7 +7264,7 @@ class Admin extends CI_Controller {
 	        $video_config['upload_path']   = './uploads/';
 	        $video_config['allowed_types'] = 'mp4|webm|ogg';
 	        $video_config['encrypt_name']  = TRUE;
-
+	        $this->load->library('upload', $video_config);
 	        $this->upload->initialize($video_config);
 
 	        if (!$this->upload->do_upload('edit_video')) {
