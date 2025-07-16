@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 26, 2025 at 02:12 PM
+-- Generation Time: Jul 11, 2025 at 01:45 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -239,25 +239,202 @@ INSERT INTO `tbl_built_reliability` (`id`, `title`, `description`, `is_delete`, 
 
 CREATE TABLE `tbl_case_study` (
   `id` int(11) NOT NULL,
-  `title` varchar(100) DEFAULT NULL,
-  `description` longtext DEFAULT NULL,
-  `link` varchar(100) DEFAULT NULL,
-  `image` longtext DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  `is_delete` enum('1','0') NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `tags` text DEFAULT NULL
+  `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `badge` varchar(100) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `video` text DEFAULT NULL,
+  `slug_url` varchar(255) DEFAULT NULL,
+  `case_study_link` varchar(255) DEFAULT NULL,
+  `publish_date` date DEFAULT NULL,
+  `tag_id` varchar(255) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  `is_delete` enum('1','0') NOT NULL DEFAULT '1',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `main_image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_case_study`
 --
 
-INSERT INTO `tbl_case_study` (`id`, `title`, `description`, `link`, `image`, `date`, `is_delete`, `created_at`, `updated_at`, `tags`) VALUES
-(1, 'Foods', 'Packfora enabled a leading FMCG brand to cut costs by 30% while enhancing recyclability and sustainability.', 'case-study-inner.php', 'uploads/case-study-thumb-01.webp', '2025-05-05', '1', '2025-06-24 14:05:29', '2025-06-26 12:33:16', NULL),
-(2, 'Personal Care', 'How Packfora streamlined a major pharma company in their specification management.', 'pharma-case-study.php', 'uploads/case-study-thumb-02.webp', '2025-05-03', '1', '2025-06-26 11:59:26', '2025-06-26 11:59:26', NULL),
-(3, 'Plastic Packaging', 'Check out how Packfora reimagined packaging for a new1.5L water bottle.', '1.5-litre-bottle-case-study.php', 'uploads/case-study-thumb-03.webp', '2025-05-01', '1', '2025-06-26 12:01:15', '2025-06-26 12:01:15', NULL);
+INSERT INTO `tbl_case_study` (`id`, `title`, `description`, `badge`, `image`, `video`, `slug_url`, `case_study_link`, `publish_date`, `tag_id`, `is_active`, `is_delete`, `created_at`, `updated_at`, `main_image`) VALUES
+(1, 'Packfora enabled a leading FMCG brand to cut costs by 30% while enhancing recyclability and sustainability.', 'We partnered with a $2.5B horticulture leader to design a packaging solution that did more than protect fruit — it built a habit. Inspired by the pillbox design, the 7-day fruit regimen pack helped consumers stay consistent, supported ESG goals, and moved from pilot to commercial rollout in just four months.', 'Foods', 'uploads/ebded142958539454267cff8f7c6dfcc.webp', 'uploads/2fa5bef0542f33d60dcb3db3bd27bd01.webm', 'case-study-inner.php', NULL, '0000-00-00', '1,7,9,14,16', 1, '1', '2025-07-04 16:57:13', '2025-07-07 12:39:41', NULL),
+(2, 'How Packfora streamlined a major pharma company in their specification management.', 'When packaging specifications are scattered across geographies, platforms, and people — speed, accuracy, and compliance take a hit. A leading pharmaceutical company needed a better way to manage its packaging and finished goods specification, one that could support both day-to-day efficiency and long-term transformation. Packfora led an end-to-end specification management transformation to unlock clarity, compliance, and control across their packaging lifecycle.', 'Personal Care', 'uploads/c2a7476a5296f55c4223f8643ff34dcf.webp', 'uploads/3a7b8888d73669237167ca6b0277d686.webm', 'pharma-case-study.php', NULL, '0000-00-00', '3,13,15,21', 1, '1', '2025-07-04 17:06:52', '2025-07-07 10:37:25', NULL),
+(3, 'Check out how Packfora reimagined packaging for a new 1.5L water bottle.', 'A global FMCG company wanted to launch a new bottled water SKU — but without relying on traditional shrink film-based collation. They needed a fresh approach to secondary packaging that could match performance, stay within cost limits, and meet sustainability targets. All without heavy capital investment.', 'Plastic Packaging', 'uploads/2415670eb7c53b1f68a61f8a7fc7cc7e.webp', 'uploads/4c0feca9fc75bf0ac3955d048b4353cc.webm', '1.5-litre-bottle-case-study.php', NULL, '0000-00-00', '2,8,12,19', 1, '1', '2025-07-04 17:09:46', '2025-07-07 12:38:35', NULL),
+(4, 'Smarter Packaging, Leaner Impact: Savings for a Global Foods Major', 'For a global foods major, we balanced cost, sustainability, and consumer convenience through smarter packaging choices. From material shifts to format rethinks, our work unlocked efficiency across the value chain.', '', 'uploads/f2a930a0cfd0a67d22edbd28c69406c6.png', 'uploads/6d503940259624d9feb270a3d0d2cbe3.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '2', 1, '1', '2025-07-04 17:52:31', '2025-07-07 18:40:29', NULL),
+(5, 'Scaling Corrugate Wins: A US Productivity Roadmap in Action', 'In the US market, we partnered with a foods major to identify and execute corrugate packaging opportunities at scale. From design harmonization to inventory reduction, our roadmap delivered both savings and speed.', '', 'uploads/a1e768ff20ad90315b13121dd993dc7c.png', 'uploads/babb75a7834dc5e5faa86f3e0aa687e9.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '2', 1, '1', '2025-07-04 17:57:53', '2025-07-07 18:41:34', NULL),
+(6, 'Reimagining Trust: 3D-Led Repositioning for a Nycil', 'We helped reposition a leading hygiene brand through a 3D visual concept that brought their germ-fighting edge to life. The goal? To shift perception and cement their authority in the category.', '', 'uploads/58941dd0d5dca9c9a4bccac7a82cb4dd.png', 'uploads/f178fb2bd78f295d9d96515d3d70bacb.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '2', 1, '1', '2025-07-04 17:58:26', '2025-07-07 18:42:01', NULL),
+(7, 'Optimizing Sourcing: From Shared Service to Strategic', 'We helped transition packaging sourcing from a shared internal model in the UK and USA to a lean, cost-optimized third-party network. The result? Greater agility, transparency, and long-term savings', '', 'uploads/8522812322a08b9b801ffcf2d27a99c4.png', 'uploads/2e1416a1f02ff289d7cf0e96b7127670.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8', 1, '1', '2025-07-04 18:00:36', '2025-07-07 18:43:02', NULL),
+(8, 'Demystifying Pharma Packaging: A Guide for Non-Packaging Teams', 'We created a comprehensive guide designed for non-packaging teams in a global pharma major helping drive cross-functional alignment and measurable packaging improvements.', '', 'uploads/25cbd88716bf86da451975c6290ad91a.png', 'uploads/12489202180d015cf848645ec262f4b8.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8', 1, '1', '2025-07-04 18:01:21', '2025-07-07 18:43:49', NULL),
+(9, 'Breaking Boundaries: Rigid Plastic Innovation in Action', 'We led a deep-dive design and engineering program to unlock innovation in complex rigid plastic formats. From structure to material science, we reimagined what was possible.', '', 'uploads/4ac1f85d7829db29d162e8818103ac1c.png', 'uploads/df577761184b46df8ba4644f39431556.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8', 1, '1', '2025-07-04 18:01:49', '2025-07-07 18:43:59', NULL),
+(10, 'Rapid Prototyping, Real Results: In-House 3D for Pack Speed', 'By integrating in-house 3D printing and mold development, we helped streamline prototyping cycles and reduce lead times in packaging design. Faster decisions. Smarter execution.', '', 'uploads/62f18db237340c1cc66a2a6067ab3687.png', 'uploads/62910e74c53ede6564af5b9e59bab765.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8', 1, '1', '2025-07-04 18:03:02', '2025-07-07 18:45:06', NULL),
+(11, 'Engineering Simplicity: Reducing Cost & Complexity in Home Care', 'For a leading home cleaning brand, we engineered packaging that reduced cost and complexity without compromising performance. Structural redesigns and component optimization drove bottom-line gains.', '', 'uploads/dbe5dc7d304699f48735807bd3751831.png', 'uploads/c5073d07b1bc5b5f04fe4f7ac4620d29.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8', 1, '1', '2025-07-04 18:03:59', '2025-07-07 18:45:21', NULL),
+(12, 'Data-Driven Decisions: LCA for Smarter Beverage Packaging', 'We conducted a Life Cycle Assessment (LCA) comparing PET and glass bottles to help a global alcoholic beverage major make data-driven packaging decisions. The outcome? Clearer trade-offs, credible claims, and a roadmap for decarbonization.', '', 'uploads/6c69e12026670cf9a2f242927354fd17.png', 'uploads/46e25e2783679f7ddf2aa53023ea2362.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '1', 1, '1', '2025-07-04 18:05:19', '2025-07-08 10:16:07', NULL),
+(13, 'Showcasing What’s Next: Innovation Fair for a Global FMCG', 'We curated  an innovation fair for an FMCG major bringing cross-functional teams together to explore packaging-led opportunities. Prototypes, pilots, and possibilities, all in one place.', '', 'uploads/d71a17ff5907193c03e1bb98a04ab1c4.webp', NULL, 'pharma-case-study.php', NULL, '0000-00-00', '16', 1, '0', '2025-07-04 18:05:59', '2025-07-07 11:48:47', NULL),
+(14, 'Showcasing What’s Next: Innovation Fair for a Global FMCG', 'We curated  an innovation fair for an FMCG major bringing cross-functional teams together to explore packaging-led opportunities. Prototypes, pilots, and possibilities, all in one place.', '', 'uploads/8595fe3507437c92ca094e83dcbcd086.png', 'uploads/d2dd85d219df7e3f1745a3d48a412bcd.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '16', 1, '1', '2025-07-04 18:11:05', '2025-07-08 10:16:16', NULL),
+(15, 'From Manual to Intelligent: Supply Chain Reinvention in FMCG', 'We partnered with a leading FMCG player to redesign and automate their packaging supply chain delivering faster turnaround, enhanced traceability, and cost resilience.', '', 'uploads/8b4e6bbfd99b66093dc9003f84a925f4.png', 'uploads/fbc0d24f26d6c7cf788822291b910e2c.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '6', 1, '1', '2025-07-04 18:12:38', '2025-07-08 10:16:53', NULL),
+(16, 'Standardizing Speed: Packaging Ops for the QSR Ecosystem', 'For a global QSR supply partner, we streamlined mold management, global quality systems, and packaging specifications. The result? A harmonized ecosystem across geographies and functions.', '', 'uploads/d129af4c91cd19d6ec4838e17ecf92a2.webp', 'uploads/3743d6db53c0acf4053bd97763ebc3ea.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '19', 1, '1', '2025-07-04 18:16:34', '2025-07-07 11:16:20', NULL),
+(17, 'End-to-End Enablement: Packaging Ops from Specs to Shelf', 'We helped accelerate packaging project management through integrated systems for specs, artworks, and lab testing. One framework, full visibility, faster execution.', '', 'uploads/817e21d4f8826d9a227429bca6e8ee10.webp', 'uploads/865e8a4b27a9a70e16ac610465ca79d0.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8,12,19', 1, '1', '2025-07-04 18:22:07', '2025-07-07 11:12:49', NULL),
+(18, 'Predictive Packaging: Algorithm-Led Supply Chain Testing', 'We developed a protocol to test packaging solutions within an algorithm-driven framework giving our client data-led confidence before deployment.', '', 'uploads/0515ef591b6d2deea69e621c551e541f.webp', 'uploads/45d183d32f5348dcc9b58ed1f72afbfe.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8,12,19', 1, '1', '2025-07-04 18:23:37', '2025-07-09 18:09:03', 'existing_main_image_path.jpg');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_case_study_business_impact`
+--
+
+CREATE TABLE `tbl_case_study_business_impact` (
+  `id` int(11) NOT NULL,
+  `case_study_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `is_delete` enum('1','0') NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_case_study_business_impact`
+--
+
+INSERT INTO `tbl_case_study_business_impact` (`id`, `case_study_id`, `title`, `description`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Time to Market', 'From brief to shelf within 4 months', 'uploads/business_impact/1752209540_gradient-01.png', '1', '2025-07-10 16:38:22', '2025-07-11 10:24:38'),
+(2, 1, 'Consumer Validation', '75% said the pack helped them remember to eat fruit daily', 'uploads/business_impact/gradient-02.png', '1', '2025-07-10 16:42:37', '2025-07-10 16:42:37'),
+(3, 1, 'Scalability', 'Commercial rollout in Singapore, with more markets planned', 'uploads/business_impact/gradient-03.png', '1', '2025-07-10 16:43:06', '2025-07-10 16:43:06'),
+(4, 2, 'Faster, More Confident Decision-Making', 'With structured, validated data, teams could move faster without second-guessing specs', 'uploads/business_impact/gradient-01_(1).png', '1', '2025-07-10 16:43:43', '2025-07-10 16:43:43'),
+(5, 2, 'Simplified Global Collaboration', 'A unified process eliminated ambiguity and built consistency across sites and stakeholders', 'uploads/business_impact/gradient-02_(1).png', '1', '2025-07-10 16:44:23', '2025-07-10 16:44:23'),
+(6, 2, 'A Stronger Foundation for the Future', 'The client is now better equipped to drive cost savings, meet sustainability targets, and handle regulatory shifts — with data that’s ready for it all', 'uploads/business_impact/gradient-03_(1).png', '1', '2025-07-10 16:45:51', '2025-07-10 16:45:51'),
+(7, 3, 'Customer Satisfaction', 'Our approach validated the client\'s internal R&D work — boosting confidence that they were on the right path for scale-up', 'uploads/business_impact/gradient-01_(2).png', '1', '2025-07-10 16:46:28', '2025-07-10 16:46:28'),
+(8, 3, 'Due Diligence', 'We evaluated over 15 viable formats and recommended the best-fit solution based on performance, feasibility, and sustainability', 'uploads/business_impact/gradient-02_(2).png', '1', '2025-07-10 16:47:08', '2025-07-10 16:48:01'),
+(9, 3, 'Speed to Market', 'Delivered insights within tight timelines — keeping the program on track without operational delays', 'uploads/business_impact/gradient-03_(2).png', '1', '2025-07-10 16:48:35', '2025-07-11 10:34:34');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_case_study_objectives`
+--
+
+CREATE TABLE `tbl_case_study_objectives` (
+  `id` int(11) NOT NULL,
+  `fk_case_study_id` int(11) NOT NULL,
+  `objective` varchar(255) NOT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `is_delete` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_case_study_objectives`
+--
+
+INSERT INTO `tbl_case_study_objectives` (`id`, `fk_case_study_id`, `objective`, `image`, `is_active`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 1, 'To close the gap between public health recommendations and daily consumer behavior —through a packaging intervention that simplifies decision-making, builds structure, and drives consistent fruit intake.', 'uploads/7bd9b0042d7e1e8432bd2efc77bf2561.webp', 1, 1, '2025-07-07 14:27:26', '2025-07-07 16:11:09'),
+(2, 2, 'To improve the quality and reliability of existing spec data across more than 20 global manufacturing sites while accelerating new product development, establishing unified governance, and enabling a smooth transition to the client’s new PLM platform.', 'uploads/8c0c1787668e3a1431e4a2049d34a93f.webp', 1, 1, '2025-07-07 14:38:15', NULL),
+(3, 3, 'To eliminate reliance on shrink film in water collation through a packaging intervention that balances transit performance, cost efficiency, and carbon footprint without capital-intensive changes.', 'uploads/e2a4ee3f81680a8d7a3abf35883783aa.webp', 1, 1, '2025-07-07 14:39:30', '2025-07-07 16:06:37');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_case_study_solutions`
+--
+
+CREATE TABLE `tbl_case_study_solutions` (
+  `id` int(11) NOT NULL,
+  `fk_header_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `is_delete` enum('1','0') NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_case_study_solutions`
+--
+
+INSERT INTO `tbl_case_study_solutions` (`id`, `fk_header_id`, `title`, `description`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Built for daily life', 'Fridge-fit, shelf-ready, and intuitive to use', 'uploads/solutions/1752139417_1951.png', '1', '2025-07-10 14:53:37', '2025-07-10 14:53:37'),
+(2, 1, 'Sustainably made', '100% recyclable materials and vegetable-based ink', 'uploads/solutions/1752139417_6843.png', '1', '2025-07-10 14:53:37', '2025-07-10 14:53:37'),
+(3, 1, 'Inclusive by design', 'Tactile cues for the visually impaired', 'uploads/solutions/1752139417_3544.png', '1', '2025-07-10 14:53:37', '2025-07-10 14:53:37'),
+(4, 2, 'Data Quality & Validation Process', 'Built a specialized 20+ member team of packaging and product SMEs — in under 2 months Established global contact nodes across 20+ manufacturing sites Executed a maker-checker model to improve and validate data prior to PLM migration', 'uploads/solutions/1752139731_7507.svg', '1', '2025-07-10 14:58:51', '2025-07-10 14:58:51'),
+(5, 2, 'End-to-End Specification Management', 'Took full accountability of specification creation in both legacy and new PLM systems Reduced turnaround time for new specs — especially for NPD programs Delivered structured reporting across regulatory, sustainability, and cost-saving metrics', 'uploads/solutions/1752139731_3707.svg', '1', '2025-07-10 14:58:51', '2025-07-10 14:58:51'),
+(6, 2, 'Global Data Governance for Change Management', 'Designed one global process with harmonized specification protocols Defined minimum data requirements for spec accuracy across all regions Ensured alignment with compliance and regulatory standards', 'uploads/solutions/1752139731_9295.svg', '1', '2025-07-10 14:58:51', '2025-07-10 14:58:51'),
+(7, 3, 'Primary Packaging', '', 'uploads/solutions/1752139888_8590.svg', '1', '2025-07-10 15:01:28', '2025-07-10 15:01:28'),
+(8, 3, 'Secondary Packaging', '', 'uploads/solutions/1752139888_6474.svg', '1', '2025-07-10 15:01:28', '2025-07-10 15:01:28'),
+(9, 3, 'Integrated Primary + Secondary Systems', '', 'uploads/solutions/1752225199_integrated-primary.svg', '1', '2025-07-10 15:01:28', '2025-07-11 14:58:20');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_case_study_solution_header`
+--
+
+CREATE TABLE `tbl_case_study_solution_header` (
+  `id` int(11) NOT NULL,
+  `case_study_id` int(11) NOT NULL,
+  `main_title` varchar(255) NOT NULL,
+  `main_description` text NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_case_study_solution_header`
+--
+
+INSERT INTO `tbl_case_study_solution_header` (`id`, `case_study_id`, `main_title`, `main_description`, `created_at`, `updated_at`) VALUES
+(1, 1, 'The Solution', 'We created a behavior-first packaging format that enables action, not just access. Rooted in real consumer behavior, the format made healthy choices easy, visible, and repeatable.', '2025-07-10 14:53:37', '2025-07-10 14:53:37'),
+(2, 2, 'The Solution', 'We created a behavior-first packaging format that enables action, not just access. Rooted in real consumer behavior, the format made healthy choices easy, visible, and repeatable', '2025-07-10 14:58:51', '2025-07-10 14:58:51'),
+(3, 3, 'The Solution', 'Packfora explored 15+ combinations of formats across three levels of intervention:', '2025-07-10 15:01:28', '2025-07-11 14:58:08');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_case_study_tags`
+--
+
+CREATE TABLE `tbl_case_study_tags` (
+  `id` int(11) NOT NULL,
+  `name` varchar(150) NOT NULL,
+  `category` enum('featured','capability','industry') NOT NULL,
+  `is_delete` enum('1','0') NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_case_study_tags`
+--
+
+INSERT INTO `tbl_case_study_tags` (`id`, `name`, `category`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'Sustainability', 'featured', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(2, 'Design-to-Value', 'featured', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(3, 'Specification Management', 'capability', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(4, 'MaxMold', 'capability', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(5, 'Simulation & Modeling', 'capability', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(6, 'Supply Chain Optimization', 'capability', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(7, 'Procurement & Cost Reduction', 'capability', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(8, 'Packaging Design & Engineering', 'capability', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(9, 'Sustainability & Carbon Reduction', 'capability', '0', '2025-07-05 10:23:21', '2025-07-11 10:26:13'),
+(10, 'Global-to-Local Harmonization', 'capability', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(11, 'Digital Transformation in Packaging', 'capability', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(12, 'Pack Format Innovation', 'capability', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(13, 'Pharmaceuticals', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(14, 'Food & Beverage', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(15, 'Personal Care & Cosmetics', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(16, 'FMCG & CPG', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(17, 'Automotive', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(18, 'Chemicals & Explosives', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(19, 'Packaging Producers', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(20, 'B2B Industrial', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(21, 'Healthcare Devices', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
+(22, 'Retail & E-commerce', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:32:39');
 
 -- --------------------------------------------------------
 
@@ -322,7 +499,18 @@ INSERT INTO `tbl_discover_benefits` (`id`, `fk_service_id`, `title`, `descriptio
 (12, 5, 'People, Planet & Profit', 'Sustainability is at the core of our process. By balancing economic, environmental, and consumer needs, we help brands achieve triple-bottom-line impact.', 'uploads/people-planet-profit.png', '1', '2025-06-10 12:38:10', '2025-06-10 12:38:10'),
 (13, 5, 'End-to-End Optimization', 'From concept to commercialization, we ensure every element of packaging is designed for efficiency, sustainability, and long-term success.', 'uploads/end-to-end-optimization.png', '1', '2025-06-10 12:38:40', '2025-06-26 17:12:19'),
 (14, 7, 'Sustainability-Driven', 'Optimize materials, reduce waste, and lower carbon footprint.', 'uploads/sustainability-driven.png', '1', '2025-06-16 11:45:17', '2025-06-16 11:46:41'),
-(15, 8, 'Build a Strong Foundationeeeeeeeeee', 'Rapid Sourcing & Tail Spend Management Supplier Lifecycle Management', 'uploads/build-a-strong-foundation.png', '1', '2025-06-16 14:29:55', '2025-06-16 14:35:44');
+(15, 8, 'Build a Strong Foundationeeeeeeeeee', 'Rapid Sourcing & Tail Spend Management Supplier Lifecycle Management', 'uploads/build-a-strong-foundation.png', '1', '2025-06-16 14:29:55', '2025-06-16 14:35:44'),
+(16, 7, 'End-to-End Solutions', 'From concept to commercialization, ensuring efficiency at every step.', 'uploads/end-to-end-solutions.png', '1', '2025-06-27 11:43:31', '2025-06-27 11:43:31'),
+(17, 7, 'Cost-Effective Innovation', 'Smarter designs that drive cost savings without compromising quality.', 'uploads/cost-effective-innovation.png', '1', '2025-06-27 11:44:05', '2025-06-27 11:44:05'),
+(18, 7, 'Industry-Specific Customization', 'Tailored solutions for FMCG, Pharma, Automotive, and more.', 'uploads/industry-specific-customization.png', '1', '2025-06-27 11:45:07', '2025-06-27 11:45:07'),
+(19, 7, 'Speed & Agility', 'Rapid prototyping and AI-powered processes to reduce time-to-market.', 'uploads/speed-and-agility.png', '1', '2025-06-27 11:45:36', '2025-06-27 11:45:36'),
+(20, 7, 'Digital Precision', 'AI, VR, and automation ensure accuracy in design and execution.', 'uploads/digital-precision.png', '1', '2025-06-27 11:46:39', '2025-06-27 11:46:39'),
+(21, 9, 'Aligns specifications across regions and teams', NULL, 'uploads/aligns-specifications.svg', '1', '2025-07-01 14:00:10', '2025-07-01 14:00:10'),
+(22, 9, 'Enables rapid packaging changes and new product launches', NULL, 'uploads/enables-rapid-packaging.svg', '1', '2025-07-01 14:00:35', '2025-07-01 14:00:35'),
+(23, 9, 'Reduces errors & change redundancy', NULL, 'uploads/reduces-errors.svg', '1', '2025-07-01 14:01:25', '2025-07-01 14:01:25'),
+(24, 9, 'Better inventory management & reduce material wastage', NULL, 'uploads/better-inventory.svg', '1', '2025-07-01 14:02:00', '2025-07-01 14:02:00'),
+(25, 9, 'Conforms to regulatory and sustainability reporting frameworks', NULL, 'uploads/confirms-to-regulatory.svg', '1', '2025-07-01 14:02:22', '2025-07-01 14:02:22'),
+(26, 9, 'Builds strong foundation for future digitization and AI tools', NULL, 'uploads/builds-strong-foundation.svg', '1', '2025-07-01 14:03:08', '2025-07-01 14:03:08');
 
 -- --------------------------------------------------------
 
@@ -435,6 +623,83 @@ INSERT INTO `tbl_global_dialogue` (`id`, `title`, `description`, `is_delete`, `c
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_holistic_model_levers`
+--
+
+CREATE TABLE `tbl_holistic_model_levers` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  `is_delete` tinyint(1) DEFAULT 1,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_holistic_model_levers`
+--
+
+INSERT INTO `tbl_holistic_model_levers` (`id`, `title`, `is_active`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'Reduce waste and system complexity', 1, 1, '2025-07-07 14:56:06', '2025-07-08 12:12:56'),
+(2, 'Replace outdated specs and materials', 1, 1, '2025-07-07 14:56:06', '2025-07-08 12:12:56'),
+(3, 'Redesign for right-sizing and resource efficiency', 1, 1, '2025-07-07 14:56:06', '2025-07-08 12:12:56'),
+(4, 'Optimize procurement with cost, supply, and market intelligence', 1, 1, '2025-07-07 14:56:06', '2025-07-08 12:12:56');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_holistic_model_sections`
+--
+
+CREATE TABLE `tbl_holistic_model_sections` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  `is_delete` tinyint(1) DEFAULT 1,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_holistic_model_sections`
+--
+
+INSERT INTO `tbl_holistic_model_sections` (`id`, `title`, `description`, `is_active`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'Holistic Value Model', 'A proven framework for business impact today and tomorrow. We apply a proprietary model that shows where value lies and how to unlock it across cost, compliance, and competitiveness.', 1, 1, '2025-07-07 14:56:05', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_holistic_model_strategies`
+--
+
+CREATE TABLE `tbl_holistic_model_strategies` (
+  `id` int(11) NOT NULL,
+  `section_type` enum('Technology','Procurement') NOT NULL,
+  `pillar` varchar(100) DEFAULT NULL,
+  `items` text DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  `is_delete` tinyint(1) DEFAULT 1,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_holistic_model_strategies`
+--
+
+INSERT INTO `tbl_holistic_model_strategies` (`id`, `section_type`, `pillar`, `items`, `is_active`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'Technology', 'Reduce', 'Waste, Complexity Reduction', 1, 1, '2025-07-07 14:56:05', '2025-07-08 12:12:56'),
+(2, 'Technology', 'Replace', 'Technology, Materials', 1, 1, '2025-07-07 14:56:05', '2025-07-08 12:12:56'),
+(3, 'Technology', 'Redesign', 'Specification, Right Sizing', 1, 1, '2025-07-07 14:56:05', '2025-07-08 12:12:56'),
+(4, 'Procurement', 'Supplier Strategy', 'Periodical Review, Market Intelligence', 1, 1, '2025-07-07 14:56:05', '2025-07-08 12:12:56'),
+(5, 'Procurement', 'Should Cost', 'Periodical Review, Market Intelligence', 1, 1, '2025-07-07 14:56:05', '2025-07-08 12:12:56'),
+(6, 'Procurement', 'Future Proofing', 'Periodical Review, Market Intelligence', 1, 1, '2025-07-07 14:56:06', '2025-07-08 12:12:56');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_how_we_do_it`
 --
 
@@ -453,9 +718,9 @@ CREATE TABLE `tbl_how_we_do_it` (
 --
 
 INSERT INTO `tbl_how_we_do_it` (`id`, `title`, `description`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'Triple Bottom Line Approach', 'We integrate People, Planet and Profit into every packaging solution. Balancing impact and profitability.', 'uploads/we-do-011.png', '0', '2025-06-17 09:29:11', '2025-06-17 16:27:38'),
-(2, 'End-to-End Value Chain', 'From packaging ideation to execution, our strategies seamlessly integrate into your operations, ensuring efficiency & compliance.', 'uploads/we-do-02.png', '1', '2025-06-17 09:50:54', '2025-06-17 09:50:54'),
-(3, 'Digitization & Innovation', 'We leverage AI, automation, and real-time data to ensure efficient, innovative, and sustainable packaging solutions that benefit your business, our team, and the planet.', 'uploads/we-do-03.png', '1', '2025-06-17 09:51:21', '2025-06-17 10:20:05');
+(1, 'Triple Bottom Line Approach', 'We integrate People, Planet and Profit into every packaging solution. Balancing impact and profitability.', 'uploads/we-do-01.png', '1', '2025-06-17 09:29:11', '2025-07-02 10:59:56'),
+(2, 'End-to-End Value Chain', 'From packaging ideation to execution, our strategies seamlessly integrate into your operations, ensuring efficiency & compliance.', 'uploads/we-do-02.png', '1', '2025-06-17 09:50:54', '2025-07-02 10:24:00'),
+(3, 'Digitization & Innovation', 'We leverage AI, automation, and real-time data to ensure efficient, innovative, and sustainable packaging solutions that benefit your business, our team, and the planet.', 'uploads/we-do-03.png', '1', '2025-06-17 09:51:21', '2025-07-02 10:25:18');
 
 -- --------------------------------------------------------
 
@@ -483,6 +748,30 @@ INSERT INTO `tbl_impact_boxes` (`id`, `front_heading`, `front_value`, `back_desc
 (2, 'Unmatched Packaging with', '140+ Experts', 'Innovating packaging solutions that drive efficiency, sustainability, and market leadership.', 'https://sda.in.net/web/packfora/final/why-packfora.php', 'uploads/unmatched-packaging.webp', '1', '2025-06-23 04:00:48'),
 (3, 'Successfully delivered client projects across', '21+  Countries', 'Empowering global brands to achieve scalable,future-proof packaging success.', 'https://sda.in.net/web/packfora/final/why-packfora.php', 'uploads/successfully-delivered.webp', '1', '2025-06-23 04:03:54'),
 (4, 'Client Satisfaction', '70+ Clients', 'Committed to a customer-first approach, delivering trust, innovation, and brand excellence.', 'https://sda.in.net/web/packfora/final/why-packfora.php', 'uploads/client-satisfaction.jpg', '1', '2025-06-23 04:05:13');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_impact_enabled`
+--
+
+CREATE TABLE `tbl_impact_enabled` (
+  `id` int(11) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `is_delete` tinyint(1) DEFAULT 1,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_impact_enabled`
+--
+
+INSERT INTO `tbl_impact_enabled` (`id`, `image`, `description`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'uploads/impact-enabled-012.svg', 'Backed by advanced capabilities — simulation, value engineering, end-to-end value chain intelligence', 1, '2025-07-02 13:55:51', '2025-07-02 13:55:51'),
+(2, 'uploads/impact-enabled-02.svg', 'Powered by a multi-disciplinary pool of experts — across packaging design, development, supply chain, procurement, and sustainability', 1, '2025-07-02 13:56:20', '2025-07-02 13:56:20'),
+(3, 'uploads/impact-enabled-03.svg', 'Guided by a system-wide lens — where packaging is treated not as a cost or constraint, but as a strategic lever', 1, '2025-07-02 13:56:39', '2025-07-02 13:56:39');
 
 -- --------------------------------------------------------
 
@@ -534,7 +823,9 @@ CREATE TABLE `tbl_knowledge_centre` (
 --
 
 INSERT INTO `tbl_knowledge_centre` (`id`, `title`, `date`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'Late Varianting in Packaging: On-Demand Corrugate Printing for Agility and Sustainability', '2025-06-13', 'uploads/blog24.webp', '1', '2025-06-17 15:14:41', '2025-06-18 10:03:22');
+(1, 'Late Varianting in Packaging: On-Demand Corrugate Printing for Agility and Sustainability', '2025-06-13', 'uploads/blog1.webp', '1', '2025-06-17 15:14:41', '2025-07-02 16:29:29'),
+(2, 'Navigating PPWR 2025/40: Lessons from the Frontlines of Packaging Compliance', '2025-05-08', 'uploads/blog25.webp', '1', '2025-07-02 16:29:10', '2025-07-02 16:31:18'),
+(3, '8 Packaging Trends That Will Shape the Future:                               Sustainability, Innovat', '2025-06-03', 'uploads/blog3.webp', '1', '2025-07-02 16:30:27', '2025-07-02 16:30:27');
 
 -- --------------------------------------------------------
 
@@ -547,6 +838,7 @@ CREATE TABLE `tbl_leadership_team` (
   `name` varchar(100) DEFAULT NULL,
   `description` longtext DEFAULT NULL,
   `designation` varchar(100) DEFAULT NULL,
+  `link` text DEFAULT NULL,
   `image` longtext DEFAULT NULL,
   `is_delete` enum('1','0') NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
@@ -557,9 +849,23 @@ CREATE TABLE `tbl_leadership_team` (
 -- Dumping data for table `tbl_leadership_team`
 --
 
-INSERT INTO `tbl_leadership_team` (`id`, `name`, `description`, `designation`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'Ramaiah Muthusubramanian', 'Ramaiah Muthusubramanian is a CEO with 35+ years of experience.  He specializes in front-end frameworks and UX design.', 'CEO', 'uploads/ramaiah-muthusubramanian.png', '1', '2025-06-17 11:58:32', '2025-06-17 12:15:13'),
-(2, 'Chirag Master', 'Chirag Master is a Strategic Home & Personal Care, Others, Talent Flex with 20+ years of experience.  He specializes in front-end frameworks and UX design.  Strategic Home & Personal Care, Others, Talent Flex', 'Strategic Home & Personal Care, Others, Talent Flex', 'uploads/chirag-master.webp', '1', '2025-06-17 12:15:57', '2025-06-17 12:15:57');
+INSERT INTO `tbl_leadership_team` (`id`, `name`, `description`, `designation`, `link`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'Ramaiah Muthusubramanian', 'Ramaiah Muthusubramanian, widely known as Muthu, is a global packaging leader with over 30 years of experience in Packaging R&D, Supply Chain Technology, and Procurement. Before co-founding Packfora, he held senior leadership roles at Unilever, where he served as Global Packaging Director for Laundry and Program Director for Sustainable Flexible Packaging.At Unilever, Muthu played a key role in embedding sustainability into the packaging agenda, fostering partnerships across geographies, and spearheading initiatives that influenced policy and industry benchmarks. He championed cross-cultural collaboration, leading global teams across Europe, Asia, and Latin America to drive design thinking, lifecycle innovation, and consumer-centric packaging solutions. His work was pivotal in creating scalable systems that supported Unilever’s commitment to reduce plastic waste and promote circularity.Muthu holds a Master’s Diploma in Packaging Technology from IIP Mumbai and a B.Sc. in Mathematics from Madura College. Known for his value @ velocity mindset, he has led high-impact, cross-functional teams to deliver award-winning, sustainable innovations.As CEO at Packfora, he advocates for an ecosystem-driven approach, combining expertise and collaboration to deliver end-to-end solutions. He is passionate about future-proofing capabilities and driving circular, consumer-centric packaging strategies.', 'CEO', 'https://www.linkedin.com/in/ramaiah-muthusubramanian-9406902/?originalSubdomain=in', 'uploads/ramaiah-muthusubramanian.png', '1', '2025-07-01 16:12:02', '2025-07-02 10:07:46'),
+(2, 'Hitesh Shenoy', 'Hitesh Shenoy is a seasoned global packaging leader with over 25 years of cross-functional experience spanning packaging innovation, sustainability, value engineering, and supply chain enablement. He has held senior leadership roles at Unilever and GSK Consumer Healthcare, where he led complex, multi-market programs focused on compliance, digital transformation, and consumer-centric design. As former Senior Director – Global Technical Packaging at GSK, he drove strategic initiatives such as child-resistant/senior-friendly packaging and global digital specification systems.Currently Vice President at Packfora, Hitesh leads the Food and Pharmaceutical Packaging vertical, partnering with multinational clients to deliver sustainable and regulatory-compliant packaging solutions. He is a passionate advocate for packaging as a driver of both business value and environmental stewardship, with a keen focus on flexible packaging and circularity.', 'VP & BU Lead - Growth - Foods & Pharma', 'https://www.linkedin.com/in/hitesh-shenoy-2a84492/?originalSubdomain=sg&original_referer=http%3A%2F%2F148.72.26.123%2F', 'uploads/hitesh-shinoy.webp', '1', '2025-07-01 16:12:02', '2025-07-02 10:08:16'),
+(3, 'Jikul Purohit', 'Jikul Purohit is a passionate packaging innovation and sustainability leader with over 17 years of cross-functional experience in R&D, product development, and value engineering. Based in London, UK, Jikul manages multi-country teams and brings a truly global perspective to his work. Before co-founding Packfora, he held several key roles at Unilever, where he led global and regional packaging projects across categories like Laundry, Skin Cleansing, and Beverages.He holds a Post Graduate Diploma in Packaging from the Indian Institute of Packaging, Mumbai, and an engineering degree in Electronics from the University of Mumbai.At Packfora, Jikul leads technology and innovation efforts, driving sustainable, future-ready solutions for clients in food, FMCG, and pharma sectors. His expertise lies in flexible packaging, circularity, and regulatory-compliant design systems that deliver impact at scale.', 'VP & BU Lead - Delivery - Foods & Pharma', 'https://www.linkedin.com/authwall?trk=gf&trkInfo=AQE2hM3m7ADyHwAAAZfJbbZgnFGZmzOHy6levxjJnF02Ntcp3eHrfbvbDdz4M0alrW8PVzdluzztygGdTc1DU_lJy0ovZ2C439at4uaI6Un5bfwE735N5EkPHxitPBvZYAAJ-sc=&original_referer=http://148.72.26.123/&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fjikul-purohit-6532526%2F%3ForiginalSubdomain%3Duk', 'uploads/jikul-purohit.webp', '1', '2025-07-01 16:12:02', '2025-07-02 10:08:36'),
+(4, 'Chirag Master', 'Chirag Master is a seasoned packaging leader with over 18 years of global experience in packaging design, development, procurement, and supply chain across personal care categories. Prior to co-founding Packfora, Chirag had a successful career at Unilever, with assignments in India, Thailand, and the UK.His expertise spans innovation project management, sourcing digitization, and end-to-end packaging development, from concept to shelf. He holds a degree in Chemical Engineering and a Post Graduate Diploma in Packaging Science and Technology from SIES School of Packaging.At Packfora, Chirag leads the Home, Personal Care, and Oral Care vertical, driving sustainable, consumer-centric solutions with a deep understanding of packaging materials, device development, and global innovation delivery.', 'VP & BU Lead - Growth, Delivery - SHPCO, Talent Flex, & Mold Management Services', 'https://www.linkedin.com/authwall?trk=gf&trkInfo=AQEVl5d0ALx5vQAAAZfJbgCYAS7dhU70V4YaigGNubWK7G1hEwYvzvi2QtwPGRtfAZTf8kC1cDb0Ydt89fWzOQpEy-qBVtdmJ2pAmygEx5_Z8Myn9-Yce2IglkKVOAsWwron3oQ=&original_referer=http://148.72.26.123/&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fchirag-master-54364bb%2F%3ForiginalSubdomain%3Din', 'uploads/chirag-master.webp', '1', '2025-07-01 16:12:02', '2025-07-02 10:08:59'),
+(5, 'Tom Oravez', 'Tom Oravez is a seasoned packaging innovation leader with over 20 years of experience driving packaging strategy, product innovation, and sustainable growth across major food companies. At Packfora, he leads the U.S. team and supports client initiatives across the America. He has held leadership roles in R&D and Supply Chain at General Mills, Conagra Brands, Pinnacle Foods, Mars, and Kraft Foods. His core strengths include Packaging Strategy & Development, Supply Chain Optimization, Productivity Programs, Technical Risk Management, and End-to-End Innovation Execution.He brings deep expertise in a wide range of packaging technologies from flexibles and cartons to cans, cups, bottles, glass, and corrugates and has a proven track record of building and guiding high-performing teams that deliver impactful innovation and renovation. Tom holds a B.S. in Packaging from Rutgers College of Engineering.He is passionate about talent development and driving cross-functional collaboration to create consumer-centric, sustainable packaging solutions. Based in New Jersey, Tom enjoys playing sports, camping, and traveling in his free time.', 'Food, Pharma & CHC', 'https://www.linkedin.com/in/tom-oravez/', 'uploads/tom-oravez.webp', '1', '2025-07-01 16:12:02', '2025-07-02 10:09:13'),
+(6, 'Prashant Sukhtankar', 'Prashant Sukhtankar is a Foods, Pharma & CHC', 'Foods, Pharma & CHC', 'https://www.linkedin.com/authwall?trk=gf&trkInfo=AQEXciLbvEuN-QAAAZfJbqiQC-dkX6u07Psy-pHoHsZeQPNsAzw2IFHsTPZzj94m2w1l-FkJcpXnzD1eKOqEd4_JMjQzy5k6yJeatFeAG0WZdGZgBOcZJ2uvoGnBEXzAFJuojw8=&original_referer=https://www.linkedin.com/in/prashant-sukhtankar-70a90a18/?originalSubdomain=in&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fprashant-sukhtankar-70a90a18%2F%3ForiginalSubdomain%3Din%26original_referer%3Dhttp%253A%252F%252F148.72.26.123%252F', 'uploads/prashant-sukhtankar.webp', '1', '2025-07-01 16:14:00', '2025-07-02 10:09:36'),
+(7, 'Ankita Lokhande', 'Ankita Lokhande is a seasoned packaging leader with 14+ years of experience across the personal care, food & beverage, and FMCG industries. At Packfora, she drives global sustainability programs, design-to-value initiatives, capability building, and innovation for leading multinationals. She brings deep expertise in consumer-centric design, technical packaging development, and circular solutions with a proven ability to align functional performance with sustainability goals.Ankita partners with brand teams, industry alliances, and supply chain players to deliver high-impact packaging transformation. She holds a degree in Packaging Technology and is widely recognized for her thought leadership in sustainable packaging and innovation. Beyond work, she enjoys exploring interior design and creating functional, aesthetic living spaces.', 'Foods, Pharma & CHC', 'https://www.linkedin.com/authwall?trk=gf&trkInfo=AQGXobmlQ2QS6wAAAZfJbt9Am357RnAYQM8A9Q4DG26GOSRq_12HCdFLg31pylWUsIWc_tKcg3rNHefrIQuvH3cAa0JlebFIpDGeVlJlB6oN0KVHzAcVcawkKmbr8Qd-GOp2d08=&original_referer=http://148.72.26.123/&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fankita-lokhande-8baa43168%2F%3ForiginalSubdomain%3Din', 'uploads/ankita-lokhande.webp', '1', '2025-07-01 16:14:00', '2025-07-02 10:09:52'),
+(8, 'Brijesh Sounderajjan', 'Brijesh Sounderrajan is a seasoned packaging engineering leader with over 30 years of experience across the FMCG industry. At Packfora, he leads the Talent Flex Growth with a strong focus on enabling Capacity, Capability and Flexibility build for the customers through right-fit packaging talent.His career includes key roles at Godfrey Phillips India Ltd, Pidilite Industries, Godrej & Boyce, where he worked in several capacities heading production for the world-famous Marlboro brand in India. He has rich experience in the deployment of ERP solutions for procurement and inventory function and has been instrumental in Packaging development and new product launches across organizations.He holds a Post Graduate Qualification in Packaging as well as Materials Management. He enjoys reading inspiring entrepreneurship initiatives, travel, and connecting with people.', 'SHPCO & Talent Flex', 'https://www.linkedin.com/authwall?trk=gf&trkInfo=AQEQRf6BUpRblAAAAZfJbzFIIGliiFTdI5UfbP0C2KkM3Px9QOuAj9vXC7_TGqOPqGDigLVTMlvghyZiGjHu2uNt4kLugcD4Tuu8J_R6MQNcYkHsQwzw4HjccMdfpTK_yE_rTX4=&original_referer=http://148.72.26.123/&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fbrijesh-sounderrajan-5378277%2F', 'uploads/brijesh-sounderajjan.webp', '1', '2025-07-01 16:14:00', '2025-07-02 10:10:12'),
+(9, 'Ankheeta Lath', 'Ankheeta leads global marketing at Packfora, driving brand growth through innovative digital strategies, integrated campaigns, and impactful content. With an MBA in Marketing, she specializes in transforming marketing frameworks to deliver measurable impact across international markets.Prior to Packfora, she spent over seven years at Informa Markets India, where she led conference content strategy and curation across key sectors including food, pharma, cosmetics, and nutrition. Known for her collaborative mindset and passion for team building, Ankheeta believes in the power of shared success: “I shine, we shine, client shine.”', 'Director - Marketing', 'https://www.linkedin.com/authwall?trk=gf&trkInfo=AQFYgJ9i_0LeHwAAAZfJb39o3N-cQqLmECvy5cGVxLfvEqsGBX39COLkyO89ULiFIHxf2rOzvT16DfdXTqKss_bOMP_DUwLYtPiuK5YgwtYNJ14F_Bk4lboxCKFIC3g5uWSbZzc=&original_referer=http://148.72.26.123/&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fankheeta-lath-122a6598%2F%3ForiginalSubdomain%3Din', 'uploads/ankheeta-lath.webp', '1', '2025-07-01 16:14:00', '2025-07-02 10:10:42'),
+(10, 'Baskaran Thiagarajan', 'Baskaran is a seasoned manufacturing and operations leader with 29 years of experience across Plant Operations, Supply Chain Management, Lean Manufacturing, Operational Excellence, and Manufacturing Transformation. His expertise spans a wide range of sectors, including Chemicals, Paints, FMCG, and Alcobev. He most recently led India Contract Manufacturing Operations at Diageo, overseeing a network that contributed to 65% of Diageo India’s business.Prior to that, he held key leadership roles at Avery Dennison, Mondelez, Hindustan Unilever, United Phosphorus, Asian Paints, and DCW Ltd. Baskaran brings deep knowledge in Production Planning, Project Management, HSE, TPM, and Plant Engineering. A strong advocate of continuous improvement, he is a Certified Energy Manager (BEE), Certified TPM Instructor (JIPM), DuPont Certified Safety Trainer, and APICS-certified in Supply Chain Management.He holds a B.E. in Mechanical Engineering from Thiagarajar College of Engineering, Madurai. Outside of work, he enjoys playing badminton and listening to music.', 'SHPCO', 'https://www.linkedin.com/authwall?trk=gf&trkInfo=AQG9xUjmUMPqtAAAAZfJcABQBATYN730hfFV3xy6c5otHO1yUgN73C9ZsnRhUEomhBTxPkwYcMeGVZjOi4g4FMu0oIjYtDaLG3ORDdFVuYCkhtijYDAMYFj38_5fTwZzXlCXh44=&original_referer=http://148.72.26.123/&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fbaskaran-thiagarajan%2F%3ForiginalSubdomain%3Din', 'uploads/baskaran-thiagarajan.webp', '1', '2025-07-01 16:14:00', '2025-07-02 10:11:02'),
+(11, 'Samrat Dasgupta', 'Samrat Dasgupta leads Supply Chain - Packaging & Automation at Packfora, bringing over 18 years of experience across FMCG, F&B, and industrial manufacturing. A techno-commercial leader, he specializes in packaging automation, supply chain optimization, and high-capex project delivery. With deep expertise in E2E value chains, from packaging design to sourcing, machine installation and logistics optimization, Samrat has successfully led the implementation of multiple high-speed automated lines across geographies.He is known for driving packaging value engineering, digital transformation, and cost-saving initiatives, while managing P&L and leading cross-functional, multicultural teams. Samrat holds a B.E. and an MBA-PGBM from IIM Indore and is Lean IPD and Machine Safety certified.', 'SHPCO', 'https://www.linkedin.com/authwall?trk=gf&trkInfo=AQGB7n6e6u4FBwAAAZfJcEK4ULJcvL9U2wu1Hqhth19JJxr2keMhlcahBwfkMFObO_FQ4SFy_dLyknNLVIKPDoNxHLEj357If_vAAcGaEM9mQ8IUezqHkmJl5uu2slh1puWyDGQ=&original_referer=https://www.linkedin.com/in/samrat-dasgupta-1326583a/&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fsamrat-dasgupta-1326583a%2F%3Foriginal_referer%3Dhttp%253A%252F%252F148.72.26.123%252F', 'uploads/samrat-dasgupta.webp', '1', '2025-07-01 16:14:00', '2025-07-02 10:11:37'),
+(12, 'Sheryll Umagtang', 'Sheryll Umagtang is a seasoned packaging professional with over 20 years of cross-functional experience spanning Packaging Innovation, Quality Assurance, Supplier Qualification, and Procurement. Her career spans multiple industries, including personal care, food & beverage, and spirits through key roles at Unilever, Diageo, Nutri Asia, and now Packfora.At Packfora, Sheryll partners with leading global and regional brands to deliver innovative packaging solutions that strike a balance between performance, sustainability, cost, and consumer appeal. She is skilled in managing projects from ideation to execution, defining specifications, collaborating closely with suppliers, and ensuring smooth, market-ready launches. She holds a degree in Chemical Engineering from the University of the Philippines Diliman.Outside of her professional life, Sheryll enjoys creative pursuits like painting, exploring mindfulness through reflective reading, cooking, and taking long walks — simple routines that bring her clarity, joy, and a sense of balance.', 'Food, Pharma & CHC', 'https://www.linkedin.com/authwall?trk=gf&trkInfo=AQEJqZcTwFKmBgAAAZfJcLvQmjCxFKBjNWfuqC5mP6GTvUni2Ls-CSfuVCx4GdQ45OxQDP7xq_wBeg7ocGcAgwpO-T_uR7RHG2T5bzOXTF2sjAmfvofA4fXBLxBj7YsHx6ntD_4=&original_referer=http://148.72.26.123/&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fsheryll-umagtang-174439216%2F', 'uploads/sheryll-umagtang.webp', '1', '2025-07-01 16:16:14', '2025-07-02 10:11:52'),
+(13, 'Rodney Pease', 'Rodney Pease is a seasoned packaging engineering professional with extensive experience in the food & beverage industry. Over the years, he has built a strong track record in driving innovation, operational excellence, and sustainable packaging solutions across consumer product segments.Rodney is highly skilled in packaging equipment, continuous improvement, mechanics, and sustainable materials—combining technical depth with a strategic business mindset. His career highlights include leading teams of packaging professionals, optimizing operations, and identifying growth opportunities through key partnerships and market insights. Known for his ability to align packaging strategy with business goals, Rodney has consistently delivered impactful, future-ready solutions.', 'Food, Pharma & CHC', 'https://www.linkedin.com/authwall?trk=gf&trkInfo=AQF4aTsym0gHigAAAZfJcQnwiw8vZb2IQx2bDN6SJxWoaV_-p7GwAdbgXs-6ZC-PVynwIqtkGcWzPOrNboa2Ky2hlRK75PVQHI4_lCgyf5gAonZ5Fp5AO_iVWuHnLvb5lwCWEgI=&original_referer=http://148.72.26.123/&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Frodney-pease-2768a850', 'uploads/rodney-pease.webp', '1', '2025-07-01 16:16:14', '2025-07-02 10:12:12'),
+(14, 'Micheal Harris', 'Michael Harris is a seasoned packaging engineering leader with over 20 years of experience across the CPG, pharmaceutical, and food & beverage industries. At Packfora, he leads strategic packaging initiatives for major North American clients, with a strong focus on innovation, supplier collaboration, and cross-functional execution.His career includes key roles at Barry-Wehmiller Design Group, James Ross Consulting, Church & Dwight, CITGO, Pinnacle Foods, and Kraft Foods, where he managed global packaging development and product launches. Michael’s strengths lie in launching new products, optimizing materials, and building supplier relationships that deliver cost and sustainability gains.He holds a Packaging B.S. from Michigan State and an MBA from Davenport University. He enjoys reading, philosophy, travel, and parenting his 1.5-year-old son.', 'Foods, Pharma & CHC', 'https://www.linkedin.com/authwall?trk=gf&trkInfo=AQF4aTsym0gHigAAAZfJcQnwiw8vZb2IQx2bDN6SJxWoaV_-p7GwAdbgXs-6ZC-PVynwIqtkGcWzPOrNboa2Ky2hlRK75PVQHI4_lCgyf5gAonZ5Fp5AO_iVWuHnLvb5lwCWEgI=&original_referer=http://148.72.26.123/&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Frodney-pease-2768a850', 'uploads/micheal-harris.webp', '1', '2025-07-01 16:16:14', '2025-07-02 10:12:36'),
+(15, 'Chinmay Vasavada', 'Chinmay Vasavda is a strategic HR leader with over 18 years of experience across FMCG, chemicals, and consulting sectors. Passionate about building agile, future-ready organizations, he brings deep expertise in global HR business partnering, M&A integration, organization transformation, and capability building.His career spans leading companies like Unilever, VVF Limited, and Sampat International, where he drove people-first strategies and led initiatives in digital HR, leadership development, and inclusive culture. Chinmay has worked across India, the US, Europe, Southeast Asia, and MENA, partnering with diverse functions from R&D to Sales and Finance. A technically trained professional turned HR expert, he thrives on enabling purposeful talent ecosystems in complex, multicultural environments.', 'Director - People & Culture', 'https://www.linkedin.com/in/chinmay-vasavada-9956651b/?originalSubdomain=in&original_referer=http%3A%2F%2F148.72.26.123%2F', 'uploads/chinmay-vasavada.webp', '1', '2025-07-01 16:16:14', '2025-07-02 10:12:56'),
+(16, 'Indra Jeevanandam', 'Indra Jeevanandam has over 12 years of experience in financial planning, pricing, profitability management, and cash flow optimization. At Packfora, she supports the Food & Pharma Business Unit by embedding pricing discipline, enhancing P&L transparency, forecasting revenue pipelines, and enabling cash flow predictability. Indra works closely with leadership and cross-functional teams to align financial strategies with business goals, ensuring clarity and accountability across operations.Her previous roles span leading organizations like Datamatics, VFS Global, Travelport, and Tresorie, where she managed receivables, fund flows, and financial reporting across diverse entities. Known for her calm, collaborative style, Indra excels at building financial systems that support agility and empowering non-finance teams with actionable insights.Outside work, she finds joy in travel, dance, and community service, while staying grounded through spiritual reflection.', 'Finance Business Partner', 'https://www.linkedin.com/authwall?trk=gf&trkInfo=AQHt9YQJmJhJAAAAAZfJciMwukSv17-BZQXX8rLxNgwalYGrW7TEo9atjw7zj_qIM_sMIIKk81fYyP6QF2x9nZRq8ErC3u7217yP88-349gXd7iAlrrgGjXwDIhw7IDQ5TwTdj4=&original_referer=http://148.72.26.123/&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Findra-kartik-3a9582201%2F%3ForiginalSubdomain%3Din', 'uploads/indra-jeevanandam.webp', '1', '2025-07-01 16:16:14', '2025-07-02 10:13:35');
 
 -- --------------------------------------------------------
 
@@ -619,6 +925,51 @@ INSERT INTO `tbl_market_trends` (`id`, `fk_service_id`, `title`, `description`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_optimize_image`
+--
+
+CREATE TABLE `tbl_optimize_image` (
+  `id` int(11) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `is_delete` tinyint(1) DEFAULT 1,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_optimize_image`
+--
+
+INSERT INTO `tbl_optimize_image` (`id`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'uploads/icon_1751525959_1.webp', 1, '2025-07-03 12:29:19', '2025-07-03 12:29:19');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_optimize_packaging`
+--
+
+CREATE TABLE `tbl_optimize_packaging` (
+  `id` int(11) NOT NULL,
+  `icon` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `is_delete` tinyint(1) DEFAULT 1,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_optimize_packaging`
+--
+
+INSERT INTO `tbl_optimize_packaging` (`id`, `icon`, `description`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'uploads/icon_1751525959_1.png', 'Identify stress points and failure risks early', 1, '2025-07-03 12:29:19', '2025-07-03 12:29:19'),
+(2, 'uploads/icon_1751525959_11.png', 'Accelerate decision-making with data', 1, '2025-07-03 12:29:19', '2025-07-03 12:29:19'),
+(3, 'uploads/icon_1751525959_12.png', 'Build smarter, lighter, more sustainable packs', 1, '2025-07-03 12:29:19', '2025-07-03 12:29:19');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_our_leaders`
 --
 
@@ -627,6 +978,7 @@ CREATE TABLE `tbl_our_leaders` (
   `fk_service_id` int(11) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `designation` varchar(255) DEFAULT NULL,
+  `link` text DEFAULT NULL,
   `image` longtext DEFAULT NULL,
   `is_delete` enum('1','0') NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
@@ -637,11 +989,23 @@ CREATE TABLE `tbl_our_leaders` (
 -- Dumping data for table `tbl_our_leaders`
 --
 
-INSERT INTO `tbl_our_leaders` (`id`, `fk_service_id`, `name`, `designation`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Annette Black', 'Packaging Engineer', 'uploads/team-011.webp', '1', '2025-06-04 16:56:15', '2025-06-04 16:56:15'),
-(2, 1, 'Annette Blacka', 'Packaging Engineer', 'uploads/team-02.webp', '1', '2025-06-04 17:02:13', '2025-06-04 17:02:13'),
-(3, 1, 'Annette Blackaa', 'Packaging Engineer', 'uploads/team-03.webp', '1', '2025-06-04 17:02:49', '2025-06-04 17:02:49'),
-(4, 1, 'Annette Blackaasss', 'Packaging Engineer', 'uploads/team-04.webp', '1', '2025-06-04 17:03:48', '2025-06-04 17:14:28');
+INSERT INTO `tbl_our_leaders` (`id`, `fk_service_id`, `name`, `designation`, `link`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Brijesh Sounderrajan', 'Talent Flex', 'https://www.linkedin.com/in/brijesh-sounderrajan-5378277/?original_referer=http%3A%2F%2F148.72.26.123%2F', 'uploads/brijesh1.webp', '1', '2025-06-04 16:56:15', '2025-07-09 12:38:21'),
+(2, 1, 'Pradeep Nair', 'Foods, Pharma & CHC', 'https://www.linkedin.com/authwall?trk=gf&trkInfo=AQF3qYIOUjNz7AAAAZfuAdkgGrAqNiE7jDQmuI3R58d5V03wtpjBzowlGZKFZ2oE0Pz-ZS3D9DFGdOG98nrbF55UwOp8TCWmZFYqBREEPzUJttB-GTrz7jvlm34c4K8pVmrroko=&original_referer=http://148.72.26.123/&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fpradeep-nair-7b0175119%2F', 'uploads/pradeep1.webp', '1', '2025-06-04 17:02:13', '2025-07-09 12:36:37'),
+(3, 1, 'Prachi Balchandani', 'Packaging Engineer', 'https://www.linkedin.com/in/prachibalchandani/', 'uploads/prachi1.webp', '1', '2025-06-04 17:02:49', '2025-07-09 12:38:05'),
+(4, 1, 'Annette Blackaasss', 'Packaging Engineer', NULL, 'uploads/team-04.webp', '0', '2025-06-04 17:03:48', '2025-07-09 12:36:00'),
+(5, 5, 'Hitesh Shenoy', 'VP & BU Lead - Growth - Foods & Pharma', 'https://www.linkedin.com/in/hitesh-shenoy-2a84492/?originalSubdomain=sg', 'uploads/hitesh.webp', '1', '2025-06-27 09:51:51', '2025-06-27 09:51:51'),
+(6, 5, 'Chirag Master', 'VP & BU Lead - Growth, Delivery - SHPCO, Talent Flex & Mold Management Services', 'https://www.linkedin.com/in/chirag-master-54364bb/?originalSubdomain=in', 'uploads/chirag.webp', '1', '2025-06-27 09:52:45', '2025-06-27 09:52:45'),
+(7, 5, 'Tom Oravez', 'Foods, Pharma & CHC (USA)', 'https://www.linkedin.com/in/tom-oravez/', 'uploads/tom.webp', '1', '2025-06-27 09:53:25', '2025-06-27 09:53:25'),
+(8, 5, 'Sheryll Umagtang', 'Foods, Pharma & CHC (SEA)', 'https://www.linkedin.com/in/sheryll-umagtang-174439216/', 'uploads/sheryll.webp', '1', '2025-06-27 09:55:41', '2025-06-27 09:55:41'),
+(9, 5, 'Micheal Harris', 'Foods, Pharma & CHC (USA)', 'https://www.linkedin.com/in/michael-l-harris-41a9897/', 'uploads/micheal.webp', '1', '2025-06-27 09:56:26', '2025-06-27 09:56:26'),
+(10, 4, 'Tom Oravez', 'Foods, Pharma & CHC (USA)', 'https://www.linkedin.com/in/tom-oravez/', 'uploads/tom_(1).webp', '1', '2025-06-27 12:50:23', '2025-06-27 12:53:23'),
+(11, 4, 'Prashant Sukhtankar', 'Foods, Pharma & CHC', 'https://www.linkedin.com/in/prashant-sukhtankar-70a90a18/?originalSubdomain=in', 'uploads/prashant.webp', '1', '2025-06-27 12:51:56', '2025-06-27 12:53:21'),
+(12, 4, 'Aunjna Agarvval', 'Foods, Pharma & CHC', 'https://www.linkedin.com/in/aunjna-agarvval-743b90204/', 'uploads/aunjna.webp', '1', '2025-06-27 12:52:54', '2025-06-27 12:53:19'),
+(13, 4, 'Avinash Singh', 'SHPCO', 'https://www.linkedin.com/in/avinash-singh-68345356/', 'uploads/avinash.webp', '1', '2025-06-27 12:56:40', '2025-06-27 12:56:40'),
+(14, 8, 'Chirag Master', 'VP & BU Lead - Growth, Delivery - sHPCO, Talent Flex & Mold Management Services', 'https://www.linkedin.com/in/chirag-master-54364bb/?originalSubdomain=in', 'uploads/chirag_(2).webp', '1', '2025-07-01 10:54:07', '2025-07-01 10:54:07'),
+(15, 8, 'Minoti Banerjee', 'SHPCO', 'https://www.linkedin.com/in/minoti-banerjee/?original_referer=http%3A%2F%2Flocalhost%2F', 'uploads/minoti.webp', '1', '2025-07-01 10:54:47', '2025-07-01 10:54:47'),
+(16, 8, 'Saikat Jana', 'SHPCO', 'https://www.linkedin.com/in/saikat-jana-048a2a13b/', 'uploads/saiket.webp', '1', '2025-07-01 10:55:53', '2025-07-01 10:55:53');
 
 -- --------------------------------------------------------
 
@@ -679,8 +1043,15 @@ INSERT INTO `tbl_our_offering` (`id`, `fk_service_id`, `title`, `description`, `
 (12, 3, 'Packaging Automation', 'Packaging Technology Selection Material - Machine Interface Affordable Automation Installation & Line Trials', 'uploads/packaging-automation.webp', '1', '2025-06-06 10:03:05', '2025-06-06 10:03:05'),
 (13, 3, 'Industrial Digitization', 'Advanced QMS Simulation Solutions Real Time Visualization Virtual Reality in Packaging', 'uploads/industrial-digitization.webp', '1', '2025-06-06 10:03:36', '2025-06-06 10:03:36'),
 (14, 3, 'End-to-End Management', 'Business Cases Project Management And Control Make vs Source Load Ability Analysis', 'uploads/end-to-end-management.webp', '1', '2025-06-06 10:04:01', '2025-06-06 10:05:58'),
-(15, 7, 'Packaging Innovation', 'End-to-end, fast-tracked product and packaging development powered by digital tools for rapid prototyping and agile execution Mock-ups Aesthetic Prototypes Functional Prototypes Pilot Mold Trials Assembly & Finishing Driving creativity through innovation fairs and collaborative ideation', 'uploads/creative-design.webp', '1', '2025-06-16 11:09:08', '2025-06-16 11:14:49'),
-(16, 8, 'Sourcing & Design-to-Value (DTV)', 'Foundational Strategies Spend Analytics & Market Intelligence Strategic & Tactical Sourcing (Short & Long-Term) Supplier Pricing Review & Benchmarking Contract Lifecycle Management Driving Business Goals Through Smart Procurement Advanced Optimization Levers Spec Optimization & Material Alternatives Standardization & Complexity Reduction Value Chain Assessment for End-to-End Efficiency', 'uploads/sourcing-and-dtv.webp', '1', '2025-06-16 14:09:51', '2025-06-16 14:16:04');
+(15, 7, 'Packaging Innovation', 'End-to-end, fast-tracked product and packaging development powered by digital tools for rapid prototyping and agile execution.\r\nMock-ups. \r\nAesthetic Prototypes. \r\nFunctional Prototypes. \r\nPilot Mold Trials. \r\nAssembly & Finishing. \r\nDriving creativity through innovation fairs and collaborative ideation.', 'uploads/creative-design.webp', '1', '2025-06-16 11:09:08', '2025-06-27 10:59:51'),
+(16, 8, 'Sourcing & Design-to-Value (DTV)', 'Foundational Strategies Spend Analytics & Market Intelligence Strategic & Tactical Sourcing (Short & Long-Term) Supplier Pricing Review & Benchmarking Contract Lifecycle Management Driving Business Goals Through Smart Procurement Advanced Optimization Levers Spec Optimization & Material Alternatives Standardization & Complexity Reduction Value Chain Assessment for End-to-End Efficiency', 'uploads/sourcing-and-dtv.webp', '1', '2025-06-16 14:09:51', '2025-06-16 14:16:04'),
+(17, 7, 'Packaging Engineering', 'Expertise in 2D & 3D packaging design.\r\nDigital simulation for performance optimization.\r\nScalable and efficient packaging manufacturing.\r\nFocus on innovation, sustainability, and cost-effectiveness.\r\nParametric CAD development: DFM, DFA and DFMEA.\r\nManufacturing Drawings.', 'uploads/design-led-research.webp', '1', '2025-06-27 10:39:31', '2025-06-27 11:00:36'),
+(18, 7, 'Transit & Distribution Modelling', 'Comprehensive transit and distribution simulations.\r\nTesting aligned with ISTA scenarios and global standards.\r\nEnsures product protection, minimizes material waste.\r\nSupports reliability across diverse supply chain conditions.', 'uploads/design-validation.webp', '1', '2025-06-27 10:39:58', '2025-06-27 11:01:54'),
+(19, 7, 'Channel-Specific Solutions', 'Tailored packaging for e-commerce and D2C.\r\nOptimized for protection, efficiency, and cost.\r\nDesigned to enhance digital brand experience.', 'uploads/engineering-excellence.webp', '1', '2025-06-27 10:40:30', '2025-06-27 11:02:18'),
+(20, 9, 'Data Migration for PLM Deployment', 'Supporting smooth transitions from scattered data to a single digital source of truth\r\n\r\nBuild packaging data models and templates.\r\nValidate data with sites and suppliers.\r\nPrepare structured, migration-ready datasets.', 'uploads/data-migration.webp', '1', '2025-07-01 12:03:37', '2025-07-01 12:36:59'),
+(21, 9, 'Post-PLM Change Management', 'Managing packaging data updates across the product lifecycle with precision and speed\r\n\r\nCentralized spec management teams\r\nAligned with global standards and workflows\r\nOn-time, audit-ready updates across SKUs', 'uploads/change-management.webp', '1', '2025-07-01 12:06:00', '2025-07-01 12:37:06'),
+(22, 9, 'Portfolio Assessment & Value Creation', 'Using specification data as a lever for simplification, sustainability, and savings\r\n\r\nIdentify duplication, complexity, and gaps\r\nEnable reporting across functions (Regulatory, Procurement, Sustainability)\r\nDrive decisions through validated insights', 'uploads/assesment.webp', '1', '2025-07-01 12:07:16', '2025-07-01 12:37:13'),
+(23, 9, 'Digitization & Process Automation', 'Laying the groundwork for real-time visibility and future-ready operations\r\n\r\nAutomated audit mechanisms and quality checks\r\nDigital dashboards for tracking and governance', 'uploads/digitisation.webp', '1', '2025-07-01 12:08:34', '2025-07-01 12:37:18');
 
 -- --------------------------------------------------------
 
@@ -710,6 +1081,29 @@ INSERT INTO `tbl_our_promise` (`id`, `title`, `description`, `image`, `is_delete
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_pillars_intro`
+--
+
+CREATE TABLE `tbl_pillars_intro` (
+  `id` int(11) NOT NULL,
+  `main_title` varchar(255) NOT NULL,
+  `subtitle` text NOT NULL,
+  `sub_heading` varchar(255) NOT NULL,
+  `is_delete` tinyint(1) DEFAULT 1,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_pillars_intro`
+--
+
+INSERT INTO `tbl_pillars_intro` (`id`, `main_title`, `subtitle`, `sub_heading`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'Our Pillars of Impact Enablement', 'We\'ve built a capability stack that allows us to deliver outcomes across every packaging decision point:', '1. Science-Backed Approach', 1, '2025-07-03 12:29:18', '2025-07-03 12:29:18');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_resourcing_model`
 --
 
@@ -731,6 +1125,29 @@ INSERT INTO `tbl_resourcing_model` (`id`, `title`, `description`, `image`, `is_d
 (1, 'Onshore', 'Model offers In-house resourcing for clients on a global scale at client\'s location.', 'uploads/onshore2.webp', '1', '2025-06-04 13:51:26', '2025-06-04 13:51:26'),
 (2, 'Offshore', 'Model offers resourcing for clients in an efficient way for workstreams that can be managed virtually.', 'uploads/offshore.webp', '1', '2025-06-04 13:56:06', '2025-06-04 13:56:06'),
 (3, 'Hybrid', 'Model offers resourcing for clients that provides the flexibility of offering best of both worlds.', 'uploads/hybrid.webp', '1', '2025-06-04 13:56:31', '2025-06-04 14:07:29');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_science_backed`
+--
+
+CREATE TABLE `tbl_science_backed` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `is_delete` tinyint(1) DEFAULT 1,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_science_backed`
+--
+
+INSERT INTO `tbl_science_backed` (`id`, `title`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 'Model performance', 1, '2025-07-03 12:29:18', '2025-07-03 12:29:18'),
+(2, 'Minimize risk', 1, '2025-07-03 12:29:19', '2025-07-03 12:29:19'),
+(3, 'Move faster', 1, '2025-07-03 12:29:19', '2025-07-03 12:29:19');
 
 -- --------------------------------------------------------
 
@@ -788,11 +1205,12 @@ CREATE TABLE `tbl_service_banner_video` (
 
 INSERT INTO `tbl_service_banner_video` (`id`, `fk_service_id`, `title`, `sub_title`, `description`, `video`, `is_delete`, `created_at`, `updated_at`) VALUES
 (1, 1, 'Talent Flex', 'Elevate Your Team Capability', '77% of businesses globally reported difficulty finding the skilled talent they need. Talent Flex helps you stay ahead by bridging skill gaps, enhancing productivity, and enabling businesses to manage complex packaging priorities.', 'uploads/talent-flex1.mp4', '1', '2025-06-03 16:46:03', '2025-06-04 17:59:56'),
-(2, 2, 'Sustainability', 'Sustainability is the New Core of Packaging', 'Stricter regulations, plastic bans, and growing demand for eco-friendly products are reshaping packaging industry sustainability is not just a requirement, but also a competitive advantage. We help you stay ahead with smart, sustainable solutions that drive growth while protecting the planet.', 'uploads/sustainability.mp4', '1', '2025-06-05 09:15:54', '2025-06-05 09:18:17'),
+(2, 2, 'Sustainability', 'Sustainability is the New Core of Packaging', 'Stricter regulations, plastic bans, and growing demand for eco-friendly products are reshaping the packaging industry. Sustainability is not just a requirement but an opportunity to deliver competitive advantage. Our approach helps you achieve both environmental impact and business performance.', 'uploads/sustainability.mp4', '1', '2025-06-05 09:15:54', '2025-06-27 14:20:50'),
 (3, 3, 'Supply Chain Automation', 'Automate. Streamline. Optimize.', 'Supply Chain Automation is designed to simplify and enhance the entire supply chain process, from procurement to delivery. By integrating advanced automation technology, we enable businesses to operate with greater speed, efficiency, and precision across all levels of their supply chain.', 'uploads/supply-chain-automation.mp4', '1', '2025-06-05 15:16:25', '2025-06-05 15:17:04'),
-(4, 7, 'Packaging Innovation and Engineering', 'Inspire. Innovate. Impact.', 'We design packaging solutions that blend innovation, sustainability, and efficiency. By leveraging cutting-edge technology, strategic thinking, and deep industry expertise, we create packaging that delivers value for people, the planet, and profit.', 'uploads/innovation-and-engineering.mp4', '1', '2025-06-16 10:39:21', '2025-06-16 10:46:14'),
+(4, 7, 'Packaging Innovation and Engineering', 'Inspire. Innovate. Impact.', 'We use design thinking principles and real consumer insights to develop solutions that go beyond aesthetics or functionality. Our approach ensures that design and developmental impact is not restricted to Innovation but also straddles across efficiency and sustainability.', 'uploads/innovation-and-engineering.mp4', '1', '2025-06-16 10:39:21', '2025-06-27 10:37:57'),
 (5, 8, 'Packaging Procurement', 'Optimise Your Packaging', 'Packaging Spend typically accounts for ~ 5% to max 15% of the total procurement spend of an organization. With the right approach, we can reduce costs, improve efficiency, and enhance brand impact.', 'uploads/packaging-procurement.mp4', '1', '2025-06-16 13:48:00', '2025-06-16 13:49:58'),
-(6, 5, 'Design to Value', 'Smarter Packaging. Shining Impact.', 'We believe that packaging is a strategic business weapon and our Design to Value (DTV) creates impact similarly by blending innovation & efficiency to create packaging solutions that optimize costs, enhance consumer experience, and future-proof your business.', 'uploads/dtv.webm', '1', '2025-06-26 16:14:57', '2025-06-26 16:14:57');
+(6, 5, 'Design to Value', 'Smarter Packaging. Shining Impact.', 'We believe that packaging is a strategic business weapon and our Design to Value (DTV) creates impact similarly by blending innovation & efficiency to create packaging solutions that optimize costs, enhance consumer experience, and future-proof your business.', 'uploads/dtv.webm', '1', '2025-06-26 16:14:57', '2025-06-26 16:14:57'),
+(7, 9, 'Specification Management', 'The hidden system behind Packaging Success', 'In high speed, multi SKU environments, specification mismanagement quietly erodes speed, compliance and revenue. Without high data accuracy or structured analysis for continuous improvement, even small inconsistencies in data, versions or approvals can create serious disruption. We bring structure, visibility and intelligence to packaging specs, turning them from a bottleneck into a competitive edge.', 'uploads/specification-management.webm', '1', '2025-07-01 11:30:50', '2025-07-01 11:37:25');
 
 -- --------------------------------------------------------
 
@@ -845,8 +1263,11 @@ CREATE TABLE `tbl_slider` (
 --
 
 INSERT INTO `tbl_slider` (`id`, `title`, `subtitle`, `button_text`, `button_link`, `image`, `slide_order`, `status`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'Unlock Unimaginable Business Impact Using Packaging as a Business Weapon', '', 'Learn more about us', 'why-packfora.php', NULL, 1, 1, '0', NULL, NULL),
-(2, 'Unlock Unimaginable Business Impact Using Packaging as a Business Weapon', '', 'Learn more about us', 'why-packfora.php', 'uploads/banner-01.webp', 1, 1, '1', NULL, NULL);
+(1, 'Unlock Unimaginable Business Impact Using Packaging as a Business Weapon', '', 'Learn more about us', 'why-packfora.php', NULL, 1, 1, '1', NULL, NULL),
+(2, 'School of Packaging', 'Sharpen your packaging expertise with<br>industry-leading training.', 'Learn More About our Training Program', 'javascript:void(0)', './uploads/packfora-wh-logo.webp', 2, 1, '1', NULL, NULL),
+(3, 'Whitepaper 2024', 'Stay ahead with cutting-edge packaging insights.', 'Download Your Copy Now!', 'packforum-2024.php', './uploads/packforum.webp', 3, 1, '1', NULL, NULL),
+(4, 'Packaging Maturity Index', 'Assess where you stand and discover new<br>growth opportunities.', 'Click Below to Check Yours', 'javascript:void(0)', NULL, 4, 1, '1', NULL, NULL),
+(5, 'End-to-End Intelligence. Strategic Insights. Maximum Value.', 'Digitalise your Mold Management', 'Explore More', 'maxmold.php', './uploads/maxmold-logo1.png', 5, 1, '1', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -946,7 +1367,7 @@ CREATE TABLE `tbl_success_stories` (
 INSERT INTO `tbl_success_stories` (`id`, `fk_service_id`, `title`, `description`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
 (1, 1, 'Mold Management for a Global QSR Chain', 'Read how we streamlined mold management, enhancing efficiency and turnaround speed—securing a 24-month contract extension.', 'uploads/mould-management-for-a-global-QSR-chain.webp', '1', '2025-06-04 15:31:32', '2025-06-04 15:31:32'),
 (2, 1, 'Lab & Prototyping Management for FMCG', 'Explore how we digitized lab operations, cutting prototyping time by 60%, accelerating product launches, and driving continuous innovation.', 'uploads/lab-and-prototyping-management-for-FMCG.webp', '1', '2025-06-04 15:33:37', '2025-06-04 15:34:14'),
-(3, 2, 'Digitization & Innovationssss', 'We leverage AI, automation, and real-time data to ensure efficient, innovative, and sustainable packaging solutions that benefit your business, our team, and the planet.', 'uploads/we-do-03.png', '1', '2025-06-05 14:53:26', '2025-06-17 10:06:14'),
+(3, 2, 'Digitization & Innovationssss', 'We leverage AI, automation, and real-time data to ensure efficient, innovative, and sustainable packaging solutions that benefit your business, our team, and the planet.', 'uploads/we-do-03.png', '0', '2025-06-05 14:53:26', '2025-06-27 17:28:23'),
 (4, 2, 'Global Spirits Leader Cuts Packaging Waste & Boosts Sustainability Without Compromising Luxury', NULL, 'uploads/global-spirit.webp', '1', '2025-06-05 14:56:50', '2025-06-05 14:56:50'),
 (5, 2, 'Revolutionizing Personal Care Packaging: A Sustainability Breakthrough for a Global FMCG Giant', NULL, 'uploads/personal-care.webp', '1', '2025-06-05 14:57:12', '2025-06-05 14:57:12'),
 (6, 2, 'Navigating Africa\'s Evolving Packaging Regulations: A Compliance Success Story', NULL, 'uploads/africa.webp', '1', '2025-06-05 14:57:44', '2025-06-05 14:57:44'),
@@ -961,7 +1382,12 @@ INSERT INTO `tbl_success_stories` (`id`, `fk_service_id`, `title`, `description`
 (15, 5, 'Sustainable Frozen Food Packaging Transformation', 'Transitioned from non-recyclable laminated plastic to fossil-free, recyclable pouches—maintaining performance while enhancing sustainability.', 'uploads/sustainable-frozen-food-packaging.webp', '1', '2025-06-26 17:16:17', '2025-06-26 17:16:17'),
 (16, 5, 'Thermoformed PP Bowl Optimization', 'Achieved up to 9% reduction in plastic consumption through advanced material optimization, lowering costs without compromising strength.', 'uploads/thermoformed-PP-otimization.webp', '1', '2025-06-26 17:17:30', '2025-06-26 17:17:30'),
 (17, 5, 'Corrugate Cost-Saving Pipeline', 'Built a $4.1M annual savings roadmap for a leading CPG brand, halving implementation time while improving manufacturability.', 'uploads/corrugate-cost-saving-pipeline.webp', '1', '2025-06-26 17:19:16', '2025-06-26 17:19:16'),
-(18, 5, 'ISTA-Test Protocol Development for India', 'Developed localized ISTA-equivalent testing protocols to minimize Defects Per Million Opportunities (DPMO), driving packaging innovation and process efficiency.', 'uploads/ISTA-test.webp', '1', '2025-06-26 17:20:09', '2025-06-26 17:20:09');
+(18, 5, 'ISTA-Test Protocol Development for India', 'Developed localized ISTA-equivalent testing protocols to minimize Defects Per Million Opportunities (DPMO), driving packaging innovation and process efficiency.', 'uploads/ISTA-test.webp', '1', '2025-06-26 17:20:09', '2025-06-26 17:20:09'),
+(19, 7, 'Leading CPG Manufacturer', 'Achieved $90M in savings through packaging innovations and strategic partnerships.', 'uploads/leading-CPG.webp', '1', '2025-06-27 12:00:42', '2025-06-27 12:00:42'),
+(20, 7, 'FMCG Giant', 'Centralized and digitized lab operations, reducing design and prototyping time by 60%.', 'uploads/FMCG-giant.webp', '1', '2025-06-27 12:02:07', '2025-06-27 12:02:07'),
+(21, 2, 'Transforming Fresh Produce Packaging: How a Global Brand Reduced Waste & Maximized Shelf Life', NULL, 'uploads/transform1.webp', '1', '2025-06-27 17:29:25', '2025-06-27 17:29:25'),
+(22, 9, 'Streamlined specification workflows across multiple categories and markets - improving speed, govern', NULL, 'uploads/streamlined-specification.webp', '1', '2025-07-01 14:43:10', '2025-07-01 14:45:14'),
+(23, 9, 'Enabled global specification harmonization across brands — reducing manual rework and accelerating c', NULL, 'uploads/global-specification.webp', '1', '2025-07-01 14:44:40', '2025-07-01 14:44:40');
 
 -- --------------------------------------------------------
 
@@ -984,6 +1410,56 @@ CREATE TABLE `tbl_user` (
 
 INSERT INTO `tbl_user` (`id`, `name`, `email`, `password`, `created_at`, `updated_at`) VALUES
 (1, 'Admin', 'admin@admin.com', 'NkYzS0ZCRkhhck9lazVyNUkxd0ljUT09', '2025-05-28 10:29:13', '2025-05-28 10:29:13');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_value_chain_expertise`
+--
+
+CREATE TABLE `tbl_value_chain_expertise` (
+  `id` int(11) NOT NULL,
+  `fk_section_id` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  `is_delete` tinyint(1) DEFAULT 1,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_value_chain_expertise`
+--
+
+INSERT INTO `tbl_value_chain_expertise` (`id`, `fk_section_id`, `title`, `description`, `is_active`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Consumer', 'We enable packaging choices that enhance product experience, brand equity, and market competitiveness.', 1, 1, '2025-07-08 13:18:17', '2025-07-09 09:41:04'),
+(2, 1, 'Brand', 'We ensure packaging aligns with real-world consumer expectations — from functionality and usability to sustainability.', 1, 1, '2025-07-08 13:18:17', '2025-07-09 09:41:04'),
+(3, 1, 'Brand Owner Supply Chain', 'We optimize how packaging flows through manufacturing, warehousing, and logistics — balancing cost, agility, and carbon impact.', 1, 1, '2025-07-08 13:18:17', NULL),
+(4, 1, 'Supplier Supply Chain', 'We help brands work smarter with suppliers and converters — driving material selection, lead time optimization, and supply resilience.', 1, 1, '2025-07-08 13:18:17', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_value_chain_section`
+--
+
+CREATE TABLE `tbl_value_chain_section` (
+  `id` int(11) NOT NULL,
+  `main_title` varchar(255) NOT NULL,
+  `main_description` text NOT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  `is_delete` tinyint(1) DEFAULT 1,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_value_chain_section`
+--
+
+INSERT INTO `tbl_value_chain_section` (`id`, `main_title`, `main_description`, `is_active`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1, '3. End-to-End Value Chain Expertise', 'Packaging decisions impact every part of the value chain — and we understand those interconnections deeply. We bring expertise across the entire ecosystem:', 1, 1, '2025-07-08 13:18:16', '2025-07-09 09:46:31');
 
 -- --------------------------------------------------------
 
@@ -1130,6 +1606,37 @@ ALTER TABLE `tbl_case_study`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tbl_case_study_business_impact`
+--
+ALTER TABLE `tbl_case_study_business_impact`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbl_case_study_objectives`
+--
+ALTER TABLE `tbl_case_study_objectives`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_case_study_id` (`fk_case_study_id`);
+
+--
+-- Indexes for table `tbl_case_study_solutions`
+--
+ALTER TABLE `tbl_case_study_solutions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbl_case_study_solution_header`
+--
+ALTER TABLE `tbl_case_study_solution_header`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbl_case_study_tags`
+--
+ALTER TABLE `tbl_case_study_tags`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_contact_us`
 --
 ALTER TABLE `tbl_contact_us`
@@ -1167,6 +1674,24 @@ ALTER TABLE `tbl_global_dialogue`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tbl_holistic_model_levers`
+--
+ALTER TABLE `tbl_holistic_model_levers`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbl_holistic_model_sections`
+--
+ALTER TABLE `tbl_holistic_model_sections`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbl_holistic_model_strategies`
+--
+ALTER TABLE `tbl_holistic_model_strategies`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_how_we_do_it`
 --
 ALTER TABLE `tbl_how_we_do_it`
@@ -1176,6 +1701,12 @@ ALTER TABLE `tbl_how_we_do_it`
 -- Indexes for table `tbl_impact_boxes`
 --
 ALTER TABLE `tbl_impact_boxes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbl_impact_enabled`
+--
+ALTER TABLE `tbl_impact_enabled`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1209,6 +1740,18 @@ ALTER TABLE `tbl_market_trends`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tbl_optimize_image`
+--
+ALTER TABLE `tbl_optimize_image`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbl_optimize_packaging`
+--
+ALTER TABLE `tbl_optimize_packaging`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_our_leaders`
 --
 ALTER TABLE `tbl_our_leaders`
@@ -1227,9 +1770,21 @@ ALTER TABLE `tbl_our_promise`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tbl_pillars_intro`
+--
+ALTER TABLE `tbl_pillars_intro`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_resourcing_model`
 --
 ALTER TABLE `tbl_resourcing_model`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbl_science_backed`
+--
+ALTER TABLE `tbl_science_backed`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1284,6 +1839,19 @@ ALTER TABLE `tbl_success_stories`
 -- Indexes for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbl_value_chain_expertise`
+--
+ALTER TABLE `tbl_value_chain_expertise`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_section_id` (`fk_section_id`);
+
+--
+-- Indexes for table `tbl_value_chain_section`
+--
+ALTER TABLE `tbl_value_chain_section`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1360,7 +1928,37 @@ ALTER TABLE `tbl_built_reliability`
 -- AUTO_INCREMENT for table `tbl_case_study`
 --
 ALTER TABLE `tbl_case_study`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT for table `tbl_case_study_business_impact`
+--
+ALTER TABLE `tbl_case_study_business_impact`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `tbl_case_study_objectives`
+--
+ALTER TABLE `tbl_case_study_objectives`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `tbl_case_study_solutions`
+--
+ALTER TABLE `tbl_case_study_solutions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `tbl_case_study_solution_header`
+--
+ALTER TABLE `tbl_case_study_solution_header`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `tbl_case_study_tags`
+--
+ALTER TABLE `tbl_case_study_tags`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `tbl_contact_us`
@@ -1372,7 +1970,7 @@ ALTER TABLE `tbl_contact_us`
 -- AUTO_INCREMENT for table `tbl_discover_benefits`
 --
 ALTER TABLE `tbl_discover_benefits`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `tbl_event_slider`
@@ -1399,6 +1997,24 @@ ALTER TABLE `tbl_global_dialogue`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `tbl_holistic_model_levers`
+--
+ALTER TABLE `tbl_holistic_model_levers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `tbl_holistic_model_sections`
+--
+ALTER TABLE `tbl_holistic_model_sections`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tbl_holistic_model_strategies`
+--
+ALTER TABLE `tbl_holistic_model_strategies`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `tbl_how_we_do_it`
 --
 ALTER TABLE `tbl_how_we_do_it`
@@ -1411,6 +2027,12 @@ ALTER TABLE `tbl_impact_boxes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT for table `tbl_impact_enabled`
+--
+ALTER TABLE `tbl_impact_enabled`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `tbl_impact_sections`
 --
 ALTER TABLE `tbl_impact_sections`
@@ -1420,13 +2042,13 @@ ALTER TABLE `tbl_impact_sections`
 -- AUTO_INCREMENT for table `tbl_knowledge_centre`
 --
 ALTER TABLE `tbl_knowledge_centre`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_leadership_team`
 --
 ALTER TABLE `tbl_leadership_team`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `tbl_life_at_packfora`
@@ -1441,16 +2063,28 @@ ALTER TABLE `tbl_market_trends`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT for table `tbl_optimize_image`
+--
+ALTER TABLE `tbl_optimize_image`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tbl_optimize_packaging`
+--
+ALTER TABLE `tbl_optimize_packaging`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `tbl_our_leaders`
 --
 ALTER TABLE `tbl_our_leaders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `tbl_our_offering`
 --
 ALTER TABLE `tbl_our_offering`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `tbl_our_promise`
@@ -1459,9 +2093,21 @@ ALTER TABLE `tbl_our_promise`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `tbl_pillars_intro`
+--
+ALTER TABLE `tbl_pillars_intro`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `tbl_resourcing_model`
 --
 ALTER TABLE `tbl_resourcing_model`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `tbl_science_backed`
+--
+ALTER TABLE `tbl_science_backed`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
@@ -1474,7 +2120,7 @@ ALTER TABLE `tbl_services`
 -- AUTO_INCREMENT for table `tbl_service_banner_video`
 --
 ALTER TABLE `tbl_service_banner_video`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tbl_shine_with_us`
@@ -1486,7 +2132,7 @@ ALTER TABLE `tbl_shine_with_us`
 -- AUTO_INCREMENT for table `tbl_slider`
 --
 ALTER TABLE `tbl_slider`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tbl_smart_to_circular`
@@ -1510,13 +2156,25 @@ ALTER TABLE `tbl_student_talent_economy`
 -- AUTO_INCREMENT for table `tbl_success_stories`
 --
 ALTER TABLE `tbl_success_stories`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tbl_value_chain_expertise`
+--
+ALTER TABLE `tbl_value_chain_expertise`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `tbl_value_chain_section`
+--
+ALTER TABLE `tbl_value_chain_section`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_video_banner`
@@ -1541,6 +2199,22 @@ ALTER TABLE `tbl_why_people_choose_packfora`
 --
 ALTER TABLE `tbl_work_with_technocarts`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `tbl_case_study_objectives`
+--
+ALTER TABLE `tbl_case_study_objectives`
+  ADD CONSTRAINT `tbl_case_study_objectives_ibfk_1` FOREIGN KEY (`fk_case_study_id`) REFERENCES `tbl_case_study` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tbl_value_chain_expertise`
+--
+ALTER TABLE `tbl_value_chain_expertise`
+  ADD CONSTRAINT `tbl_value_chain_expertise_ibfk_1` FOREIGN KEY (`fk_section_id`) REFERENCES `tbl_value_chain_section` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

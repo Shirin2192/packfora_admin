@@ -327,48 +327,54 @@ class Admin extends CI_Controller {
 	}	
 	public function upload_client_image()
 	{
-		// Set upload configuration
-		$config['upload_path']   = './uploads/clients/';
-		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
-		$config['max_size']      = 2048; // in KB
-		$config['encrypt_name']  = TRUE;
+	    // Set upload configuration
+	    $config['upload_path']   = './uploads/clients/';
+	    $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+	    $config['max_size']      = 2048; // in KB
+	    $config['encrypt_name']  = TRUE;
 
-		// Create directory if not exists
-		if (!is_dir($config['upload_path'])) {
-			mkdir($config['upload_path'], 0777, true);
-		}
+	    // Create directory if not exists
+	    if (!is_dir($config['upload_path'])) {
+	        mkdir($config['upload_path'], 0777, true);
+	    }
 
-		$this->load->library('upload', $config);
+	    $this->load->library('upload', $config);
 
-		if (!$this->upload->do_upload('img')) {
-			// Remove <p> tags or any HTML from the error message
-			$error = strip_tags($this->upload->display_errors());
-			echo json_encode([
-				'status' => false,
-				'message' => $error
-			]);
-			return;
-		}
-		$uploadData = $this->upload->data();
-		$filename = $uploadData['file_name'];
+	    if (!$this->upload->do_upload('img')) {
+	        // Remove <p> tags or any HTML from the error message
+	        $error = strip_tags($this->upload->display_errors());
+	        echo json_encode([
+	            'status' => false,
+	            'message' => $error
+	        ]);
+	        return;
+	    }
 
-		// Save file path to DB (optional: add validation/sanitization)
-		$save = $this->model->insertData('our_clients', [
-			'image' => 'uploads/clients/' . $filename
-		]);
+	    $uploadData = $this->upload->data();
+	    $filename = $uploadData['file_name'];
 
-		if ($save) {
-			echo json_encode([
-				'status' => true,
-				'message' => 'Image uploaded successfully',
-				'filename' => $filename
-			]);
-		} else {
-			echo json_encode([
-				'status' => false,
-				'message' => 'Image uploaded but failed to save in database.'
-			]);
-		}
+	    // === Get Checkbox Values ===
+	    $show_on_homepage = $this->input->post('show_on_homepage') ? 1 : 0;
+	    $show_on_clients_page = $this->input->post('show_on_clients_page') ? 1 : 0;
+
+	    // Save file path and checkbox data to DB
+	    $save = $this->model->insertData('our_clients', [
+	        'image' => 'uploads/clients/' . $filename,
+	        'show_on_homepage' => $show_on_homepage,
+	        'show_on_clients_page' => $show_on_clients_page,
+	    ]);
+	    if ($save) {
+	        echo json_encode([
+	            'status' => true,
+	            'message' => 'Image uploaded successfully',
+	            'filename' => $filename
+	        ]);
+	    } else {
+	        echo json_encode([
+	            'status' => false,
+	            'message' => 'Image uploaded but failed to save in database.'
+	        ]);
+	    }
 	}
 	public function get_clients_data()
 	{
@@ -381,6 +387,60 @@ class Admin extends CI_Controller {
 		$response['data'] = $this->model->selectWhereData('our_clients',array('id'=> $id), '*');
 		echo json_encode($response);
 	}
+	public function update_client_image()
+	{
+	    $id = $this->input->post('id');
+	    $previous_image = $this->input->post('previous_image');
+
+	    if (!$id) {
+	        echo json_encode(['status' => false, 'message' => 'Invalid ID.']);
+	        return;
+	    }
+
+	    $data = [];
+
+	    // === Handle Image Upload ===
+	    if (!empty($_FILES['edit_image']['name'])) {
+	        $config['upload_path']   = './uploads/clients/';
+	        $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+	        $config['max_size']      = 2048;
+	        $config['encrypt_name']  = TRUE;
+
+	        if (!is_dir($config['upload_path'])) {
+	            mkdir($config['upload_path'], 0777, true);
+	        }
+
+	        $this->load->library('upload', $config);
+
+	        if (!$this->upload->do_upload('edit_image')) {
+	            $error = strip_tags($this->upload->display_errors());
+	            echo json_encode(['status' => false, 'message' => $error]);
+	            return;
+	        }
+
+	        $uploadData = $this->upload->data();
+	        $new_filename = 'uploads/clients/' . $uploadData['file_name'];
+	        $data['image'] = $new_filename;
+
+	        // Delete old image if it exists
+	        if (!empty($previous_image) && file_exists(FCPATH . $previous_image)) {
+	            unlink(FCPATH . $previous_image);
+	        }
+	    }
+
+	    // === Handle Checkboxes ===
+	    $data['show_on_homepage']     = $this->input->post('show_on_homepage') ? 1 : 0;
+	    $data['show_on_clients_page'] = $this->input->post('show_on_clients_page') ? 1 : 0;
+		    // === Update the Database ===
+	    $updated = $this->model->updateData('our_clients', $data, ['id' => $id]);
+
+	    if ($updated) {
+	        echo json_encode(['status' => true, 'message' => 'Client updated successfully.']);
+	    } else {
+	        echo json_encode(['status' => false, 'message' => 'No changes made or update failed.']);
+	    }
+	}
+
 
 	public function delete_clients_image()
 	{

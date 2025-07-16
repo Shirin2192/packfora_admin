@@ -52,7 +52,7 @@ $("#OurClientForm").on("submit", function (e) {
 	});
 });
 $(document).ready(function () {
-	const table = $("#ClientImageTable").DataTable({
+	ClientImageTable = $("#ClientImageTable").DataTable({
 		ajax: frontend + "admin/get_clients_data", // your API route
 		processing: true,
 		serverSide: false,
@@ -71,10 +71,25 @@ $(document).ready(function () {
 				orderable: false,
 			},
 			{
+		        data: "show_on_homepage",
+		        render: function (data) {
+		            return data == "1" ? `<span class="badge bg-success">Yes</span>` : `<span class="badge bg-secondary">No</span>`;
+		        }
+		    },
+		    {
+		        data: "show_on_clients_page",
+		        render: function (data) {
+		            return data == "1" ? `<span class="badge bg-success">Yes</span>` : `<span class="badge bg-secondary">No</span>`;
+		        }
+		    },
+			{
 				data: null,
 				orderable: false,
 				render: function (data, type, row) {
 					return `
+						<a href="#" class="edit-btn" data-id="${row.id}" title="Edit">
+                            <i class="fas fa-edit text-warning "></i>
+                        </a>
                         <a href="#" class="delete-btn" data-id="${row.id}" title="Delete">
                             <i class="fas fa-trash-alt text-danger"></i>
                         </a>
@@ -86,60 +101,49 @@ $(document).ready(function () {
 	 // <a href="#" class="view-btn" data-id="${row.id}" title="View">
      //                        <i class="fas fa-eye text-info "></i>
      //                    </a>
-     //                    <a href="#" class="edit-btn" data-id="${row.id}" title="Edit">
-     //                        <i class="fas fa-edit text-warning "></i>
-     //                    </a>
-	$("#ClientImageTable").on("click", ".view-btn", function (e) {
-        e.preventDefault();
-        const id = $(this).data("id");
-        $.ajax({
-            url: frontend + "admin/get_clients_details",
-            type: "POST",
-            dataType: "json",
-            data: { id: id }, // send id in POST data
-            success: function (response) {
-                if (response.data.image) {
-                	const imageUrl = response.data.image;
-                $("#view_image").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px;">');
+                        
+ $("#ClientImageTable").on("click", ".edit-btn", function (e) {
+    e.preventDefault();
+    const id = $(this).data("id");
+
+    $.ajax({
+        url: frontend + "admin/get_clients_details",
+        type: "POST",
+        dataType: "json",
+        data: { id: id },
+        success: function (response) {
+            if (response.data) {
+                const data = response.data;
+
+                $("#edit_id").val(data.id);
+                $("#edit_previous_image").val(data.image);
+
+                // Show image preview
+                if (data.image) {
+                    const imageUrl = frontend + data.image;
+                    $("#edit_image_preview").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px;">');
+                } else {
+                    $("#edit_image_preview").html('');
+                }
+
+                // Checkboxes
+                $("#edit_show_on_homepage").prop("checked", data.show_on_homepage == "1");
+                $("#edit_show_on_clients_page").prop("checked", data.show_on_clients_page == "1");
+
+                // Bootstrap 5 Modal trigger
+                const editModal = new bootstrap.Modal(document.getElementById('EditModal'));
+                editModal.show();
             } else {
-                $("#view_image").html('');
+                Swal.fire("Error", "Client data not found.", "error");
             }
-            $('#ViewModal').modal('show');
-            },
-            error: function () {
-                $("#view_title").text("Error loading data");
-                $("#view_date").text("Error loading data");
-                $("#view_image").hide();
-            },
-        });
+        },
+        error: function () {
+            Swal.fire("Error", "Server error. Try again.", "error");
+        }
     });
-    $("#ClientImageTable").on("click", ".edit-btn", function (e) {
-        e.preventDefault();
-        const id = $(this).data("id");
-        // Fetch details from server via POST
-        $.ajax({
-            url: frontend + "admin/get_clients_details",
-            type: "POST",
-            dataType: "json",
-            data: { id: id }, // send id in POST data
-            success: function (response) {
-                    $("#edit_id").val(response.data.id);
-                    $("#edit_previous_image").val(response.data.image); // Handle empty image case
-                    if (response.data.image) {
-                        const imageUrl = frontend + response.data.image;
-                        $("#edit_image_preview").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px;">');
-                    } else {
-                        $("#edit_image_preview").html('');
-                    }
-                    $('#EditModal').modal('show');                
-            },
-            error: function () {
-                $("#edit_title").val("Error loading data");
-                $("#edit_date").val("Error loading data");
-                $("#edit_image_preview").html('');
-            },
-        });
-    });
+});
+
+
 	// Delete action
 	$("#ClientImageTable").on("click", ".delete-btn", function (e) {
 		e.preventDefault();
@@ -174,4 +178,44 @@ $(document).ready(function () {
 			}
 		});
 	});
+});
+$('#EditOurClientForm').submit(function (e) {
+    e.preventDefault();
+
+    let formData = new FormData(this);
+    // Clear previous errors
+    $('#error_edit_video').text('');
+
+    $.ajax({
+        url: frontend + "admin/update_client_image", // adjust to your route
+        type: "POST",
+        data: formData,
+        dataType: "json",
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            if (response.status) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: response.message,
+                    timer: 1000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+                // Reset the form
+                $('#EditOurClientForm')[0].reset();   
+                $('#EditModal').modal('hide');            
+                // Reload the DataTable
+                ClientImageTable.ajax.reload(null, false);
+                
+                // Optional: refresh data table or show toast
+            } else if (response.status === 'error') {
+                // Show validation errors
+                if (response.errors.image) {
+                    $('#error_edit_image').text(response.errors.image);
+                }
+            }
+        }
+    });
 });

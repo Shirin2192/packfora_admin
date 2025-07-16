@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 11, 2025 at 01:45 PM
+-- Generation Time: Jul 16, 2025 at 02:28 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -153,28 +153,81 @@ CREATE TABLE `our_clients` (
   `image` longtext DEFAULT NULL,
   `is_delete` enum('1','0') NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime NOT NULL DEFAULT current_timestamp()
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `show_on_homepage` enum('1','0') NOT NULL DEFAULT '0',
+  `show_on_clients_page` enum('1','0') NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `our_clients`
 --
 
-INSERT INTO `our_clients` (`id`, `image`, `is_delete`, `created_at`, `updated_at`) VALUES
-(1, 'uploads/clients/0236e2b84a2c768be6322d37f46aa8c2.webp', '1', '2025-06-26 11:04:36', '2025-06-26 11:04:36'),
-(2, 'uploads/clients/ebe5b80564f49982fe35f2b65617126c.webp', '1', '2025-06-26 11:04:42', '2025-06-26 11:04:42'),
-(3, 'uploads/clients/89b797d678f9ffddeb0c4d9119ba520d.webp', '1', '2025-06-26 11:04:47', '2025-06-26 11:04:47'),
-(4, 'uploads/clients/a1744b38c307be4d1bfe4772a0ccbd0c.webp', '1', '2025-06-26 11:05:00', '2025-06-26 11:05:00'),
-(5, 'uploads/clients/800da3c264367a91ad027736a4a2bcf2.webp', '1', '2025-06-26 11:05:07', '2025-06-26 11:05:07'),
-(6, 'uploads/clients/36dd77a0abb5d125da30212545aea16b.webp', '1', '2025-06-26 11:05:11', '2025-06-26 11:05:11'),
-(7, 'uploads/clients/b8d6e1898bb7cc7c727a2b397c778f6c.webp', '1', '2025-06-26 11:05:24', '2025-06-26 11:05:24'),
-(8, 'uploads/clients/beba7f9049fa1c808f9d0550a73eca12.webp', '1', '2025-06-26 11:05:39', '2025-06-26 11:05:39'),
-(9, 'uploads/clients/2898b36dac41bae513ee7234d8eb023c.webp', '1', '2025-06-26 11:05:44', '2025-06-26 11:05:44'),
-(10, 'uploads/clients/91a9b652ca4ddda037d3da516ba3e3cf.webp', '1', '2025-06-26 11:05:52', '2025-06-26 11:05:52'),
-(11, 'uploads/clients/0e1b7735eb45fb5d3e2dd80fef3f5cba.webp', '1', '2025-06-26 11:05:57', '2025-06-26 11:05:57'),
-(12, 'uploads/clients/6d1e41856cd1dc1d20f89c2a7ab17df5.webp', '1', '2025-06-26 11:06:02', '2025-06-26 11:06:02'),
-(13, 'uploads/clients/3916400e615756df559ab8fe8c491dd7.webp', '1', '2025-06-26 11:06:11', '2025-06-26 11:06:11'),
-(14, 'uploads/clients/aff1fa7c321850f09822d5532c094a1e.webp', '1', '2025-06-26 11:06:16', '2025-06-26 11:06:16');
+INSERT INTO `our_clients` (`id`, `image`, `is_delete`, `created_at`, `updated_at`, `show_on_homepage`, `show_on_clients_page`) VALUES
+(1, 'uploads/clients/abbott.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '', '1'),
+(2, 'uploads/clients/aditya-birla-group.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '', '1'),
+(3, 'uploads/clients/ag-poly-packs.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(4, 'uploads/clients/amazon.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(5, 'uploads/clients/amcor.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(6, 'uploads/clients/avery-dennison.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(7, 'uploads/clients/barry-callebaut.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(8, 'uploads/clients/bayer.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(9, 'uploads/clients/bcg.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(10, 'uploads/clients/brillon.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(11, 'uploads/clients/bw-unilever.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(12, 'uploads/clients/camlin.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(13, 'uploads/clients/colgate-palmolive.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(14, 'uploads/clients/danone.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(15, 'uploads/clients/diageo.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(16, 'uploads/clients/dole.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(17, 'uploads/clients/edgewell.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(18, 'uploads/clients/elida-beauty.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(19, 'uploads/clients/encube.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(20, 'uploads/clients/fairprice.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(21, 'uploads/clients/fertin.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(22, 'uploads/clients/gala.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(23, 'uploads/clients/glenmark.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(24, 'uploads/clients/godrej.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(25, 'uploads/clients/havi.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(26, 'uploads/clients/hector-beverages.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(27, 'uploads/clients/hershey.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(28, 'uploads/clients/indian-oil.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(29, 'uploads/clients/ITC.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(30, 'uploads/clients/itc-paspd.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(31, 'uploads/clients/itochu.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(32, 'uploads/clients/jt-mold.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(33, 'uploads/clients/jubilant-foodworks.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(34, 'uploads/clients/marico.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(35, 'uploads/clients/mc-nroe.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(36, 'uploads/clients/menasha.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(37, 'uploads/clients/mondelez.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(38, 'uploads/clients/nivea.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(39, 'uploads/clients/norton.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(40, 'uploads/clients/nykaa.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(41, 'uploads/clients/olam.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(42, 'uploads/clients/parekhplast.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(43, 'uploads/clients/pepsi.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(44, 'uploads/clients/pepsico.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(45, 'uploads/clients/pernod-ricard.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(46, 'uploads/clients/pidilite.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(47, 'uploads/clients/pitilip-morris-international.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(48, 'uploads/clients/polyplex.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(49, 'uploads/clients/pz-cussons.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(50, 'uploads/clients/raychem-RPG.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(51, 'uploads/clients/reckitt.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(52, 'uploads/clients/scjohnson.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(53, 'uploads/clients/sln-coffee.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(54, 'uploads/clients/solar.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(55, 'uploads/clients/switz.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(56, 'uploads/clients/takeda.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(57, 'uploads/clients/tata-motors.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(58, 'uploads/clients/tatat-consumer-products-limited.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(59, 'uploads/clients/ultratech-cement.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(60, 'uploads/clients/uma-global-foods.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(61, 'uploads/clients/unilever.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(62, 'uploads/clients/universal-robina.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(63, 'uploads/clients/wipro.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1'),
+(64, 'uploads/clients/zespri.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '1', '1'),
+(65, 'uploads/clients/zydus-wellness.svg', '1', '2025-07-16 14:32:11', '2025-07-16 14:32:11', '0', '1');
 
 -- --------------------------------------------------------
 
@@ -260,24 +313,24 @@ CREATE TABLE `tbl_case_study` (
 --
 
 INSERT INTO `tbl_case_study` (`id`, `title`, `description`, `badge`, `image`, `video`, `slug_url`, `case_study_link`, `publish_date`, `tag_id`, `is_active`, `is_delete`, `created_at`, `updated_at`, `main_image`) VALUES
-(1, 'Packfora enabled a leading FMCG brand to cut costs by 30% while enhancing recyclability and sustainability.', 'We partnered with a $2.5B horticulture leader to design a packaging solution that did more than protect fruit — it built a habit. Inspired by the pillbox design, the 7-day fruit regimen pack helped consumers stay consistent, supported ESG goals, and moved from pilot to commercial rollout in just four months.', 'Foods', 'uploads/ebded142958539454267cff8f7c6dfcc.webp', 'uploads/2fa5bef0542f33d60dcb3db3bd27bd01.webm', 'case-study-inner.php', NULL, '0000-00-00', '1,7,9,14,16', 1, '1', '2025-07-04 16:57:13', '2025-07-07 12:39:41', NULL),
-(2, 'How Packfora streamlined a major pharma company in their specification management.', 'When packaging specifications are scattered across geographies, platforms, and people — speed, accuracy, and compliance take a hit. A leading pharmaceutical company needed a better way to manage its packaging and finished goods specification, one that could support both day-to-day efficiency and long-term transformation. Packfora led an end-to-end specification management transformation to unlock clarity, compliance, and control across their packaging lifecycle.', 'Personal Care', 'uploads/c2a7476a5296f55c4223f8643ff34dcf.webp', 'uploads/3a7b8888d73669237167ca6b0277d686.webm', 'pharma-case-study.php', NULL, '0000-00-00', '3,13,15,21', 1, '1', '2025-07-04 17:06:52', '2025-07-07 10:37:25', NULL),
-(3, 'Check out how Packfora reimagined packaging for a new 1.5L water bottle.', 'A global FMCG company wanted to launch a new bottled water SKU — but without relying on traditional shrink film-based collation. They needed a fresh approach to secondary packaging that could match performance, stay within cost limits, and meet sustainability targets. All without heavy capital investment.', 'Plastic Packaging', 'uploads/2415670eb7c53b1f68a61f8a7fc7cc7e.webp', 'uploads/4c0feca9fc75bf0ac3955d048b4353cc.webm', '1.5-litre-bottle-case-study.php', NULL, '0000-00-00', '2,8,12,19', 1, '1', '2025-07-04 17:09:46', '2025-07-07 12:38:35', NULL),
-(4, 'Smarter Packaging, Leaner Impact: Savings for a Global Foods Major', 'For a global foods major, we balanced cost, sustainability, and consumer convenience through smarter packaging choices. From material shifts to format rethinks, our work unlocked efficiency across the value chain.', '', 'uploads/f2a930a0cfd0a67d22edbd28c69406c6.png', 'uploads/6d503940259624d9feb270a3d0d2cbe3.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '2', 1, '1', '2025-07-04 17:52:31', '2025-07-07 18:40:29', NULL),
-(5, 'Scaling Corrugate Wins: A US Productivity Roadmap in Action', 'In the US market, we partnered with a foods major to identify and execute corrugate packaging opportunities at scale. From design harmonization to inventory reduction, our roadmap delivered both savings and speed.', '', 'uploads/a1e768ff20ad90315b13121dd993dc7c.png', 'uploads/babb75a7834dc5e5faa86f3e0aa687e9.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '2', 1, '1', '2025-07-04 17:57:53', '2025-07-07 18:41:34', NULL),
-(6, 'Reimagining Trust: 3D-Led Repositioning for a Nycil', 'We helped reposition a leading hygiene brand through a 3D visual concept that brought their germ-fighting edge to life. The goal? To shift perception and cement their authority in the category.', '', 'uploads/58941dd0d5dca9c9a4bccac7a82cb4dd.png', 'uploads/f178fb2bd78f295d9d96515d3d70bacb.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '2', 1, '1', '2025-07-04 17:58:26', '2025-07-07 18:42:01', NULL),
-(7, 'Optimizing Sourcing: From Shared Service to Strategic', 'We helped transition packaging sourcing from a shared internal model in the UK and USA to a lean, cost-optimized third-party network. The result? Greater agility, transparency, and long-term savings', '', 'uploads/8522812322a08b9b801ffcf2d27a99c4.png', 'uploads/2e1416a1f02ff289d7cf0e96b7127670.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8', 1, '1', '2025-07-04 18:00:36', '2025-07-07 18:43:02', NULL),
-(8, 'Demystifying Pharma Packaging: A Guide for Non-Packaging Teams', 'We created a comprehensive guide designed for non-packaging teams in a global pharma major helping drive cross-functional alignment and measurable packaging improvements.', '', 'uploads/25cbd88716bf86da451975c6290ad91a.png', 'uploads/12489202180d015cf848645ec262f4b8.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8', 1, '1', '2025-07-04 18:01:21', '2025-07-07 18:43:49', NULL),
-(9, 'Breaking Boundaries: Rigid Plastic Innovation in Action', 'We led a deep-dive design and engineering program to unlock innovation in complex rigid plastic formats. From structure to material science, we reimagined what was possible.', '', 'uploads/4ac1f85d7829db29d162e8818103ac1c.png', 'uploads/df577761184b46df8ba4644f39431556.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8', 1, '1', '2025-07-04 18:01:49', '2025-07-07 18:43:59', NULL),
-(10, 'Rapid Prototyping, Real Results: In-House 3D for Pack Speed', 'By integrating in-house 3D printing and mold development, we helped streamline prototyping cycles and reduce lead times in packaging design. Faster decisions. Smarter execution.', '', 'uploads/62f18db237340c1cc66a2a6067ab3687.png', 'uploads/62910e74c53ede6564af5b9e59bab765.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8', 1, '1', '2025-07-04 18:03:02', '2025-07-07 18:45:06', NULL),
-(11, 'Engineering Simplicity: Reducing Cost & Complexity in Home Care', 'For a leading home cleaning brand, we engineered packaging that reduced cost and complexity without compromising performance. Structural redesigns and component optimization drove bottom-line gains.', '', 'uploads/dbe5dc7d304699f48735807bd3751831.png', 'uploads/c5073d07b1bc5b5f04fe4f7ac4620d29.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8', 1, '1', '2025-07-04 18:03:59', '2025-07-07 18:45:21', NULL),
-(12, 'Data-Driven Decisions: LCA for Smarter Beverage Packaging', 'We conducted a Life Cycle Assessment (LCA) comparing PET and glass bottles to help a global alcoholic beverage major make data-driven packaging decisions. The outcome? Clearer trade-offs, credible claims, and a roadmap for decarbonization.', '', 'uploads/6c69e12026670cf9a2f242927354fd17.png', 'uploads/46e25e2783679f7ddf2aa53023ea2362.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '1', 1, '1', '2025-07-04 18:05:19', '2025-07-08 10:16:07', NULL),
+(1, 'Packfora enabled a leading FMCG brand to cut costs by 30% while enhancing recyclability and sustainability.', 'We partnered with a $2.5B horticulture leader to design a packaging solution that did more than protect fruit-it built a habit. Inspired by the pillbox design, the 7-day fruit regimen pack helped consumers stay consistent, supported ESG goals, and moved from pilot to commercial rollout in just four months.', 'Foods', 'uploads/ebded142958539454267cff8f7c6dfcc.webp', 'uploads/2fa5bef0542f33d60dcb3db3bd27bd01.webm', 'case-study-inner', NULL, '2025-06-05', '8', 1, '1', '2025-07-04 16:57:13', '2025-07-14 23:26:46', 'uploads/case-study-01.webp'),
+(2, 'How Packfora streamlined a major pharma company in their specification management.', 'When packaging specifications are scattered across geographies, platforms, and people - speed, accuracy, and compliance take a hit. A leading pharmaceutical company needed a better way to manage its packaging and finished goods specification, one that could support both day-to-day efficiency and long-term transformation. Packfora led an end-to-end specification management transformation to unlock clarity, compliance, and control across their packaging lifecycle.', 'Personal Care', 'uploads/c2a7476a5296f55c4223f8643ff34dcf.webp', 'uploads/3a7b8888d73669237167ca6b0277d686.webm', 'pharma-case-study', NULL, '2025-06-01', '3', 1, '1', '2025-07-04 17:06:52', '2025-07-14 23:27:31', 'uploads/case-study-02.webp'),
+(3, 'Check out how Packfora reimagined packaging for a new 1.5L water bottle.', 'A global FMCG company wanted to launch a new bottled water SKU - but without relying on traditional shrink film-based collation. They needed a fresh approach to secondary packaging that could match performance, stay within cost limits, and meet sustainability targets. All without heavy capital investment.', 'Plastic Packaging', 'uploads/2415670eb7c53b1f68a61f8a7fc7cc7e.webp', 'uploads/4c0feca9fc75bf0ac3955d048b4353cc.webm', 'litre-bottle-case-study', NULL, '2025-05-28', '8', 1, '1', '2025-07-04 17:09:46', '2025-07-14 23:27:46', 'uploads/case-study-03.webp'),
+(4, 'Smarter Packaging, Leaner Impact: Savings for a Global Foods Major', 'For a global foods major, we balanced cost, sustainability, and consumer convenience through smarter packaging choices. From material shifts to format rethinks, our work unlocked efficiency across the value chain.', '', 'uploads/07b000a1ea5c071af15b10dc81f05f95.webp', 'uploads/6d503940259624d9feb270a3d0d2cbe3.mp4', 'global-foods-major-savings', NULL, '2025-05-15', '2', 1, '1', '2025-07-04 17:52:31', '2025-07-14 04:52:37', 'uploads/53768837ab5e5e6ff27162528ad1dabe.webp'),
+(5, 'Scaling Corrugate Wins: A US Productivity Roadmap in Action', 'In the US market, we partnered with a foods major to identify and execute corrugate packaging opportunities at scale. From design harmonization to inventory reduction, our roadmap delivered both savings and speed.', '', 'uploads/22f147407ca915a1f2f802d1965c91f8.webp', 'uploads/babb75a7834dc5e5faa86f3e0aa687e9.mp4', 'scaling-corrugate-wins-us-productivity-roadmap', NULL, '2025-05-05', '2', 1, '1', '2025-07-04 17:57:53', '2025-07-14 04:52:53', 'uploads/1161cf92a54abf621e38df856f123e9d.webp'),
+(6, 'Reimagining Trust: 3D-Led Repositioning for a Nycil', 'We helped reposition a leading hygiene brand through a 3D visual concept that brought their germ-fighting edge to life. The goal? To shift perception and cement their authority in the category.', '', 'uploads/a06eabd88bbf57ad217ecd42e9aaabe6.webp', 'uploads/f178fb2bd78f295d9d96515d3d70bacb.mp4', '3d-led-repositioning-nycil', NULL, '2025-05-03', '2', 1, '1', '2025-07-04 17:58:26', '2025-07-14 04:53:05', 'uploads/dd59dbe82ac1561b41883cab42170946.webp'),
+(7, 'Optimizing Sourcing: From Shared Service to Strategic', 'We helped transition packaging sourcing from a shared internal model in the UK and USA to a lean, cost-optimized third-party network. The result? Greater agility, transparency, and long-term savings', '', 'uploads/0358a7742b73fa8ca9b8dcff3b3ae4cc.webp', 'uploads/2e1416a1f02ff289d7cf0e96b7127670.mp4', 'optimizing-sourcing-from-shared-service-to-strategic', NULL, '2025-04-30', '8', 1, '1', '2025-07-04 18:00:36', '2025-07-14 04:54:16', 'uploads/679b8405798a827dafc1c6cb5af8549c.webp'),
+(8, 'Demystifying Pharma Packaging: A Guide for Non-Packaging Teams', 'We created a comprehensive guide designed for non-packaging teams in a global pharma major helping drive cross-functional alignment and measurable packaging improvements.', '', 'uploads/4a6318883c5356ccd0b07652878764d0.webp', 'uploads/Comprehensive.mp4', 'demystifying-pharma-packaging-guide-non-packaging-teams', NULL, '2025-04-28', '8', 1, '1', '2025-07-04 18:01:21', '2025-07-15 05:16:00', 'uploads/173ec85b963174032481ab93acf7cb2a.webp'),
+(9, 'Breaking Boundaries: Rigid Plastic Innovation in Action', 'We led a deep-dive design and engineering program to unlock innovation in complex rigid plastic formats. From structure to material science, we reimagined what was possible.', '', 'uploads/de0982f132e4e427b6ac87e946c4815f.webp', 'uploads/df577761184b46df8ba4644f39431556.mp4', 'breaking-boundaries-rigid-plastic-innovation', NULL, '2025-04-20', '8', 1, '1', '2025-07-04 18:01:49', '2025-07-14 04:54:26', 'uploads/f576305b0764d3fbc987ca0bb2092828.webp'),
+(10, 'Rapid Prototyping, Real Results: In-House 3D for Pack Speed', 'By integrating in-house 3D printing and mold development, we helped streamline prototyping cycles and reduce lead times in packaging design. Faster decisions. Smarter execution.', '', 'uploads/f6948863a800803226c4fa2fb8c8254d.webp', 'uploads/62910e74c53ede6564af5b9e59bab765.mp4', 'rapid-prototyping-inhouse-3d-pack-speed', NULL, '2025-04-16', '8', 1, '1', '2025-07-04 18:03:02', '2025-07-14 04:54:34', 'uploads/3cf226ed24602a824765aebd085228cf.webp'),
+(11, 'Engineering Simplicity: Reducing Cost & Complexity in Home Care', 'For a leading home cleaning brand, we engineered packaging that reduced cost and complexity without compromising performance. Structural redesigns and component optimization drove bottom-line gains.', '', 'uploads/3cb2d563fe4e61c1b729204cd36d9c58.webp', 'uploads/c5073d07b1bc5b5f04fe4f7ac4620d29.mp4', 'engineering-simplicity-cost-complexity-home-care', NULL, '2025-04-10', '8', 1, '1', '2025-07-04 18:03:59', '2025-07-14 04:54:43', 'uploads/deb6aceebcd546e1e581844c9d3347fc.webp'),
+(12, 'Data-Driven Decisions: LCA for Smarter Beverage Packaging', 'We conducted a Life Cycle Assessment (LCA) comparing PET and glass bottles to help a global alcoholic beverage major make data-driven packaging decisions. The outcome? Clearer trade-offs, credible claims, and a roadmap for decarbonization.', '', 'uploads/5f6ba2b597ca0c4919ec8a72fa4dfc86.webp', 'uploads/46e25e2783679f7ddf2aa53023ea2362.mp4', 'data-driven-decisions-lca-beverage-packaging', NULL, '2025-04-05', '1', 1, '1', '2025-07-04 18:05:19', '2025-07-14 04:54:56', 'uploads/f22b48936af21066b3bfe058a6adf587.webp'),
 (13, 'Showcasing What’s Next: Innovation Fair for a Global FMCG', 'We curated  an innovation fair for an FMCG major bringing cross-functional teams together to explore packaging-led opportunities. Prototypes, pilots, and possibilities, all in one place.', '', 'uploads/d71a17ff5907193c03e1bb98a04ab1c4.webp', NULL, 'pharma-case-study.php', NULL, '0000-00-00', '16', 1, '0', '2025-07-04 18:05:59', '2025-07-07 11:48:47', NULL),
-(14, 'Showcasing What’s Next: Innovation Fair for a Global FMCG', 'We curated  an innovation fair for an FMCG major bringing cross-functional teams together to explore packaging-led opportunities. Prototypes, pilots, and possibilities, all in one place.', '', 'uploads/8595fe3507437c92ca094e83dcbcd086.png', 'uploads/d2dd85d219df7e3f1745a3d48a412bcd.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '16', 1, '1', '2025-07-04 18:11:05', '2025-07-08 10:16:16', NULL),
-(15, 'From Manual to Intelligent: Supply Chain Reinvention in FMCG', 'We partnered with a leading FMCG player to redesign and automate their packaging supply chain delivering faster turnaround, enhanced traceability, and cost resilience.', '', 'uploads/8b4e6bbfd99b66093dc9003f84a925f4.png', 'uploads/fbc0d24f26d6c7cf788822291b910e2c.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '6', 1, '1', '2025-07-04 18:12:38', '2025-07-08 10:16:53', NULL),
-(16, 'Standardizing Speed: Packaging Ops for the QSR Ecosystem', 'For a global QSR supply partner, we streamlined mold management, global quality systems, and packaging specifications. The result? A harmonized ecosystem across geographies and functions.', '', 'uploads/d129af4c91cd19d6ec4838e17ecf92a2.webp', 'uploads/3743d6db53c0acf4053bd97763ebc3ea.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '19', 1, '1', '2025-07-04 18:16:34', '2025-07-07 11:16:20', NULL),
-(17, 'End-to-End Enablement: Packaging Ops from Specs to Shelf', 'We helped accelerate packaging project management through integrated systems for specs, artworks, and lab testing. One framework, full visibility, faster execution.', '', 'uploads/817e21d4f8826d9a227429bca6e8ee10.webp', 'uploads/865e8a4b27a9a70e16ac610465ca79d0.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8,12,19', 1, '1', '2025-07-04 18:22:07', '2025-07-07 11:12:49', NULL),
-(18, 'Predictive Packaging: Algorithm-Led Supply Chain Testing', 'We developed a protocol to test packaging solutions within an algorithm-driven framework giving our client data-led confidence before deployment.', '', 'uploads/0515ef591b6d2deea69e621c551e541f.webp', 'uploads/45d183d32f5348dcc9b58ed1f72afbfe.mp4', 'pharma-case-study.php', NULL, '0000-00-00', '8,12,19', 1, '1', '2025-07-04 18:23:37', '2025-07-09 18:09:03', 'existing_main_image_path.jpg');
+(14, 'Showcasing Whats Next: Innovation Fair for a Global FMCG', 'We curated  an innovation fair for an FMCG major bringing cross-functional teams together to explore packaging-led opportunities. Prototypes, pilots, and possibilities, all in one place.', '', 'uploads/a7b47e711218a2e1de23f1980f527d21.webp', 'uploads/d2dd85d219df7e3f1745a3d48a412bcd.mp4', 'innovation-fair-global-fmcg', NULL, '2025-04-03', '1', 1, '1', '2025-07-04 18:11:05', '2025-07-14 04:57:46', 'uploads/d8f42d4ae4138e199611db20301c43cf.webp'),
+(15, 'From Manual to Intelligent: Supply Chain Reinvention in FMCG', 'We partnered with a leading FMCG player to redesign and automate their packaging supply chain delivering faster turnaround, enhanced traceability, and cost resilience.', '', 'uploads/118dff581cd10ee4a004787d8953304a.webp', 'uploads/fbc0d24f26d6c7cf788822291b910e2c.mp4', 'supply-chain-reinvention-fmcg', NULL, '2025-04-01', '6', 1, '1', '2025-07-04 18:12:38', '2025-07-14 04:55:22', 'uploads/55f2d6ee8edca20b3c3f81bf69f492a6.webp'),
+(16, 'Standardizing Speed: Packaging Ops for the QSR Ecosystem', 'For a global QSR supply partner, we streamlined mold management, global quality systems, and packaging specifications. The result? A harmonized ecosystem across geographies and functions.', '', 'uploads/7361fc702f64649128a26b3d00d5d087.webp', 'uploads/3743d6db53c0acf4053bd97763ebc3ea.mp4', 'standardizing-speed-packaging-qsr-ecosystem', NULL, '2025-03-31', '23', 1, '1', '2025-07-04 18:16:34', '2025-07-14 04:55:30', 'uploads/426cd5545a671ac623deb05a422387ef.webp'),
+(17, 'End-to-End Enablement: Packaging Ops from Specs to Shelf', 'We helped accelerate packaging project management through integrated systems for specs, artworks, and lab testing. One framework, full visibility, faster execution.', '', 'uploads/34cdc1b901dfcaa537979b8bf6f99484.webp', 'uploads/865e8a4b27a9a70e16ac610465ca79d0.mp4', 'packaging-ops-specs-to-shelf', NULL, '2025-03-21', '23', 1, '1', '2025-07-04 18:22:07', '2025-07-14 04:55:38', 'uploads/4dcf79f7c086d04d73894b80e463bb6c.webp'),
+(18, 'Predictive Packaging: Algorithm-Led Supply Chain Testing', 'We developed a protocol to test packaging solutions within an algorithm-driven framework giving our client data-led confidence before deployment.', '', 'uploads/18a5c0628705d78c927dfb74a936f73d.webp', 'uploads/45d183d32f5348dcc9b58ed1f72afbfe.mp4', 'predictive-packaging-algorithm-supply-chain', NULL, '2025-03-12', '19', 1, '1', '2025-07-04 18:23:37', '2025-07-14 04:55:49', 'uploads/2f977e9fc20f03faa8bfce9d0fa0dab4.webp');
 
 -- --------------------------------------------------------
 
@@ -434,7 +487,8 @@ INSERT INTO `tbl_case_study_tags` (`id`, `name`, `category`, `is_delete`, `creat
 (19, 'Packaging Producers', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
 (20, 'B2B Industrial', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
 (21, 'Healthcare Devices', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:23:21'),
-(22, 'Retail & E-commerce', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:32:39');
+(22, 'Retail & E-commerce', 'industry', '1', '2025-07-05 10:23:21', '2025-07-05 10:32:39'),
+(23, 'Talent Flex', 'featured', '1', '2025-07-14 15:29:54', '2025-07-14 15:29:54');
 
 -- --------------------------------------------------------
 
@@ -1615,8 +1669,7 @@ ALTER TABLE `tbl_case_study_business_impact`
 -- Indexes for table `tbl_case_study_objectives`
 --
 ALTER TABLE `tbl_case_study_objectives`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_case_study_id` (`fk_case_study_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tbl_case_study_solutions`
@@ -1910,7 +1963,7 @@ ALTER TABLE `current_opening`
 -- AUTO_INCREMENT for table `our_clients`
 --
 ALTER TABLE `our_clients`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT for table `tbl_blogs`
@@ -1958,7 +2011,7 @@ ALTER TABLE `tbl_case_study_solution_header`
 -- AUTO_INCREMENT for table `tbl_case_study_tags`
 --
 ALTER TABLE `tbl_case_study_tags`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `tbl_contact_us`

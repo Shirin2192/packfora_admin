@@ -37,31 +37,44 @@
                                     <form id="OurClientForm" class="forms-sample" enctype="multipart/form-data">
 
                                         <div class="row">
+                                            <!-- Image Upload -->
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>File upload</label>
+                                                    <label>Upload Client Logo</label>
                                                     <input type="file" name="img" class="file-upload-default">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control file-upload-info"
-                                                            disabled placeholder="Upload Image">
+                                                        <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
                                                         <span class="input-group-append">
-                                                            <button
-                                                                class="file-upload-browse btn btn-gradient-primary py-3"
-                                                                type="button">Upload</button>
+                                                            <button class="file-upload-browse btn btn-gradient-primary py-3" type="button">Upload</button>
                                                         </span>
                                                     </div>
-                                                    <!-- Add this for error display -->
-                                                    <small id="error_img" class="text-danger d-block mt-1"
-                                                        style="display:none;"></small>
+                                                    <!-- Error message -->
+                                                    <small id="error_img" class="text-danger d-block mt-1" style="display: none;"></small>
                                                 </div>
+                                            </div>
 
+                                            <!-- Show On Options -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Display Options</label><br>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" name="show_on_homepage" id="show_on_homepage" value="1">
+                                                        <label class="form-check-label" for="show_on_homepage">Show on Homepage</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" name="show_on_clients_page" id="show_on_clients_page" value="1" checked>
+                                                        <label class="form-check-label" for="show_on_clients_page">Show on Clients Page</label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+
                                         <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
                                     </form>
                                 </div>
                             </div>
                         </div>
+                    </div>
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
@@ -71,6 +84,8 @@
                                                 <tr>
                                                     <th>Sr. No.</th>
                                                     <th>Image</th>
+                                                    <th>Show on Homepage</th>       <!-- ✅ New Column -->
+                                                    <th>Show on Clients Page</th>   <!-- ✅ New Column -->
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -79,73 +94,54 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal fade" id="ViewModal" tabindex="-1" aria-labelledby="ViewModalLabel"
-                            aria-hidden="true">
+                        
+                        <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="ViewModalLabel">View Our Client </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+                                        <h5 class="modal-title" id="EditModalLabel">Edit Client Details</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body" id="modalBodyContent">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label for="view_image">Image</label>
-                                                <p id="view_image"></p>
-                                            </div>                                           
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="EditModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="EditModalLabel">Edit Current Opening Details</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <form id="EditOurClientForm">
+
+                                    <form id="EditOurClientForm" enctype="multipart/form-data">
                                         <div class="modal-body" id="modalBodyContent">
                                             <input type="hidden" id="edit_id" name="id">
-                                            <div class="row mb-3">
-                                                <div class="col-md-6">
-                                                    <label for="edit_title" class="form-label">Title</label>
-                                                    <input type="text" class="form-control" id="edit_title" name="title"
-                                                        required>
-                                                    <div class="text-danger" id="error_edit_title"></div>
+                                            <input type="hidden" id="edit_previous_image" name="previous_image">
+
+                                            <div class="row align-items-center">
+                                                <!-- Left: Image Upload -->
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="edit_image" class="form-label">Upload Client Logo</label>
+                                                    <input type="file" class="form-control" id="edit_image" name="edit_image">
+                                                    <small id="error_edit_image" class="text-danger d-block mt-1" style="display: none;"></small>
+                                                    <div id="edit_image_preview" class="mt-3"></div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <label for="edit_location" class="form-label">Location</label>
-                                                    <input type="text" class="form-control" id="edit_location"
-                                                        name="location" required>
-                                                    <div class="text-danger" id="error_edit_location"></div>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-md-12">
-                                                    <label for="edit_description" class="form-label">Description</label>
-                                                    <textarea class="form-control" id="edit_description"
-                                                        name="description" rows="4" required></textarea>
-                                                    <div class="text-danger" id="error_edit_description"></div>
+
+                                                <!-- Right: Checkboxes -->
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label d-block">Display Options</label>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" id="edit_show_on_homepage" name="show_on_homepage" value="1">
+                                                        <label class="form-check-label" for="edit_show_on_homepage">Show on Homepage</label>
+                                                    </div>
+                                                    <div class="form-check mt-2">
+                                                        <input type="checkbox" class="form-check-input" id="edit_show_on_clients_page" name="show_on_clients_page" value="1" >
+                                                        <label class="form-check-label" for="edit_show_on_clients_page">Show on Clients Page</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                             <button type="submit" class="btn btn-primary">Update</button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
+
+
 
                     </div>
                     <!-- content-wrapper ends -->
