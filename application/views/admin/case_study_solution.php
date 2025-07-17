@@ -202,9 +202,15 @@
                             </div>  
                             <div class="col-md-6">
                                 <label for="edit_description">Description</label>
-                                <input type="text" class="form-control" id="edit_description" name="edit_description">
+                                <textarea type="text" class="form-control" id="edit_description" name="edit_description"></textarea>
                                 <div class="text-danger" id="error_edit_description"></div>
-                            </div>                          
+                            </div>       
+                            <!-- <div class="col-md-6">
+                                    <label for="edit_description" class="form-label">Description (One point per line)</label>
+                                    <textarea class="form-control" id="edit_description" name="edit_description" rows="6"
+                                        placeholder="Enter each point on a new line (e.g.&#10;- Point one&#10;- Point two)"></textarea>
+                                    <div class="text-danger" id="error_edit_description"></div>
+                                </div>   -->                   
                             <div class="col-md-6">
                                 <label for="edit_image">Image</label>
                                 <input type="file" class="form-control" id="edit_image" name="edit_image">

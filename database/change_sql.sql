@@ -69,3 +69,4 @@ CREATE TABLE `tbl_case_study_solutions` (
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   );
 ALTER TABLE `tbl_case_study_business_impact` ADD `is_delete` ENUM('1','0') NOT NULL AFTER `image`;
+ALTER TABLE `tbl_case_study_solutions` CHANGE `description` `description` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;

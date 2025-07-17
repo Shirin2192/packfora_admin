@@ -1,3 +1,14 @@
+
+let editorInstance;
+
+ClassicEditor
+    .create(document.querySelector("#edit_description"))
+    .then(editor => {
+        editorInstance = editor;
+    })
+    .catch(error => {
+        console.error(error);
+    });
 $(document).ready(function () {
     // Add More
     $('#addMoreBtn').click(function () {
@@ -186,8 +197,7 @@ $('#CaseStudySolutionForm').on('submit', function (e) {
     });
 });
 
-
-    $("#CaseSṭudySolutionTable").on("click", ".edit-btn", function () {
+$("#CaseSṭudySolutionTable").on("click", ".edit-btn", function () {
     const id = $(this).data("id");
 
     $.ajax({
@@ -201,9 +211,13 @@ $('#CaseStudySolutionForm').on('submit', function (e) {
                 $("#edit_main_title").val(response.main_title || "");
                 $("#edit_main_description").val(response.main_description || "");
                 $("#edit_title").val(response.title || "");
-                $("#edit_description").val(response.description || "");
+                // $("#edit_description").val(response.description);
+                // // ✅ Set CKEditor content
+                if (editorInstance) {
+                    editorInstance.setData(response.description || "");
+                }
 
-                // Set image preview
+                // ✅ Set image preview
                 if (response.image) {
                     let imageUrl = frontend + response.image;
                     $("#current_image").html(`
@@ -217,7 +231,6 @@ $('#CaseStudySolutionForm').on('submit', function (e) {
                     $("#edit_previous_image").val('');
                 }
 
-                // Show modal
                 $("#EditModal").modal("show");
             }
         },
@@ -226,6 +239,7 @@ $('#CaseStudySolutionForm').on('submit', function (e) {
         }
     });
 });
+
 
     // Delete action
     $("#CaseSṭudySolutionTable").on("click", ".delete-btn", function (e) {
@@ -265,7 +279,14 @@ $('#CaseStudySolutionForm').on('submit', function (e) {
 });
 $(document).on("submit", "#EditCaseStudySolutionForm", function (e) {
     e.preventDefault();
+
+    // // ✅ Sync CKEditor content
+    // if (editorInstance) {
+    //     $("#edit_description").val(editorInstance.getData());
+    // }
+
     const formData = new FormData(this);
+
     $.ajax({
         url: frontend + "admin/update_case_study_solution",
         type: "POST",
@@ -276,7 +297,7 @@ $(document).on("submit", "#EditCaseStudySolutionForm", function (e) {
         success: function (res) {
             if (res.status === "success") {
                 alert(res.message);
-                 CaseSṭudySolutionTable.ajax.reload(null, false);
+                CaseSṭudySolutionTable.ajax.reload(null, false);
                 $("#EditModal").modal("hide");
             } else if (res.status === "error" && res.errors) {
                 $.each(res.errors, function (key, msg) {
@@ -286,4 +307,5 @@ $(document).on("submit", "#EditCaseStudySolutionForm", function (e) {
         }
     });
 });
+
 

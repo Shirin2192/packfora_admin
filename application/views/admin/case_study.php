@@ -142,7 +142,7 @@
                         <input type="hidden" id="edit_id" name="id">
                         <input type="hidden" id="edit_previous_image" name="edit_previous_image">
                         <input type="hidden" id="edit_previous_video" name="edit_previous_video">
-                        <input type="hidden" name="edit_previous_main_image" value="existing_main_image_path.jpg" />
+                        <input type="hidden" id="edit_previous_main_image" name="edit_previous_main_image" />
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="edit_title">Title</label>

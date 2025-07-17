@@ -148,14 +148,14 @@ $(document).ready(function () {
                 $("#edit_badge").val(data.badge);
                 $("#edit_previous_image").val(data.image);
                 $('#edit_previous_video').val(data.video);
+                $('#edit_previous_main_image').val(data.main_image);
 
                 // Date
-                if (data.date && /^\d{4}-\d{2}-\d{2}$/.test(data.date)) {
-                    $("#edit_date").val(data.date);
+                if (data.publish_date && /^\d{4}-\d{2}-\d{2}$/.test(data.publish_date)) {
+                    $("#edit_date").val(data.publish_date);
                 } else {
                     $("#edit_date").val("");
                 }
-
                 // Tags - assuming it's comma-separated IDs
                 if (data.tag_id) {
                     const tagArray = data.tag_id.split(',');
@@ -169,6 +169,14 @@ $(document).ready(function () {
                 } else {
                     $("#current_image").html('');
                 }
+                 if (data.main_image) {
+                    const mainimageUrl = frontend + data.main_image;
+                    $("#current_main_image").html(`<img src="${mainimageUrl}" class="img-fluid" style="max-height: 150px; background-color:#5555;">`);
+                } else {
+                    $("#current_main_image").html('');
+                }
+
+                
 
                 // Video Preview
                 if (data.video) {
