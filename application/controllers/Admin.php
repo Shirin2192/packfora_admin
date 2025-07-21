@@ -8113,58 +8113,116 @@ class Admin extends CI_Controller {
 			$this->load->view('admin/blogs');
 		}
 	}
+	// public function save_blogs()
+	// {
+	// 	$this->load->library('form_validation');
+	// 	// Set rules
+	// 	$this->form_validation->set_rules('title', 'Title', 'required');
+	// 	$this->form_validation->set_rules('description', 'Description', 'required');
+	// 	if (empty($_FILES['image']['name'])) {
+	// 		$this->form_validation->set_rules('image', 'Image', 'required');
+	// 	}
+
+	// 	if ($this->form_validation->run() == FALSE) {
+	// 		echo json_encode([
+	// 			'status' => 'error',
+	// 			'errors' => [
+	// 				'title' => form_error('title'),
+	// 				'description' => form_error('description'),
+	// 				'image' => form_error('image'),
+	// 			]
+	// 		]);
+	// 	} else {
+	// 		// File Upload (optional)
+	// 		$config['upload_path'] = './uploads/';
+	// 		$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+	// 		$config['max_size'] = 2048;
+
+	// 		$this->load->library('upload', $config);
+
+	// 		if (!$this->upload->do_upload('image')) {
+	// 			echo json_encode([
+	// 				'status' => 'error',
+	// 				'errors' => ['image' => $this->upload->display_errors('', '')]
+	// 			]);
+	// 		} else {
+	// 			$uploadData = $this->upload->data();
+	// 			$imagePath = 'uploads/' . $uploadData['file_name'];
+	// 			// Prepare data for insertion
+	// 			$data = [
+	// 				'title' => $this->input->post('title'),
+	// 				'description' => $this->input->post('description'),
+	// 				'image' => $imagePath,
+	// 			];
+	// 			// Insert into database
+	// 			$this->model->insertData('tbl_blogs', $data);
+
+	// 			// Save to database or proceed with business logic
+	// 			echo json_encode(['status' => 'success', 'message' => 'Blogs data saved successfully.']);
+	// 		}
+	// 	}
+	// }
 	public function save_blogs()
 	{
-		$this->load->library('form_validation');
-		// Set rules
-		$this->form_validation->set_rules('title', 'Title', 'required');
-		$this->form_validation->set_rules('description', 'Description', 'required');
-		if (empty($_FILES['image']['name'])) {
-			$this->form_validation->set_rules('image', 'Image', 'required');
-		}
+	    $this->load->library('form_validation');
 
-		if ($this->form_validation->run() == FALSE) {
-			echo json_encode([
-				'status' => 'error',
-				'errors' => [
-					'title' => form_error('title'),
-					'description' => form_error('description'),
-					'image' => form_error('image'),
-				]
-			]);
-		} else {
-			// File Upload (optional)
-			$config['upload_path'] = './uploads/';
-			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
-			$config['max_size'] = 2048;
+	    $this->form_validation->set_rules('title', 'Title', 'required|max_length[255]');
+	    $this->form_validation->set_rules('summary', 'Summary', 'required');
+	    $this->form_validation->set_rules('content', 'Content', 'required');
+	    $this->form_validation->set_rules('read_time', 'Reading Time', 'required|max_length[50]');
+	    $this->form_validation->set_rules('publish_date', 'Publish Date', 'required');
 
-			$this->load->library('upload', $config);
+	    if ($this->form_validation->run() == FALSE) {
+	        echo json_encode([
+	            'status' => false,
+	            'errors' => $this->form_validation->error_array()
+	        ]);
+	        return;
+	    }
 
-			if (!$this->upload->do_upload('image')) {
-				echo json_encode([
-					'status' => 'error',
-					'errors' => ['image' => $this->upload->display_errors('', '')]
-				]);
-			} else {
-				$uploadData = $this->upload->data();
-				$imagePath = 'uploads/' . $uploadData['file_name'];
-				// Prepare data for insertion
-				$data = [
-					'title' => $this->input->post('title'),
-					'description' => $this->input->post('description'),
-					'image' => $imagePath,
-				];
-				// Insert into database
-				$this->model->insertData('tbl_blogs', $data);
+	    $image = '';
+	    if (!empty($_FILES['image']['name'])) {
+	        $config['upload_path']   = './uploads/';
+	        $config['allowed_types'] = 'jpg|jpeg|png|webp';
+	        $config['max_size']      = 2048;
+	        $config['file_name']     = time() . '_' . $_FILES['image']['name'];
 
-				// Save to database or proceed with business logic
-				echo json_encode(['status' => 'success', 'message' => 'Blogs data saved successfully.']);
-			}
-		}
+	        $this->load->library('upload', $config);
+
+	        if (!$this->upload->do_upload('image')) {
+	            echo json_encode([
+	                'status' => false,
+	                'upload_error' => $this->upload->display_errors()
+	            ]);
+	            return;
+	        } else {
+	            $uploadData = $this->upload->data();
+	            $image = $uploadData['file_name'];
+	        }
+	    }
+
+	    $slug = url_title($this->input->post('title'), 'dash', true);
+
+	    $insertData = [
+	        'title'        => $this->input->post('title'),
+	        'slug'         => $slug,
+	        'summary'      => $this->input->post('summary'),
+	        'content'      => $this->input->post('content'),
+	        'read_time'    => $this->input->post('read_time'),
+	        'publish_date' => $this->input->post('publish_date'),
+	        'image'        => 'uploads/'.$image,
+	    ];
+	    $this->model->insertData('tbl_blogs',$insertData);
+
+	    echo json_encode([
+	        'status' => true,
+	        'message' => 'Blog added successfully.'
+	    ]);
 	}
+
 	public function get_blogs_data()
 	{
-		$response['data'] = $this->model->selectWhereData('tbl_blogs',array('is_delete'=>'1','id'=>1), '*', false, array('id' => 'DESC'));
+		$response['data'] = $this->model->selectWhereData('tbl_blogs',array('is_delete'=>'1'), '*', false, array('id' => 'DESC'));
 		echo json_encode($response);
 	}
 	public function get_blogs_details()

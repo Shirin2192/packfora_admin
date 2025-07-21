@@ -1,38 +1,71 @@
-$(document).ready(function () {
-    $('#BlogsForm').on('submit', function (e) {
-        e.preventDefault();
-       // Clear previous error messages
-        $('#error_title, #error_description, #error_image').text('');
-        var formData = new FormData(this);
-        $.ajax({
-            url: frontend + "admin/save_blogs",  // Adjust URL accordingly
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            success: function (response) {
-                if (response.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        timer: 1000,
-                        timerProgressBar: true,
-                        showConfirmButton: false
-                    });
-                    $('#BlogsForm')[0].reset();
-                     // Reload the DataTable
-                    BlogsTable.ajax.reload(null, false);
-                } else if (response.status === 'error') {
-                    $.each(response.errors, function (key, val) {
-                        $('#error_' + key).text(val);
-                    });
-                }
+ClassicEditor
+    .create(document.querySelector("#content"))
+    .then(editor => {
+        editorInstance = editor;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
+    ClassicEditor
+    .create(document.querySelector("#edit_content"))
+    .then(editor => {
+        editorInstance = editor;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+$('#BlogsForm').on('submit', function (e) {
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    // Clear old errors
+    $('small.text-danger').text('').show(); // show in case previously faded out
+
+    $.ajax({
+        url: frontend + "admin/save_blogs",
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function (response) {
+            if (response.status === true) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: response.message,
+                    timer: 1000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+                $('#BlogsForm')[0].reset();
+                BlogsTable.ajax.reload(null, false);
+            } else {
+                // Show validation errors
+                $.each(response.errors, function (key, val) {
+                    $('#error_' + key).text(val).show();
+
+                    // Set timeout to clear each error message after 3s
+                    setTimeout(function () {
+                        $('#error_' + key).fadeOut('slow', function () {
+                            $(this).text('').show(); // reset text and keep element visible for next time
+                        });
+                    }, 3000);
+                });
             }
-        });
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Something went wrong. Please try again.',
+            });
+        }
     });
 });
+
 
 $(document).ready(function () {
     // Ensure 'frontend' variable is defined and points to your base URL
@@ -66,7 +99,7 @@ $(document).ready(function () {
                 orderable: false
             },
             { data: 'title' },
-            { data: 'description' },
+            { data: 'summary' },
             { data: 'image', render: function (data) {
                 // Ensure 'frontend' ends with a slash if needed
                 var imageUrl = frontend + data;
@@ -95,32 +128,46 @@ $(document).ready(function () {
     });
 
     // Optional: Handle clicks for view/edit/delete
-    $("#BlogsTable").on("click", ".view-btn", function (e) {
-        e.preventDefault();
-        const id = $(this).data("id");
-        $.ajax({
-            url: frontend + "admin/get_blogs_details",
-            type: "POST",
-            dataType: "json",
-            data: { id: id }, // send id in POST data
-            success: function (response) {
-                $("#view_title").text(response.data.title);
-                $("#view_description").text(response.data.description);
-                if (response.data.image) {
-                const imageUrl = frontend + response.data.image;
-                $("#view_image").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px;">');
+ $("#BlogsTable").on("click", ".view-btn", function (e) {
+    e.preventDefault();
+    const id = $(this).data("id");
+
+    $.ajax({
+        url: frontend + "admin/get_blogs_details",
+        type: "POST",
+        dataType: "json",
+        data: { id: id },
+        success: function (response) {
+            if (response.data) {
+                const blog = response.data;
+
+                $("#view_title").text(blog.title || "N/A");
+                $("#view_summary").text(blog.summary || "N/A");
+                $("#view_content").html(blog.content || "N/A");
+                $("#view_slug").text(blog.slug || "N/A");
+                $("#view_publish_date").text(blog.publish_date || "N/A");
+                $("#view_read_time").text(blog.read_time || "N/A");
+
+                if (blog.image) {
+                    const blogimageUrl = frontend + blog.image;
+                    $("#view_image").html(
+                        '<img src="' + blogimageUrl + '" class="img-fluid" style="max-height: 150px;">'
+                    );
+                } else {
+                    $("#view_image").html('<span>No image</span>');
+                }
+
+                $('#viewBlogModal').modal('show');
             } else {
-                $("#view_image").html('');
+                alert("Blog details not found.");
             }
-            $('#ViewModal').modal('show');
-            },
-            error: function () {
-                $("#view_title").text("Error loading data");
-                $("#view_description").text("Error loading data");
-                $("#view_image").hide();
-            },
-        });
+        },
+        error: function () {
+            alert("Error loading blog details.");
+        }
     });
+});
+
 
     $("#BlogsTable").on("click", ".edit-btn", function (e) {
         e.preventDefault();
@@ -143,7 +190,7 @@ $(document).ready(function () {
                     } else {
                         $("#edit_image_preview").html('');
                     }
-                    $('#EditModal').modal('show');
+                    $('#editBlogModal').modal('show');
                 
             },
             error: function () {
@@ -190,50 +237,50 @@ $(document).ready(function () {
 	});
 });
 
-$('#EditBlogsForm').submit(function (e) {
-    e.preventDefault();
+// $('#EditBlogsForm').submit(function (e) {
+//     e.preventDefault();
 
-    let formData = new FormData(this);
-    // Clear previous errors
-    $('#error_edit_title, #error_edit_description, #error_edit_image').text('');
+//     let formData = new FormData(this);
+//     // Clear previous errors
+//     $('#error_edit_title, #error_edit_description, #error_edit_image').text('');
 
-    $.ajax({
-        url: frontend + "admin/update_blogs", // adjust to your route
-        type: "POST",
-        data: formData,
-        dataType: "json",
-        contentType: false,
-        processData: false,
-        success: function (response) {
-            if (response.status === 'success') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: response.message,
-                    timer: 1000,
-                    timerProgressBar: true,
-                    showConfirmButton: false
-                });
-                // Reset the form
-                $('#EditBlogsForm')[0].reset();
-                // Clear previous image preview
-                $('#edit_image_preview').html('');
-                // Reload the DataTable
-                BlogsTable.ajax.reload(null, false);
-                $('#EditModal').modal('hide');
-                // Optional: refresh data table or show toast
-            } else if (response.status === 'error') {
-                // Show validation errors
-                if (response.errors.title) {
-                    $('#error_edit_title').text(response.errors.title);
-                }
-                if (response.errors.description) {
-                    $('#error_edit_description').text(response.errors.description);
-                }
-                if (response.errors.image) {
-                    $('#error_edit_image').text(response.errors.image);
-                }
-            }
-        }
-    });
-});
+//     $.ajax({
+//         url: frontend + "admin/update_blogs", // adjust to your route
+//         type: "POST",
+//         data: formData,
+//         dataType: "json",
+//         contentType: false,
+//         processData: false,
+//         success: function (response) {
+//             if (response.status === 'success') {
+//                 Swal.fire({
+//                     icon: 'success',
+//                     title: 'Success!',
+//                     text: response.message,
+//                     timer: 1000,
+//                     timerProgressBar: true,
+//                     showConfirmButton: false
+//                 });
+//                 // Reset the form
+//                 $('#EditBlogsForm')[0].reset();
+//                 // Clear previous image preview
+//                 $('#edit_image_preview').html('');
+//                 // Reload the DataTable
+//                 BlogsTable.ajax.reload(null, false);
+//                 $('#EditModal').modal('hide');
+//                 // Optional: refresh data table or show toast
+//             } else if (response.status === 'error') {
+//                 // Show validation errors
+//                 if (response.errors.title) {
+//                     $('#error_edit_title').text(response.errors.title);
+//                 }
+//                 if (response.errors.description) {
+//                     $('#error_edit_description').text(response.errors.description);
+//                 }
+//                 if (response.errors.image) {
+//                     $('#error_edit_image').text(response.errors.image);
+//                 }
+//             }
+//         }
+//     });
+// });
