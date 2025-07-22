@@ -217,6 +217,7 @@
                   <div class="modal-body">
                     <form id="EditBlogForm" enctype="multipart/form-data">
                       <input type="hidden" name="id" id="edit_id">
+                      <input type="hidden" name="current_image" id="current_image">
 
                       <div class="container-fluid">
                         <div class="row">
@@ -224,42 +225,42 @@
                           <!-- Title -->
                           <div class="col-md-6 mb-3">
                             <label class="form-label"><strong>Title</strong></label>
-                            <input type="text" name="title" id="edit_title" class="form-control" required>
+                            <input type="text" name="edit_title" id="edit_title" class="form-control" required>
                             <small class="text-danger" id="error_title"></small>
                           </div>
 
                           <!-- Slug -->
                           <div class="col-md-6 mb-3">
                             <label class="form-label"><strong>Slug</strong></label>
-                            <input type="text" name="slug" id="edit_slug" class="form-control">
+                            <input type="text" name="edit_slug" id="edit_slug" class="form-control">
                             <small class="text-danger" id="error_slug"></small>
                           </div>
 
                           <!-- Summary -->
                           <div class="col-md-6 mb-3">
                             <label class="form-label"><strong>Summary</strong></label>
-                            <textarea name="summary" id="edit_summary" class="form-control" rows="3"></textarea>
+                            <textarea name="edit_summary" id="edit_summary" class="form-control" rows="3"></textarea>
                             <small class="text-danger" id="error_summary"></small>
                           </div>
 
                           <!-- Reading Time -->
                           <div class="col-md-6 mb-3">
                             <label class="form-label"><strong>Reading Time (in mins)</strong></label>
-                            <input type="number" name="read_time" id="edit_read_time" class="form-control" min="1">
+                            <input type="text" name="edit_read_time" id="edit_read_time" class="form-control" min="1">
                             <small class="text-danger" id="error_read_time"></small>
                           </div>
 
                           <!-- Publish Date -->
                           <div class="col-md-6 mb-3">
                             <label class="form-label"><strong>Publish Date</strong></label>
-                            <input type="date" name="publish_date" id="edit_publish_date" class="form-control">
+                            <input type="date" name="edit_publish_date" id="edit_publish_date" class="form-control">
                             <small class="text-danger" id="error_publish_date"></small>
                           </div>
 
                           <!-- Image -->
                           <div class="col-md-6 mb-3">
                             <label class="form-label"><strong>Image</strong></label><br>
-                            <input type="file" name="image" id="edit_image" class="form-control">
+                            <input type="file" name="edit_image" id="edit_image" class="form-control">
                             <div id="preview_edit_image" class="mt-2"></div>
                             <small class="text-danger" id="error_image"></small>
                           </div>
@@ -267,8 +268,8 @@
                           <!-- Content (CKEditor) -->
                           <div class="col-md-12 mb-3">
                             <label class="form-label"><strong>Content</strong></label>
-                            <textarea name="description" id="edit_description" class="form-control" rows="6"></textarea>
-                            <small class="text-danger" id="error_description"></small>
+                            <textarea name="edit_content" id="edit_content" class="form-control" rows="6"></textarea>
+                            <small class="text-danger" id="error_edit_content"></small>
                           </div>
 
                         </div>
@@ -294,19 +295,7 @@
     <script src="<?= base_url()?>assets/view_js/blogs.js"></script>
     <!-- End custom js for this page -->
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const titleInput = document.getElementById('title');
-        const slugInput = document.getElementById('slug');
-
-        titleInput.addEventListener('keyup', function () {
-            let slug = this.value
-                .toLowerCase()
-                .replace(/[^a-z0-9\s-]/g, '')
-                .replace(/\s+/g, '-')
-                .replace(/-+/g, '-');
-            slugInput.value = slug;
-        });
-    });
+   
 </script>
 
 </body>

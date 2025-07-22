@@ -1,3 +1,31 @@
+ document.addEventListener('DOMContentLoaded', function () {
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+
+        titleInput.addEventListener('keyup', function () {
+            let slug = this.value
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
+            slugInput.value = slug;
+        });
+    });
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const titleInput = document.getElementById('edit_title');
+        const slugInput = document.getElementById('edit_slug');
+
+        titleInput.addEventListener('keyup', function () {
+            let slug = this.value
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
+            slugInput.value = slug;
+        });
+    });
+
 ClassicEditor
     .create(document.querySelector("#content"))
     .then(editor => {
@@ -7,10 +35,12 @@ ClassicEditor
         console.error(error);
     });
 
-    ClassicEditor
-    .create(document.querySelector("#edit_content"))
+   let editContentEditor;
+
+ClassicEditor
+.create(document.querySelector('#edit_content'))
     .then(editor => {
-        editorInstance = editor;
+        editContentEditor = editor;
     })
     .catch(error => {
         console.error(error);
@@ -169,37 +199,45 @@ $(document).ready(function () {
 });
 
 
-    $("#BlogsTable").on("click", ".edit-btn", function (e) {
-        e.preventDefault();
-        const id = $(this).data("id");
-        // Fetch details from server via POST
-        $.ajax({
+        $("#BlogsTable").on("click", ".edit-btn", function (e) {
+          e.preventDefault();
+          const id = $(this).data("id");
+
+          $.ajax({
             url: frontend + "admin/get_blogs_details",
             type: "POST",
             dataType: "json",
-            data: { id: id }, // send id in POST data
+            data: { id: id },
             success: function (response) {
-                    $("#edit_id").val(response.data.id);
-                    $("#edit_title").val(response.data.title);
-                    $('#edit_id').val(response.data.id);
-                    $("#edit_description").val(response.data.description);
-                    $("#edit_previous_image").val(response.data.image); // Handle empty image case
-                    if (response.data.image) {
-                        const imageUrl = frontend + response.data.image;
-                        $("#edit_image_preview").html('<img src="' + imageUrl + '" class="img-fluid" style="max-height: 150px;">');
-                    } else {
-                        $("#edit_image_preview").html('');
-                    }
-                    $('#editBlogModal').modal('show');
-                
+            
+                const data = response.data;
+                $("#edit_id").val(data.id);
+                $("#edit_title").val(data.title);
+                $("#edit_slug").val(data.slug);
+                $("#edit_summary").val(data.summary);
+                $("#edit_read_time").val(data.read_time);
+                $("#edit_publish_date").val(data.publish_date);
+                $("#current_image").val(data.image);
+                if (editContentEditor) {
+                  editContentEditor.setData(data.content);
+                }
+
+                $("#edit_previous_image").val(data.image);
+                if (data.image) {
+                  const imageUrl = frontend + data.image;
+                  $("#preview_edit_image").html(`<img src="${imageUrl}" class="img-fluid" style="max-height: 150px;">`);
+                } else {
+                  $("#preview_edit_image").html('');
+                }
+
+                $("#editBlogModal").modal("show");            
             },
             error: function () {
-                $("#edit_title").val("Error loading data");
-                $("#edit_description").val("Error loading data");
-                $("#edit_image_preview").html('');
-            },
+              alert("An error occurred while loading blog details.");
+            }
+          });
         });
-    });
+
     // Delete action
 	$("#BlogsTable").on("click", ".delete-btn", function (e) {
 		e.preventDefault();
@@ -237,50 +275,65 @@ $(document).ready(function () {
 	});
 });
 
-// $('#EditBlogsForm').submit(function (e) {
-//     e.preventDefault();
+$('#EditBlogForm').submit(function (e) {
+    e.preventDefault();
 
-//     let formData = new FormData(this);
-//     // Clear previous errors
-//     $('#error_edit_title, #error_edit_description, #error_edit_image').text('');
+    // Sync CKEditor content with hidden textarea
+    if (typeof editContentEditor !== 'undefined') {
+        $('#edit_content').val(editContentEditor.getData());
+    }
 
-//     $.ajax({
-//         url: frontend + "admin/update_blogs", // adjust to your route
-//         type: "POST",
-//         data: formData,
-//         dataType: "json",
-//         contentType: false,
-//         processData: false,
-//         success: function (response) {
-//             if (response.status === 'success') {
-//                 Swal.fire({
-//                     icon: 'success',
-//                     title: 'Success!',
-//                     text: response.message,
-//                     timer: 1000,
-//                     timerProgressBar: true,
-//                     showConfirmButton: false
-//                 });
-//                 // Reset the form
-//                 $('#EditBlogsForm')[0].reset();
-//                 // Clear previous image preview
-//                 $('#edit_image_preview').html('');
-//                 // Reload the DataTable
-//                 BlogsTable.ajax.reload(null, false);
-//                 $('#EditModal').modal('hide');
-//                 // Optional: refresh data table or show toast
-//             } else if (response.status === 'error') {
-//                 // Show validation errors
-//                 if (response.errors.title) {
-//                     $('#error_edit_title').text(response.errors.title);
-//                 }
-//                 if (response.errors.description) {
-//                     $('#error_edit_description').text(response.errors.description);
-//                 }
-//                 if (response.errors.image) {
-//                     $('#error_edit_image').text(response.errors.image);
-//                 }
-//             }
-//         }
-//     });
-// });
+    let formData = new FormData(this);
+
+    // Clear previous error messages
+    $('#error_title, #error_edit_content, #error_image').text('');
+
+    $.ajax({
+        url: frontend + "admin/update_blogs",
+        type: "POST",
+        data: formData,
+        dataType: "json",
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            if (response.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: response.message,
+                    timer: 1500,
+                    showConfirmButton: false,
+                    timerProgressBar: true
+                });
+
+                $('#EditBlogForm')[0].reset();
+                if (typeof editContentEditor !== 'undefined') {
+                    editContentEditor.setData('');
+                }
+                $('#preview_edit_image').html('');
+                $('#editBlogModal').modal('hide');
+                BlogsTable.ajax.reload(null, false);
+
+            } else if (response.status === 'error') {
+                if (response.errors.title) {
+                    $('#error_title').text(response.errors.title);
+                }
+                if (response.errors.content) {
+                    $('#error_edit_content').text(response.errors.content);
+                }
+                if (response.errors.image) {
+                    $('#error_image').text(response.errors.image);
+                }
+            }
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong while updating the blog.',
+            });
+        }
+    });
+});
+
+

@@ -8233,63 +8233,75 @@ class Admin extends CI_Controller {
 	}
 	public function update_blogs()
 	{
-		$this->load->library('form_validation');
-    	$this->form_validation->set_rules('title', 'Title', 'required|trim');
-    	$this->form_validation->set_rules('description', 'Description', 'required|trim');
+	    $this->load->library('form_validation');
 
-		if ($this->form_validation->run() === FALSE) {
-			echo json_encode([
-				'status' => 'error',
-				'errors' => [
-					'title' => form_error('title'),
-					'description' => form_error('description'),
-				]
-			]);
-			return;
-		}
+	    // Use correct field names from your form
+	    $this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+	    $this->form_validation->set_rules('edit_content', 'Content', 'required|trim');
 
-		$id = $this->input->post('id');
-		$title = $this->input->post('title');
-		$description = $this->input->post('description');
-		$previous_image = $this->input->post('edit_previous_image');
+	    if ($this->form_validation->run() === FALSE) {
+	        echo json_encode([
+	            'status' => 'error',
+	            'errors' => [
+	                'title' => form_error('edit_title'),
+	                'edit_content' => form_error('edit_content'),
+	            ]
+	        ]);
+	        return;
+	    }
 
-		$image = $previous_image;
-		if (!empty($_FILES['edit_image']['name'])) {
-			$config['upload_path'] = './uploads/';
-			$config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
-			$config['max_size'] = 2048;
+	    $id               = $this->input->post('id');
+	    $title            = $this->input->post('edit_title');
+	    $slug             = $this->input->post('edit_slug');
+	    $summary          = $this->input->post('edit_summary');
+	    $read_time        = $this->input->post('edit_read_time');
+	    $publish_date     = $this->input->post('edit_publish_date');
+	    $description      = $this->input->post('edit_content', false);
+	    $previous_image   = $this->input->post('current_image');
+	    $image = $previous_image;
 
-			$this->load->library('upload', $config);
+	    if (!empty($_FILES['edit_image']['name'])) {
+	        $config['upload_path']   = './uploads/';
+	        $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
+	        $config['max_size']      = 2048;
 
-			if (!$this->upload->do_upload('edit_image')) {
-				echo json_encode([
-					'status' => 'error',
-					'errors' => ['edit_image' => $this->upload->display_errors('', '')]
-				]);
-				return;
-			} else {
-				$upload_data = $this->upload->data();
-				$image = 'uploads/' . $upload_data['file_name'];
+	        $this->load->library('upload', $config);
 
-				// Optional: delete old image
-				if ($previous_image && file_exists($previous_image)) {
-					@unlink($previous_image);
-				}
-			}
-		}
-		// Update DB
-		$data = [
-			'title' => $title,
-			'description' => $description,
-			'image' => $image,
-		];
+	        if (!$this->upload->do_upload('edit_image')) {
+	            echo json_encode([
+	                'status' => 'error',
+	                'errors' => ['edit_image' => $this->upload->display_errors('', '')]
+	            ]);
+	            return;
+	        } else {
+	            $upload_data = $this->upload->data();
+	            $image = 'uploads/' . $upload_data['file_name'];
 
-		if ($this->model->updateData('tbl_blogs', $data, array('id' => $id, 'is_delete' => '1'))) {
-			echo json_encode(['status' => 'success', 'message' => 'Blogs updated successfully.']);
-		} else {
-			echo json_encode(['status' => 'error', 'message' => 'Failed to update blogs data.']);
-		}
+	            if ($previous_image && file_exists($previous_image)) {
+	                @unlink($previous_image);
+	            }
+	        }
+	    }
+
+	    // Prepare data to update
+	    $data = [
+	        'title'        => $title,
+	        'slug'         => $slug,
+	        'summary'      => $summary,
+	        'read_time'    => $read_time,
+	        'publish_date' => $publish_date,
+	        'content'  => $description,
+	        'image'        => $image,
+	    ];
+	    $updated = $this->model->updateData('tbl_blogs', $data, ['id' => $id]);
+
+	    if ($updated) {
+	        echo json_encode(['status' => 'success', 'message' => 'Blog updated successfully.']);
+	    } else {
+	        echo json_encode(['status' => 'error', 'message' => 'Failed to update blog.']);
+	    }
 	}
+
 	public function delete_blogs()
 	{
 		$id = $this->input->post('id');
