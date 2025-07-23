@@ -25,26 +25,27 @@
             slugInput.value = slug;
         });
     });
-
-ClassicEditor
-    .create(document.querySelector("#content"))
-    .then(editor => {
-        editorInstance = editor;
-    })
-    .catch(error => {
-        console.error(error);
-    });
+CKEDITOR.replace('content');
+CKEDITOR.replace('edit_content');
+// ClassicEditor
+//     .create(document.querySelector("#content"))
+//     .then(editor => {
+//         editorInstance = editor;
+//     })
+//     .catch(error => {
+//         console.error(error);
+//     });
 
    let editContentEditor;
 
-ClassicEditor
-.create(document.querySelector('#edit_content'))
-    .then(editor => {
-        editContentEditor = editor;
-    })
-    .catch(error => {
-        console.error(error);
-    });
+// ClassicEditor
+// .create(document.querySelector('#edit_content'))
+//     .then(editor => {
+//         editContentEditor = editor;
+//     })
+//     .catch(error => {
+//         console.error(error);
+//     });
 $('#BlogsForm').on('submit', function (e) {
     e.preventDefault();
 
@@ -218,11 +219,12 @@ $(document).ready(function () {
                 $("#edit_read_time").val(data.read_time);
                 $("#edit_publish_date").val(data.publish_date);
                 $("#current_image").val(data.image);
-                if (editContentEditor) {
-                  editContentEditor.setData(data.content);
-                }
+                // if (editContentEditor) {
+                  // editContentEditor.setData(data.content);
+                CKEDITOR.instances['edit_content'].setData(data.content);
+                // }
 
-                $("#edit_previous_image").val(data.image);
+                // $("#edit_previous_image").val(data.image);
                 if (data.image) {
                   const imageUrl = frontend + data.image;
                   $("#preview_edit_image").html(`<img src="${imageUrl}" class="img-fluid" style="max-height: 150px;">`);
@@ -274,66 +276,62 @@ $(document).ready(function () {
 		});
 	});
 });
-
-$('#EditBlogForm').submit(function (e) {
+$("#EditBlogForm").submit(function (e) {
     e.preventDefault();
 
-    // Sync CKEditor content with hidden textarea
-    if (typeof editContentEditor !== 'undefined') {
-        $('#edit_content').val(editContentEditor.getData());
-    }
+    // Clear previous error messages
+    $(".text-danger").html("");
 
+    // Get CKEditor content manually
+    let contentData = CKEDITOR.instances.edit_content.getData();
+    // Set it back into textarea before FormData reads it
+    $("#edit_content").val(contentData);
+
+    // Prepare FormData
     let formData = new FormData(this);
 
-    // Clear previous error messages
-    $('#error_title, #error_edit_content, #error_image').text('');
-
     $.ajax({
-        url: frontend + "admin/update_blogs",
+        url: frontend + "admin/update_blogs", // Replace with your update endpoint
         type: "POST",
         data: formData,
-        dataType: "json",
         contentType: false,
         processData: false,
+        dataType: "json",
         success: function (response) {
-            if (response.status === 'success') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: response.message,
-                    timer: 1500,
-                    showConfirmButton: false,
-                    timerProgressBar: true
-                });
-
-                $('#EditBlogForm')[0].reset();
-                if (typeof editContentEditor !== 'undefined') {
-                    editContentEditor.setData('');
-                }
-                $('#preview_edit_image').html('');
-                $('#editBlogModal').modal('hide');
-                BlogsTable.ajax.reload(null, false);
-
-            } else if (response.status === 'error') {
+            if (response.status === "success") {
+                $("#editBlogModal").modal("hide");
+                Swal.fire("Success", response.message, "success");
+                $("#BlogsTable").DataTable().ajax.reload(); // Reload DataTable
+            } else if (response.status === "error") {
+                // Show validation errors
                 if (response.errors.title) {
-                    $('#error_title').text(response.errors.title);
+                    $("#error_title").html(response.errors.title);
                 }
-                if (response.errors.content) {
-                    $('#error_edit_content').text(response.errors.content);
+                if (response.errors.edit_slug) {
+                    $("#error_slug").html(response.errors.edit_slug);
                 }
-                if (response.errors.image) {
-                    $('#error_image').text(response.errors.image);
+                if (response.errors.edit_summary) {
+                    $("#error_summary").html(response.errors.edit_summary);
+                }
+                if (response.errors.edit_read_time) {
+                    $("#error_read_time").html(response.errors.edit_read_time);
+                }
+                if (response.errors.edit_publish_date) {
+                    $("#error_publish_date").html(response.errors.edit_publish_date);
+                }
+                if (response.errors.edit_image) {
+                    $("#error_image").html(response.errors.edit_image);
+                }
+                if (response.errors.edit_content) {
+                    $("#error_edit_content").html(response.errors.edit_content);
                 }
             }
         },
         error: function () {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong while updating the blog.',
-            });
+            Swal.fire("Error", "Something went wrong while updating blog.", "error");
         }
     });
 });
+
 
 

@@ -8235,7 +8235,7 @@ class Admin extends CI_Controller {
 	{
 	    $this->load->library('form_validation');
 
-	    // Use correct field names from your form
+	    // Validation rules
 	    $this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
 	    $this->form_validation->set_rules('edit_content', 'Content', 'required|trim');
 
@@ -8250,16 +8250,17 @@ class Admin extends CI_Controller {
 	        return;
 	    }
 
-	    $id               = $this->input->post('id');
-	    $title            = $this->input->post('edit_title');
-	    $slug             = $this->input->post('edit_slug');
-	    $summary          = $this->input->post('edit_summary');
-	    $read_time        = $this->input->post('edit_read_time');
-	    $publish_date     = $this->input->post('edit_publish_date');
-	    $description      = $this->input->post('edit_content', false);
-	    $previous_image   = $this->input->post('current_image');
-	    $image = $previous_image;
-
+	    // Fetch data from POST
+	    $id             = $this->input->post('id');
+	    $title          = $this->input->post('edit_title');
+	    $slug           = $this->input->post('edit_slug');
+	    $summary        = $this->input->post('edit_summary');
+	    $read_time      = $this->input->post('edit_read_time');
+	    $publish_date   = $this->input->post('edit_publish_date');
+	    $description    = $this->input->post('edit_content', false);
+	    $previous_image = $this->input->post('current_image');
+	    $image          = $previous_image;
+	     // If a new image is uploaded
 	    if (!empty($_FILES['edit_image']['name'])) {
 	        $config['upload_path']   = './uploads/';
 	        $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
@@ -8277,31 +8278,34 @@ class Admin extends CI_Controller {
 	            $upload_data = $this->upload->data();
 	            $image = 'uploads/' . $upload_data['file_name'];
 
-	            if ($previous_image && file_exists($previous_image)) {
+	            // ✅ Safely delete previous image if it exists and isn't the same as new one
+	            if (!empty($previous_image) && file_exists($previous_image) && $previous_image !== $image) {
 	                @unlink($previous_image);
 	            }
 	        }
 	    }
 
-	    // Prepare data to update
+	    // Prepare updated data
 	    $data = [
 	        'title'        => $title,
 	        'slug'         => $slug,
 	        'summary'      => $summary,
 	        'read_time'    => $read_time,
 	        'publish_date' => $publish_date,
-	        'content'  => $description,
+	        'content'      => $description,
 	        'image'        => $image,
 	    ];
+
+	    // Run update
 	    $updated = $this->model->updateData('tbl_blogs', $data, ['id' => $id]);
 
+	    // Respond back
 	    if ($updated) {
 	        echo json_encode(['status' => 'success', 'message' => 'Blog updated successfully.']);
 	    } else {
 	        echo json_encode(['status' => 'error', 'message' => 'Failed to update blog.']);
 	    }
 	}
-
 	public function delete_blogs()
 	{
 		$id = $this->input->post('id');

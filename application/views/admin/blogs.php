@@ -295,7 +295,19 @@
     <script src="<?= base_url()?>assets/view_js/blogs.js"></script>
     <!-- End custom js for this page -->
     <script>
-   
+    document.addEventListener('DOMContentLoaded', function () {
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+
+        titleInput.addEventListener('keyup', function () {
+            let slug = this.value
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
+            slugInput.value = slug;
+        });
+    });
 </script>
 
 </body>

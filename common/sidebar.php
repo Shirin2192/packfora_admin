@@ -56,9 +56,9 @@
                    <li class="nav-item">
                     <a class="nav-link" href="<?= base_url(); ?>admin/case_study_business_impact">Case Study Business Impact</a>
                   </li>
-                  <li class="nav-item">
+               <!--    <li class="nav-item">
                     <a class="nav-link" href="<?= base_url(); ?>admin/knowledge_centre">Knowledge Centre</a>
-                  </li>
+                  </li> -->
                 </ul>
               </div>
             </li>
@@ -176,7 +176,7 @@
 
                     <li class="nav-item"><span class="menu-sub-header">Knowledge Centre</span></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/Blog">Blog</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/more_blogs">More Blogs</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/more_blogs">More Blogs</a></li> -->
 
                     <li class="nav-item"><span class="menu-sub-header">Events Packforum</span></li>
                     <li class="nav-item"><a class="nav-link" href="<?= base_url(); ?>admin/video_banner">Video Banner</a></li>
